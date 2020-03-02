@@ -64,6 +64,7 @@ class Profile(object):
         self.scoring = ProfileScoring(self.client)
         self.rating = ProfileRating(self.client)
         self.revealing = ProfileRevealing(self.client)
+        self.embedding = ProfileEmbedding(self.client)
         self.json = ProfileJson(self.client)
 
     def list(self, source_ids=None, seniority="all", stage=None,
