@@ -1,0 +1,12 @@
+#!/bin/sh
+
+COLOR_CYAN="\033[36m"
+COLOR_RESET="\033[00m"
+
+echo "$COLOR_CYAN Test for python3 $COLOR_RESET"
+python3 test.py
+echo "$COLOR_CYAN Done $COLOR_RESET"
+
+echo "$COLOR_CYAN Test for python 2.7 $COLOR_RESET"
+python2.7 test.py
+echo "$COLOR_CYAN Done $COLOR_RESET"
