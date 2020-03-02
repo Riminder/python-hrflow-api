@@ -1,7 +1,7 @@
 import requests as req
 import json
 
-from .filter import Filter
+from .job import Job
 from .profile import Profile
 from .webhook import Webhook
 from .source import Source
@@ -19,7 +19,7 @@ class Hrflow(object):
             "X-API-Key": api_key
         }
         self.webhook_secret = webhook_secret
-        self.filter = Filter(self)
+        self.job = Job(self)
         self.profile = Profile(self)
         self.webhooks = Webhook(self)
         self.source = Source(self)

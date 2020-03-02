@@ -13,12 +13,12 @@ EVENT_PROFILE_PARSE_SUCCESS = 'profile.parse.success'
 EVENT_PROFILE_PARSE_ERROR = 'profile.parse.error'
 EVENT_PROFILE_SCORE_SUCCESS = 'profile.score.success'
 EVENT_PROFILE_SCORE_ERROR = 'profile.score.error'
-EVENT_FILTER_TRAIN_SUCCESS = 'filter.train.success'
-EVENT_FILTER_TRAIN_ERROR = 'filter.train.error'
-EVENT_FILTER_TRAIN_START = 'filter.train.start'
-EVENT_FILTER_SCORE_SUCCESS = 'filter.score.success'
-EVENT_FILTER_SCORE_ERROR = 'filter.score.error'
-EVENT_FILTER_SCORE_START = 'filter.score.start'
+EVENT_JOB_TRAIN_SUCCESS = 'job.train.success'
+EVENT_JOB_TRAIN_ERROR = 'job.train.error'
+EVENT_JOB_TRAIN_START = 'job.train.start'
+EVENT_JOB_SCORE_SUCCESS = 'job.score.success'
+EVENT_JOB_SCORE_ERROR = 'job.score.error'
+EVENT_JOB_SCORE_START = 'job.score.start'
 ACTION_STAGE_SUCCESS = 'action.stage.success'
 ACTION_STAGE_ERROR = 'action.stage.error'
 ACTION_RATING_SUCCESS = 'action.rating.success'
@@ -39,12 +39,12 @@ class Webhook(object):
             EVENT_PROFILE_PARSE_ERROR: None,
             EVENT_PROFILE_SCORE_SUCCESS: None,
             EVENT_PROFILE_SCORE_ERROR: None,
-            EVENT_FILTER_TRAIN_SUCCESS: None,
-            EVENT_FILTER_TRAIN_ERROR: None,
-            EVENT_FILTER_TRAIN_START: None,
-            EVENT_FILTER_SCORE_SUCCESS: None,
-            EVENT_FILTER_SCORE_ERROR: None,
-            EVENT_FILTER_SCORE_START: None,
+            EVENT_JOB_TRAIN_SUCCESS: None,
+            EVENT_JOB_TRAIN_ERROR: None,
+            EVENT_JOB_TRAIN_START: None,
+            EVENT_JOB_SCORE_SUCCESS: None,
+            EVENT_JOB_SCORE_ERROR: None,
+            EVENT_JOB_SCORE_START: None,
             ACTION_STAGE_SUCCESS: None,
             ACTION_STAGE_ERROR: None,
             ACTION_RATING_SUCCESS: None,
@@ -54,6 +54,11 @@ class Webhook(object):
     def check(self):
         """Get response from api for POST webhook/check."""
         response = self.client.post("webhook/check")
+        return response.json()
+
+    def test(self):
+        """Get response from api for POST webhook/check."""
+        response = self.client.post("webhook/test")
         return response.json()
 
     def setHandler(self, event_name, callback):

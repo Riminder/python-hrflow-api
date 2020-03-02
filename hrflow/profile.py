@@ -1,19 +1,18 @@
 """Profile related calls."""
 
 import time
-import magic
-import os
 import os.path as path
 import json
 
 SERNIORITY_VALUES = ["all", "senior", "junior"]
 STAGE_VALUES = [None, "new", "yes", "later", "no"]
-SORT_BY_VALUES =  ["date_reception", "date_creation", "location", "location_experience", "location_education",
-        "score_semantic", "score_predictive"]
+SORT_BY_VALUES = ["date_reception", "date_creation", "location", "location_experience", "location_education",
+                  "score_semantic", "score_predictive"]
 ORDER_BY_VALUES = [None, "desc", "asc"]
-VALID_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg', '.bmp', '.doc', '.docx', '.rtf', '.dotx', '.odt', '.odp', '.ppt', '.pptx', '.rtf', '.msg']
+VALID_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg', '.bmp', '.doc', '.docx', '.rtf', '.dotx', '.odt', '.odp', '.ppt',
+                    '.pptx', '.rtf', '.msg']
 INVALID_FILENAME = ['.', '..']
-TRAINING_METADATA_MANDATORY_FIELD = {'filter_reference': lambda x: _validate_filter_reference(x, False),
+TRAINING_METADATA_MANDATORY_FIELD = {'job_reference': lambda x: _validate_job_reference(x, False),
                                      'stage': lambda x: _validate_stage(x),
                                      'stage_timestamp': lambda x: _validate_timestamp(x, 'stage_timestamp'),
                                      'rating': lambda x: _validate_rating(x),
@@ -68,8 +67,8 @@ class Profile(object):
         self.json = ProfileJson(self.client)
 
     def list(self, source_ids=None, seniority="all", stage=None,
-             date_start="1494539999", date_end=TIMESTAMP_NOW, filter_id=None,
-             page=1, limit=30, sort_by='date_reception', filter_reference=None, order_by=None):
+             date_start="1494539999", date_end=TIMESTAMP_NOW, job_id=None,
+             page=1, limit=30, sort_by='date_reception', job_reference=None, order_by=None):
         """
         Retreive all profiles that match the query param.
 
@@ -78,7 +77,7 @@ class Profile(object):
                         profiles' last date of reception
             date_start: <string> REQUIRED (default to "1494539999")
                         profiles' first date of reception
-            filter_id:     <string>
+            job_id:     <string>
             limit:      <int> (default to 30)
                         number of fetched profiles/page
             page:       <int> REQUIRED default to 1
@@ -96,10 +95,10 @@ class Profile(object):
         query_params = {}
         query_params["date_end"] = _validate_timestamp(date_end, "date_end")
         query_params["date_start"] = _validate_timestamp(date_start, "date_start")
-        if filter_id:
-            query_params["filter_id"] = _validate_filter_id(filter_id)
-        if filter_reference:
-            query_params["filter_reference"] = _validate_filter_reference(filter_reference)
+        if job_id:
+            query_params["job_id"] = _validate_job_id(job_id)
+        if job_reference:
+            query_params["job_reference"] = _validate_job_reference(job_reference)
         query_params["limit"] = _validate_limit(limit)
         query_params["page"] = _validate_page(page)
         query_params["seniority"] = _validate_seniority(seniority)
@@ -297,7 +296,7 @@ class ProfileStage():
 
     def set(self, source_id=None, profile_id=None, job_id=None, stage=None, profile_reference=None, job_reference=None):
         """
-        Edit the profile stage given a filter.
+        Edit the profile stage given a job.
 
         Args:
             profile_id:             <string>
@@ -306,10 +305,10 @@ class ProfileStage():
             source_id:              <string>
                                     source id associated to the profile
 
-            filter_id:                 <string>
-                                    filter id
+            job_id:                 <string>
+                                    job_id id
             stage:                 <string>
-                                    profiles' stage associated to the filter ( null for all, NEW, YES, LATER or NO).
+                                    profiles' stage associated to the job ( null for all, NEW, YES, LATER or NO).
 
         Returns
             Response that contains code 201 if successful
@@ -340,9 +339,10 @@ class ProfileRating():
         """Init."""
         self.client = api
 
-    def set(self, source_id=None, profile_id=None, job_id=None, rating=None, profile_reference=None, job_reference=None):
+    def set(self, source_id=None, profile_id=None, job_id=None, rating=None, profile_reference=None,
+            job_reference=None):
         """
-        Edit the profile rating given a filter.
+        Edit the profile rating given a job.
 
         Args:
             profile_id:             <string>
@@ -351,10 +351,10 @@ class ProfileRating():
             source_id:              <string>
                                     source id associated to the profile
 
-            filter_id:                 <string>
-                                    filter id
+            job_id:                 <string>
+                                    job id
             rating:                 <int32>
-                                    profile rating from 1 to 4 associated to the filter.
+                                    profile rating from 1 to 4 associated to the job.
 
         Returns
             Response that contains code 201 if successful
@@ -384,7 +384,7 @@ class ProfileRevealing():
         """Init."""
         self.client = api
 
-    def get(self, source_id=None, profile_id=None, profile_reference=None, filter_id=None, filter_reference=None):
+    def get(self, source_id=None, profile_id=None, profile_reference=None, job_id=None, job_reference=None):
         """
         Retrieve the interpretability information.
 
@@ -393,8 +393,8 @@ class ProfileRevealing():
                                     source id
             profile_id:             <string>
                                     profile id
-            filter_id:              <string>
-                                    filter id
+            job_id:              <string>
+                                    job id
 
         Returns
             interpretability information
@@ -406,11 +406,40 @@ class ProfileRevealing():
             query_params["profile_id"] = _validate_profile_id(profile_id)
         if profile_reference:
             query_params["profile_reference"] = _validate_profile_reference(profile_reference)
-        if filter_id:
-            query_params["filter_id"] = _validate_filter_id(filter_id)
-        if filter_reference:
-            query_params["filter_reference"] = _validate_filter_reference(filter_reference)
+        if job_id:
+            query_params["job_id"] = _validate_job_id(job_id)
+        if job_reference:
+            query_params["job_reference"] = _validate_job_reference(job_reference)
         response = self.client.get('profile/revealing', query_params)
+        return response
+
+
+class ProfileEmbedding():
+    """Manage embedding related profile calls."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def get(self, fields):
+        """
+        Retrieve the interpretability information.
+
+        Args:
+            source_id:              <string>
+                                    source id
+            profile_id:             <string>
+                                    profile id
+            job_id:              <string>
+                                    job id
+
+        Returns
+            interpretability information
+
+        """
+        query_params = {}
+        query_params["fields"] = fields
+        response = self.client.get('profile/embedding', query_params)
         return response
 
 
@@ -433,14 +462,14 @@ class ProfileJson():
     def add(self, source_id, profile_json, profile_reference=None, profile_labels=[],
             profile_metadatas=[], sync_parsing=0, timestamp_reception=None):
         """Use the api to add a new profile using profile_data."""
-        payload= {
-                'source_id': _validate_source_id(source_id),
-                "profile_json": profile_json,
-                "profile_type": 'json',
-                "profile_reference": profile_reference,
-                "profile_labels": profile_labels,
-                "profile_metadatas": profile_metadatas,
-                "sync_parsing": sync_parsing
+        payload = {
+            'source_id': _validate_source_id(source_id),
+            "profile_json": profile_json,
+            "profile_type": 'json',
+            "profile_reference": profile_reference,
+            "profile_labels": profile_labels,
+            "profile_metadatas": profile_metadatas,
+            "sync_parsing": sync_parsing
         }
 
         data = {'data': json.dumps(payload)}
@@ -450,7 +479,6 @@ class ProfileJson():
             data['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
 
         response = self.client.post("profile", data=data)
-        print(response.text)
         return response.json()
 
 
@@ -461,7 +489,6 @@ def _validate_dict(value, var_name="profile_data"):
 
 
 def _get_file_metadata(file_path, profile_reference):
-
     try:
         return (
             os.path.basename(file_path) + profile_reference,  # file_name
@@ -477,10 +504,12 @@ def _validate_source_id(value):
         raise TypeError("source_id must be a string")
     return value
 
+
 def _validate_source_ids(value):
     if not value or not all(isinstance(elt, str) for elt in value):
         raise TypeError("source_ids must contain list of strings")
     return value
+
 
 def _validate_training_metadata(value):
     if not isinstance(value, list):
@@ -497,18 +526,12 @@ def _validate_training_metadata(value):
     return value
 
 
-
 def _validate_profile_id(value):
     if not isinstance(value, str) and value is not None:
         raise TypeError("source_id must be string")
 
     return value
 
-def _validate_job_id(value):
-    if not isinstance(value, str) and value is not None:
-        raise TypeError("job_id must be string")
-
-    return value
 
 
 def _validate_seniority(value):
@@ -529,20 +552,19 @@ def _validate_stage(value):
 
 def _validate_job_id(value):
     if not isinstance(value, str) and value is not None:
-        raise TypeError("filter_id must be string")
-
+        raise TypeError("job_id must be string")
     return value
 
 
 def _validate_job_reference(value, acceptnone=True):
     if value is None:
         if acceptnone is False:
-            raise TypeError("filter_reference must not be None")
+            raise TypeError("job_reference must not be None")
         else:
             return value
 
     if not isinstance(value, str) and value is not None:
-        raise TypeError("filter_reference must be string")
+        raise TypeError("job_reference must be string")
 
     return value
 
@@ -624,3 +646,10 @@ def _get_files_from_dir(dir_path, is_recurcive):
         if _is_valid_extension(true_path):
             file_res.append(true_path)
     return file_res
+
+
+def _validate_id(self, value, field_name=''):
+    if not isinstance(value, str) and value is not None:
+        raise TypeError("{} must be string".format(field_name))
+
+    return value
