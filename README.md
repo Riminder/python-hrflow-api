@@ -331,7 +331,7 @@ Here is an example of how to handle webhooks
   def func_callback(event_name, webhook_data):
     print("{} {}".format(event_name, webhook_data)
 
-  client = hrflow.hrflow('api_key', webhook_secret='webhook_key')
+  client = hrflow.client('api_key', webhook_secret='webhook_key')
 
   # Set an handler for webhook event.
   callback = func_callback

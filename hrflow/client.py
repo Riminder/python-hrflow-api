@@ -6,13 +6,13 @@ from .profile import Profile
 from .webhook import Webhook
 from .source import Source
 
-HRFLOW_API_URL = "https://www.rimstaging.net/sf/public/api/v1.0/"
+CLIENT_API_URL = "https://www.rimstaging.net/sf/public/api/v1.0/"
 
 
-class Hrflow(object):
-    """hrflow api wrapper client."""
+class Client(object):
+    """client api wrapper client."""
 
-    def __init__(self, api_key, webhook_secret=None, url=HRFLOW_API_URL):
+    def __init__(self, api_key, webhook_secret=None, url=CLIENT_API_URL):
         """Init."""
         self.url = url
         self.auth_header = {

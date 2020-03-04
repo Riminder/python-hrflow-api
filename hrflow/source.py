@@ -13,7 +13,6 @@ class Source(object):
         query_params["source_id"] = self._validate_source_id(source_id)
 
         response = self.client.get('source', query_params)
-        print(response)
         return response.json()
 
     def _validate_source_id(self, value):

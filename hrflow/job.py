@@ -13,7 +13,6 @@ class Job(object):
         if name:
             query_params['name'] = name
         response = self.client.get("jobs/searching", query_params)
-        print(response.text)
         return response.json()
 
     def get(self, job_id=None, job_reference=None):
@@ -75,22 +74,22 @@ class JobJson():
         """Init."""
         self.client = api
 
-    def add(self, name, agent_id, job_json, job_reference=None, job_labels=[], job_metadatas=[], timestamp_reception=None):
+    def add(self, name, agent_id, job_reference, job_json, job_labels=[], job_metadatas=[], timestamp_reception=None):
         """Use the api to add a new job using json_data."""
         payload = {
             'name': name,
             'agent_id': agent_id,
-            "job_json": job_json,
             "job_reference": job_reference,
+            "job_json": job_json,
             "job_labels": job_labels,
             "job_metadatas": job_metadatas
         }
 
-        data = {'data': json.dumps(payload)}
-
         # some enrichement for profile_json
         if timestamp_reception is not None:
-            data['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
+            payload['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
+
+        data = {'data': json.dumps(payload)}
 
         response = self.client.post("job", data=data)
         return response.json()

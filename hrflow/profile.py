@@ -26,9 +26,9 @@ class Profile(object):
 
     Usage example:
 
-    >>> from hrflow import hrflow
+    >>> from hrflow import client
     >>> from hrflow.profile import Profile
-    >>> client = hrflow(api_key="YOUR_API_KEY")
+    >>> client = client(api_key="YOUR_API_KEY")
     >>> profile = Profile(self.client)
     >>> result = profile.get_profiles(source_ids=["5823bc959983f7a5925a5356020e60d605e8c9b5"])
     >>> print(result)
@@ -58,18 +58,18 @@ class Profile(object):
 
         """
         self.client = client
+        self.json = ProfileJson(self.client)
         self.stage = ProfileStage(self.client)
+        self.rating = ProfileRating(self.client)
         self.attachments = ProfileAttachments(self.client)
         self.parsing = ProfileParsing(self.client)
-        self.scoring = ProfileScoring(self.client)
-        self.rating = ProfileRating(self.client)
         self.revealing = ProfileRevealing(self.client)
         self.embedding = ProfileEmbedding(self.client)
-        self.json = ProfileJson(self.client)
+        self.scoring = ProfileScoring(self.client)
+        self.reasoning = ProfileReasoning(self.client)
 
-    def list(self, source_ids=None, seniority="all", stage=None,
-             date_start="1494539999", date_end=TIMESTAMP_NOW, job_id=None,
-             page=1, limit=30, sort_by='date_reception', job_reference=None, order_by=None):
+    def list(self, source_ids=None, seniority="all", stage=None, date_start="1494539999", date_end=TIMESTAMP_NOW,
+             page=1, limit=30, sort_by='date_reception', order_by=None):
         """
         Retreive all profiles that match the query param.
 
@@ -94,22 +94,17 @@ class Profile(object):
 
         """
         query_params = {}
-        query_params["date_end"] = _validate_timestamp(date_end, "date_end")
-        query_params["date_start"] = _validate_timestamp(date_start, "date_start")
-        if job_id:
-            query_params["job_id"] = _validate_job_id(job_id)
-        if job_reference:
-            query_params["job_reference"] = _validate_job_reference(job_reference)
-        query_params["limit"] = _validate_limit(limit)
-        query_params["page"] = _validate_page(page)
-        query_params["seniority"] = _validate_seniority(seniority)
-        query_params["sort_by"] = _validate_sort_by(sort_by)
         query_params["source_ids"] = json.dumps(_validate_source_ids(source_ids))
         query_params["stage"] = _validate_stage(stage)
+        query_params["seniority"] = _validate_seniority(seniority)
+        query_params["date_end"] = _validate_timestamp(date_end, "date_end")
+        query_params["date_start"] = _validate_timestamp(date_start, "date_start")
+        query_params["limit"] = _validate_limit(limit)
+        query_params["page"] = _validate_page(page)
+        query_params["sort_by"] = _validate_sort_by(sort_by)
         query_params["order_by"] = _validate_order_by(order_by)
 
         response = self.client.get("profiles/searching", query_params)
-        print(response)
         return response.json()
 
     def add(self, source_id=None, file_path=None, profile_reference="",
@@ -189,6 +184,45 @@ class Profile(object):
         if profile_reference:
             query_params["profile_reference"] = _validate_profile_reference(profile_reference)
         response = self.client.get('profile', query_params)
+        return response.json()
+
+
+class ProfileJson():
+    """Gathers route about structured profile."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def check(self, profile_data, training_metadata=[]):
+        """Use the api to check weither the profile_data are valid."""
+        data = {
+            "profile_json": _validate_dict(profile_data, "profile_data"),
+            "training_metadata": _validate_training_metadata(training_metadata),
+        }
+        response = self.client.post("profile/json/check", data=data)
+        return response.json()
+
+    def add(self, source_id, profile_json, profile_reference=None, profile_labels=[],
+            profile_metadatas=[], sync_parsing=0, timestamp_reception=None):
+        """Use the api to add a new profile using profile_data."""
+        payload = {
+            'source_id': _validate_source_id(source_id),
+            "profile_json": profile_json,
+            "profile_type": 'json',
+            "profile_reference": profile_reference,
+            "profile_labels": profile_labels,
+            "profile_metadatas": profile_metadatas,
+            "sync_parsing": sync_parsing
+        }
+
+        data = {'data': json.dumps(payload)}
+
+        # some enrichement for profile_json
+        if timestamp_reception is not None:
+            data['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
+
+        response = self.client.post("profile", data=data)
         return response.json()
 
 
@@ -288,6 +322,83 @@ class ProfileScoring():
         return response.json()
 
 
+class ProfileRevealing():
+    """Manage interpretability related profile calls."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def get(self, source_id=None, profile_id=None, profile_reference=None, job_id=None, job_reference=None):
+        """
+        Retrieve the interpretability information.
+
+        Args:
+            source_id:              <string>
+                                    source id
+            profile_id:             <string>
+                                    profile id
+            job_id:              <string>
+                                    job id
+
+        Returns
+            interpretability information
+
+        """
+        query_params = {}
+        query_params["source_id"] = _validate_source_id(source_id)
+        if profile_id:
+            query_params["profile_id"] = _validate_profile_id(profile_id)
+        if profile_reference:
+            query_params["profile_reference"] = _validate_profile_reference(profile_reference)
+        if job_id:
+            query_params["job_id"] = _validate_job_id(job_id)
+        if job_reference:
+            query_params["job_reference"] = _validate_job_reference(job_reference)
+        response = self.client.get('profile/revealing', query_params)
+        return response
+
+
+class ProfileEmbedding():
+    """Manage embedding related profile calls."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def get(self, fields):
+        """
+        Retrieve the interpretability information.
+
+        Args:
+            source_id:              <string>
+                                    source id
+            profile_id:             <string>
+                                    profile id
+            job_id:              <string>
+                                    job id
+
+        Returns
+            interpretability information
+
+        """
+        query_params = {}
+        query_params["fields"] = fields
+        response = self.client.get('profile/embedding', query_params)
+        return response
+
+
+class ProfileReasoning():
+    """Manage embedding related profile calls."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def get(self):
+        return
+
+
 class ProfileStage():
     """Manage stage related profile calls."""
 
@@ -375,111 +486,6 @@ class ProfileRating():
         data["rating"] = _validate_rating(rating)
 
         response = self.client.patch('profile/action', data=data)
-        return response.json()
-
-
-class ProfileRevealing():
-    """Manage interpretability related profile calls."""
-
-    def __init__(self, api):
-        """Init."""
-        self.client = api
-
-    def get(self, source_id=None, profile_id=None, profile_reference=None, job_id=None, job_reference=None):
-        """
-        Retrieve the interpretability information.
-
-        Args:
-            source_id:              <string>
-                                    source id
-            profile_id:             <string>
-                                    profile id
-            job_id:              <string>
-                                    job id
-
-        Returns
-            interpretability information
-
-        """
-        query_params = {}
-        query_params["source_id"] = _validate_source_id(source_id)
-        if profile_id:
-            query_params["profile_id"] = _validate_profile_id(profile_id)
-        if profile_reference:
-            query_params["profile_reference"] = _validate_profile_reference(profile_reference)
-        if job_id:
-            query_params["job_id"] = _validate_job_id(job_id)
-        if job_reference:
-            query_params["job_reference"] = _validate_job_reference(job_reference)
-        response = self.client.get('profile/revealing', query_params)
-        return response
-
-
-class ProfileEmbedding():
-    """Manage embedding related profile calls."""
-
-    def __init__(self, api):
-        """Init."""
-        self.client = api
-
-    def get(self, fields):
-        """
-        Retrieve the interpretability information.
-
-        Args:
-            source_id:              <string>
-                                    source id
-            profile_id:             <string>
-                                    profile id
-            job_id:              <string>
-                                    job id
-
-        Returns
-            interpretability information
-
-        """
-        query_params = {}
-        query_params["fields"] = fields
-        response = self.client.get('profile/embedding', query_params)
-        return response
-
-
-class ProfileJson():
-    """Gathers route about structured profile."""
-
-    def __init__(self, api):
-        """Init."""
-        self.client = api
-
-    def check(self, profile_data, training_metadata=[]):
-        """Use the api to check weither the profile_data are valid."""
-        data = {
-            "profile_json": _validate_dict(profile_data, "profile_data"),
-            "training_metadata": _validate_training_metadata(training_metadata),
-        }
-        response = self.client.post("profile/json/check", data=data)
-        return response.json()
-
-    def add(self, source_id, profile_json, profile_reference=None, profile_labels=[],
-            profile_metadatas=[], sync_parsing=0, timestamp_reception=None):
-        """Use the api to add a new profile using profile_data."""
-        payload = {
-            'source_id': _validate_source_id(source_id),
-            "profile_json": profile_json,
-            "profile_type": 'json',
-            "profile_reference": profile_reference,
-            "profile_labels": profile_labels,
-            "profile_metadatas": profile_metadatas,
-            "sync_parsing": sync_parsing
-        }
-
-        data = {'data': json.dumps(payload)}
-
-        # some enrichement for profile_json
-        if timestamp_reception is not None:
-            data['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
-
-        response = self.client.post("profile", data=data)
         return response.json()
 
 
