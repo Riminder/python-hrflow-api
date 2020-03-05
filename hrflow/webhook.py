@@ -51,9 +51,24 @@ class Webhook(object):
             ACTION_RATING_ERROR: None,
         }
 
-    def check(self):
-        """Get response from api for POST webhook/check."""
-        response = self.client.post("webhook/check")
+    def check(self, url, type):
+        """
+            Get response from api for POST webhook/check.
+
+            Args:
+                url:              <string>
+                                  url id
+                type:             <type>
+                                  profile id
+
+            Returns
+                Webhook information
+
+        """
+        data = {}
+        data['url'] = url
+        data['type'] = type
+        response = self.client.post("webhook/check", json=data)
         return response.json()
 
     def test(self):

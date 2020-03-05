@@ -78,7 +78,6 @@ class Profile(object):
                         profiles' last date of reception
             date_start: <string> REQUIRED (default to "1494539999")
                         profiles' first date of reception
-            job_id:     <string>
             limit:      <int> (default to 30)
                         number of fetched profiles/page
             page:       <int> REQUIRED default to 1

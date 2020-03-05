@@ -1,7 +1,7 @@
 from setuptools import setup
 
 setup(name='hrflow',
-      version='1.4.2',
+      version='1.5.1',
       description='python hrflow api package',
       url='https://github.com/hrflow/python-hrflow-api',
       author='riminder',

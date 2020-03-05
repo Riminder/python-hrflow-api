@@ -50,14 +50,14 @@ class Client(object):
         else:
             return req.get(url, headers=self.auth_header)
 
-    def post(self, resource_endpoint, data={}, files=None):
+    def post(self, resource_endpoint, data={}, json={}, files=None):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
         if files:
             data = self._prepare_params_for_file_upload(data)
             return req.post(url, headers=self.auth_header, files=files, data=data)
         else:
-            return req.post(url, headers=self.auth_header, data=data)
+            return req.post(url, headers=self.auth_header, data=data, json=json)
 
     def patch(self, resource_endpoint, data={}):
         """Don't use it."""
