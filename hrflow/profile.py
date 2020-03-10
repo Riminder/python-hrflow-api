@@ -3,6 +3,7 @@
 import time
 import os.path as path
 import json
+import magic
 
 SERNIORITY_VALUES = ["all", "senior", "junior"]
 STAGE_VALUES = [None, "new", "yes", "later", "no"]
@@ -497,7 +498,7 @@ def _validate_dict(value, var_name="profile_data"):
 def _get_file_metadata(file_path, profile_reference):
     try:
         return (
-            os.path.basename(file_path) + profile_reference,  # file_name
+            path.basename(file_path) + profile_reference,  # file_name
             None,
             magic.Magic(True).from_file(file_path)
         )
