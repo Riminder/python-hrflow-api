@@ -107,7 +107,7 @@ class Profile(object):
         response = self.client.get("profiles/searching", query_params)
         return response.json()
 
-    def add(self, source_id=None, file_path=None, profile_reference="",
+    def add(self, source_id=None, profile_type=None, file_path=None, profile_reference="",
             timestamp_reception=None, training_metadata=[]):
         """
         Add a profile resume to a sourced id.
@@ -129,6 +129,7 @@ class Profile(object):
         """
         data = {}
         data["source_id"] = _validate_source_ids(source_id)
+        data["profile_type"] = profile_type #TODO add validation
         data["profile_reference"] = _validate_profile_reference(profile_reference)
         data["timestamp_reception"] = _validate_timestamp(timestamp_reception, "timestamp_reception")
         data["training_metadata"] = _validate_training_metadata(training_metadata)
