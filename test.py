@@ -748,14 +748,14 @@ class TestHelper:
 #             "Tennis",
 #             "Dors"
 #         ],
-        "urls": {
-            "from_resume": [],
-            'linkedin': "",
-            'twitter': "",
-            'facebook': "",
-            'github': "https://github.com/TESTSomone",
-            'picture': ""
-        }
+#         "urls": {
+#             "from_resume": [],
+#             'linkedin': "",
+#             'twitter': "",
+#             'facebook': "",
+#             'github': "https://github.com/TESTSomone",
+#             'picture': ""
+#         }
 #       }
 #     self.assertRaises(ValueError, self.client.profile.json.add,
 #         self.helper.add_source_id,
@@ -789,7 +789,7 @@ class TestSource(unittest.TestCase):
     def setUp(self):
         self.helper = TestHelper.get_instance()
         # init client and profile objects
-        self.client = Hrflow(api_key=self.helper.getKey())
+        self.client = Client(api_key=self.helper.getKey())
 
     def test_get_sources(self):
         # get all sources

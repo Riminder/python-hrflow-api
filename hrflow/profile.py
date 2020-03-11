@@ -1,7 +1,7 @@
 """Profile related calls."""
 
 import time
-import os.path as path
+import os
 import json
 import magic
 
@@ -60,8 +60,7 @@ class Profile(object):
         """
         self.client = client
         self.json = ProfileJson(self.client)
-        self.stage = ProfileStage(self.client)
-        self.rating = ProfileRating(self.client)
+        self.feedback = ProfileFeedback(self.client)
         self.attachments = ProfileAttachments(self.client)
         self.parsing = ProfileParsing(self.client)
         self.revealing = ProfileRevealing(self.client)
@@ -107,8 +106,8 @@ class Profile(object):
         response = self.client.get("profiles/searching", query_params)
         return response.json()
 
-    def add(self, source_id=None, profile_type=None, file_path=None, profile_reference="",
-            timestamp_reception=None, training_metadata=[]):
+    def add(self, source_id, file_path, profile_reference='', profile_labels=None,
+            profile_metadatas=None, sync_parsing=0, timestamp_reception=None):
         """
         Add a profile resume to a sourced id.
 
@@ -127,22 +126,26 @@ class Profile(object):
             Other status codes otherwise.
 
         """
-        data = {}
-        data["source_id"] = _validate_source_ids(source_id)
-        data["profile_type"] = profile_type #TODO add validation
-        data["profile_reference"] = _validate_profile_reference(profile_reference)
-        data["timestamp_reception"] = _validate_timestamp(timestamp_reception, "timestamp_reception")
-        data["training_metadata"] = _validate_training_metadata(training_metadata)
+        payload = {
+            'source_id': _validate_source_id(source_id),
+            'profile_type': 'file',
+            'profile_reference': profile_reference,
+            'profile_labels': profile_labels,
+            'profile_metadatas': profile_metadatas,
+            'sync_parsing': sync_parsing
+        }
+        # some enrichement for profile_
+        if timestamp_reception is not None:
+            payload['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
         files = _get_file_metadata(file_path, profile_reference)
-        response = None
         with open(file_path, 'rb') as in_file:
             files = (files[0], in_file, files[2])
-            response = self.client.post("profile", data=data, files={"file": files})
+            response = self.client.post("profile", data=payload, files={"file": files})
         return response.json()
 
-    def addList(self, source_id, dir_path, is_recurcive=False, timestamp_reception=None, training_metadata=[]):
+    def addList(self, source_id, dir_path, is_recurcive=False, timestamp_reception=None, sync_parsing=0):
         """Add all profile from a given directory."""
-        if not path.isdir(dir_path):
+        if not os.path.isdir(dir_path):
             raise ValueError(dir_path + ' is not a directory')
         files_to_send = _get_files_from_dir(dir_path, is_recurcive)
         succeed_upload = {}
@@ -151,7 +154,7 @@ class Profile(object):
             try:
                 resp = self.add(source_id=source_id,
                                 file_path=file_path, profile_reference="",
-                                timestamp_reception=timestamp_reception, training_metadata=training_metadata)
+                                timestamp_reception=timestamp_reception, sync_parsing=sync_parsing)
                 if resp['code'] != 200 and resp['code'] != 201:
                     failed_upload[file_path] = ValueError('Invalid response: ' + str(resp))
                 else:
@@ -164,7 +167,7 @@ class Profile(object):
         }
         return result
 
-    def get(self, source_id=None, profile_id=None, profile_reference=None):
+    def get(self, source_id=None, profile_id=None, profile_reference=''):
         """
         Retrieve the profile information associated with profile id.
 
@@ -173,6 +176,8 @@ class Profile(object):
                                     source id
             profile_id:             <string>
                                     profile id
+            profile_reference:      <string>
+                                    profile_reference
 
         Returns
             profile information
@@ -204,26 +209,59 @@ class ProfileJson():
         response = self.client.post("profile/json/check", data=data)
         return response.json()
 
-    def add(self, source_id, profile_json, profile_reference=None, profile_labels=[],
-            profile_metadatas=[], sync_parsing=0, timestamp_reception=None):
+    def add(self, source_id, profile_json, profile_reference=None, profile_labels=None,
+            profile_metadatas=None, timestamp_reception=None):
         """Use the api to add a new profile using profile_data."""
         payload = {
             'source_id': _validate_source_id(source_id),
-            "profile_json": profile_json,
-            "profile_type": 'json',
-            "profile_reference": profile_reference,
-            "profile_labels": profile_labels,
-            "profile_metadatas": profile_metadatas,
-            "sync_parsing": sync_parsing
+            'profile_type': 'json',
+            'profile_reference': profile_reference,
+            'profile_labels': profile_labels,
+            'profile_metadatas': profile_metadatas,
+            'profile_json': json.dumps(profile_json)
         }
-
-        data = {'data': json.dumps(payload)}
-
         # some enrichement for profile_json
         if timestamp_reception is not None:
-            data['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
+            payload['timestamp_reception'] = _validate_timestamp(timestamp_reception, 'timestamp_reception')
 
-        response = self.client.post("profile", data=data)
+        response = self.client.post("profile", data=payload)
+        return response.json()
+
+
+class ProfileFeedback():
+    """Manage stage related profile calls."""
+
+    def __init__(self, api):
+        """Init."""
+        self.client = api
+
+    def set(self, profile_id=None, job_id=None, stage=None, rating=None):
+        """
+        Edit the profile stage given a job.
+
+        Args:
+            profile_id:             <string>
+                                    profile id
+        body params:
+            source_id:              <string>
+                                    source id associated to the profile
+
+            job_id:                 <string>
+                                    job_id id
+            stage:                 <string>
+                                    profiles' stage associated to the job ( null for all, NEW, YES, LATER or NO).
+
+        Returns
+            Response that contains code 201 if successful
+            Other status codes otherwise.
+
+        """
+        data = {}
+        data["profile_id"] = _validate_profile_id(profile_id)
+        data["job_id"] = _validate_job_id(job_id)
+        data["stage"] = _validate_stage(stage)
+        data['rating'] = rating
+        response = self.client.patch('profile/action', data=data)
         return response.json()
 
 
@@ -357,7 +395,7 @@ class ProfileRevealing():
         if job_reference:
             query_params["job_reference"] = _validate_job_reference(job_reference)
         response = self.client.get('profile/revealing', query_params)
-        return response
+        return response.json()
 
 
 class ProfileEmbedding():
@@ -367,7 +405,7 @@ class ProfileEmbedding():
         """Init."""
         self.client = api
 
-    def get(self, fields):
+    def get(self, source_id, profile_id, profile_reference=None, profile_email=None, fields=[]):
         """
         Retrieve the interpretability information.
 
@@ -376,17 +414,29 @@ class ProfileEmbedding():
                                     source id
             profile_id:             <string>
                                     profile id
-            job_id:              <string>
-                                    job id
+            profile_reference:      <string>
+                                    profile_reference
+            profile_email:          <string>
+                                    profile_email
+            fields:                 <array>
+                                    fields
 
         Returns
             interpretability information
 
         """
         query_params = {}
-        query_params["fields"] = fields
+        query_params["source_id"] = _validate_source_id(source_id)
+        if profile_id:
+            query_params["profile_id"] = _validate_profile_id(profile_id)
+        if profile_reference:
+            query_params["profile_reference"] = _validate_profile_reference(profile_reference)
+        if profile_email:
+            query_params["profile_email"] = profile_email
+        if fields:
+            query_params["fields"] = json.dumps(format_fields(fields))
         response = self.client.get('profile/embedding', query_params)
-        return response
+        return response.json()
 
 
 class ProfileReasoning():
@@ -400,95 +450,6 @@ class ProfileReasoning():
         return
 
 
-class ProfileStage():
-    """Manage stage related profile calls."""
-
-    def __init__(self, api):
-        """Init."""
-        self.client = api
-
-    def set(self, source_id=None, profile_id=None, job_id=None, stage=None, profile_reference=None, job_reference=None):
-        """
-        Edit the profile stage given a job.
-
-        Args:
-            profile_id:             <string>
-                                    profile id
-        body params:
-            source_id:              <string>
-                                    source id associated to the profile
-
-            job_id:                 <string>
-                                    job_id id
-            stage:                 <string>
-                                    profiles' stage associated to the job ( null for all, NEW, YES, LATER or NO).
-
-        Returns
-            Response that contains code 201 if successful
-            Other status codes otherwise.
-
-        """
-        data = {}
-        data["source_id"] = _validate_source_id(source_id)
-        if profile_id:
-            data["profile_id"] = _validate_profile_id(profile_id)
-        if job_id:
-            data["job_id"] = _validate_job_id(job_id)
-        if profile_reference:
-            data["profile_reference"] = _validate_profile_reference(profile_reference)
-        if job_reference:
-            data["job_reference"] = _validate_job_reference(job_reference)
-        data["stage"] = _validate_stage(stage)
-
-        response = self.client.patch('profile/action', data=data)
-        print(response)
-        return response.json()
-
-
-class ProfileRating():
-    """Manage rating related profile calls."""
-
-    def __init__(self, api):
-        """Init."""
-        self.client = api
-
-    def set(self, source_id=None, profile_id=None, job_id=None, rating=None, profile_reference=None,
-            job_reference=None):
-        """
-        Edit the profile rating given a job.
-
-        Args:
-            profile_id:             <string>
-                                    profile id
-        body params:
-            source_id:              <string>
-                                    source id associated to the profile
-
-            job_id:                 <string>
-                                    job id
-            rating:                 <int32>
-                                    profile rating from 1 to 4 associated to the job.
-
-        Returns
-            Response that contains code 201 if successful
-            Other status codes otherwise.
-
-        """
-        data = {}
-        data["source_id"] = _validate_source_id(source_id)
-        if profile_id:
-            data["profile_id"] = _validate_profile_id(profile_id)
-        if job_id:
-            data["job_id"] = _validate_job_id(job_id)
-        if profile_reference:
-            data["profile_reference"] = _validate_profile_reference(profile_reference)
-        if job_reference:
-            data["job_reference"] = _validate_job_reference(job_reference)
-        data["rating"] = _validate_rating(rating)
-
-        response = self.client.patch('profile/action', data=data)
-        return response.json()
-
 
 def _validate_dict(value, var_name="profile_data"):
     if not isinstance(value, dict):
@@ -499,7 +460,7 @@ def _validate_dict(value, var_name="profile_data"):
 def _get_file_metadata(file_path, profile_reference):
     try:
         return (
-            path.basename(file_path) + profile_reference,  # file_name
+            os.path.basename(file_path) + profile_reference,  # file_name
             None,
             magic.Magic(True).from_file(file_path)
         )
@@ -536,7 +497,7 @@ def _validate_training_metadata(value):
 
 def _validate_profile_id(value):
     if not isinstance(value, str) and value is not None:
-        raise TypeError("source_id must be string")
+        raise TypeError("profile_id must be string")
 
     return value
 
@@ -630,14 +591,14 @@ def _validate_timestamp(value, var_name="timestamp"):
 
 
 def _is_valid_extension(file_path):
-    ext = path.splitext(file_path)[1]
+    ext = os.path.splitext(file_path)[1]
     if not ext:
         return False
     return (ext in VALID_EXTENSIONS or ext.lower() in VALID_EXTENSIONS)
 
 
 def _is_valid_filename(file_path):
-    name = path.basename(file_path)
+    name = os.path.basename(file_path)
     return name not in INVALID_FILENAME
 
 
@@ -646,8 +607,8 @@ def _get_files_from_dir(dir_path, is_recurcive):
     files_path = os.listdir(dir_path)
 
     for file_path in files_path:
-        true_path = path.join(dir_path, file_path)
-        if path.isdir(true_path) and is_recurcive:
+        true_path = os.path.join(dir_path, file_path)
+        if os.path.isdir(true_path) and is_recurcive:
             if _is_valid_filename(true_path):
                 file_res += _get_files_from_dir(true_path, is_recurcive)
             continue
@@ -661,3 +622,7 @@ def _validate_id(self, value, field_name=''):
         raise TypeError("{} must be string".format(field_name))
 
     return value
+
+
+def format_fields(fields):
+    return {k:1 for k in fields}
