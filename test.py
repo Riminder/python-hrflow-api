@@ -3,12 +3,10 @@ import hmac
 import hashlib
 import base64
 import json
-import random
 
 from hrflow import Hrflow
-from hrflow import bytesutils
 from test_assets import test_config
-from hrflow.webhook import EVENT_FILTER_SCORE_ERROR, EVENT_FILTER_SCORE_START
+from hrflow.webhook import bytesutils
 
 
 class TestHelper:

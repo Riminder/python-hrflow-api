@@ -12,11 +12,12 @@ CLIENT_API_URL = "https://www.rimstaging.net/sf/public/api/v1.0/"
 class Client(object):
     """client api wrapper client."""
 
-    def __init__(self, api_key, webhook_secret=None, url=CLIENT_API_URL):
+    def __init__(self, api_key, mode_api='read', webhook_secret=None, url=CLIENT_API_URL):
         """Init."""
         self.url = url
         self.auth_header = {
-            "X-API-Key": api_key
+            "X-API-Key": api_key,
+            "API_MODE": mode_api
         }
         self.webhook_secret = webhook_secret
         self.job = Job(self)

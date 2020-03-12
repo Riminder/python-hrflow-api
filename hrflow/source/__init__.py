@@ -1,10 +1,9 @@
-
 class Source(object):
 
     def __init__(self, client):
         self.client = client
 
-    def list(self, name=None, page=1, limit=30, sort_by='date', order_by='desc'):
+    def search(self, name=None, page=1, limit=30, sort_by='date', order_by='desc'):
         """
             Search sources for given filters.
 
