@@ -78,7 +78,7 @@ class Profile(object):
         response = self.client.post("profile", data=payload)
         return response.json()
 
-    def add_file(self, source_id, profile_binary, profile_reference='', profile_labels=None,
+    def add_file(self, source_id, profile_file, profile_reference='', profile_labels=None,
                  profile_metadatas=None, sync_parsing=0, timestamp_reception=None):
         """
         Add a profile resume to a sourced id.
