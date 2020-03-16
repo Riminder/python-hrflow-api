@@ -13,6 +13,7 @@ from .validator import *
 
 TIMESTAMP_NOW = time.time()
 
+
 class Profile(object):
     """
     Class that interacts with hrflow API profiles endpoint.
@@ -77,7 +78,7 @@ class Profile(object):
         response = self.client.post("profile", data=payload)
         return response.json()
 
-    def add_file(self, source_id, file_path, profile_reference='', profile_labels=None,
+    def add_file(self, source_id, profile_binary, profile_reference='', profile_labels=None,
                  profile_metadatas=None, sync_parsing=0, timestamp_reception=None):
         """
         Add a profile resume to a sourced id.
@@ -108,10 +109,8 @@ class Profile(object):
         # some enrichement for profile_
         if timestamp_reception is not None:
             payload['timestamp_reception'] = validate_timestamp(timestamp_reception, 'timestamp_reception')
-        files = get_file_metadata(file_path, profile_reference)
-        with open(file_path, 'rb') as in_file:
-            files = (files[0], in_file, files[2])
-            response = self.client.post("profile", data=payload, files={"file": files})
+
+        response = self.client.post("profile", data=payload, files={"file": profile_binary})
         return response.json()
 
     def add_folder(self, source_id, dir_path, is_recurcive=False, timestamp_reception=None, sync_parsing=0):
@@ -124,8 +123,8 @@ class Profile(object):
         for file_path in files_to_send:
             try:
                 resp = self.add_file(source_id=source_id,
-                                file_path=file_path, profile_reference="",
-                                timestamp_reception=timestamp_reception, sync_parsing=sync_parsing)
+                                     file_path=file_path, profile_reference="",
+                                     timestamp_reception=timestamp_reception, sync_parsing=sync_parsing)
                 if resp['code'] != 200 and resp['code'] != 201:
                     failed_upload[file_path] = ValueError('Invalid response: ' + str(resp))
                 else:
@@ -195,4 +194,3 @@ class Profile(object):
             query_params["profile_reference"] = validate_profile_reference(profile_reference)
         response = self.client.get('profile', query_params)
         return response.json()
-

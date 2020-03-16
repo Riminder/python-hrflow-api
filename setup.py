@@ -13,23 +13,20 @@ install_reqs = parse_requirements(os.path.join(FILE_PATH, 'requirements.txt'), s
 reqs = [ir.req.__str__() for ir in install_reqs]
 
 setup(
-    # package name
-    name='hrflow',
-    # code version
-    version="1.5.3",
     # so far ignore paragraph embedding part for package
-    packages=find_packages(),
-    author="Riminder",
-    author_email="contact@rimider.net",
-    description="Hrflow API",
+
+    name='hrflow',
+    version='1.5.3',
+    description='python hrflow api package',
+    url='https://github.com/hrflow/python-hrflow-api',
+    author='riminder',
+    author_email='contact@rimider.net',
     license='MIT',
-    install_requires=reqs,
-    include_package_data=True,
-    package_data={'hrflow': ['drawers/prod_ner_drawer_icons/*.png']},
-    long_description=open('README.md').read(),
-    classifiers=[
-        "Programming Language :: Python",
-        "Development Status :: 1 - Planning",
-        "Programming Language :: Python :: 3.6",
-    ]
+    packages=find_packages(),
+    install_requires=[
+        'requests',
+        'python-magic'
+    ],
+    python_requires='>=3.5',
+    zip_safe=False
 )

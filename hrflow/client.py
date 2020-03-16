@@ -1,7 +1,7 @@
 import requests as req
 import json
 
-from .job import Job
+from hrflow.job import Job
 from .profile import Profile
 from .webhook import Webhook
 from .source import Source
