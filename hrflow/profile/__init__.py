@@ -86,8 +86,8 @@ class Profile(object):
         Args:
             source_id:              <string>
                                     source id
-            file_path:              <string>
-                                    local path to resume file
+            profile_file:           <bytes>
+                                    binary resume file
             profile_reference:      <string> (default to "")
                                     reference to assign to the profile
             timestamp_reception:    <string>
@@ -110,7 +110,7 @@ class Profile(object):
         if timestamp_reception is not None:
             payload['timestamp_reception'] = validate_timestamp(timestamp_reception, 'timestamp_reception')
 
-        response = self.client.post("profile", data=payload, files={"file": profile_binary})
+        response = self.client.post("profile", data=payload, files={"file": profile_file})
         return response.json()
 
     def add_folder(self, source_id, dir_path, is_recurcive=False, timestamp_reception=None, sync_parsing=0):
