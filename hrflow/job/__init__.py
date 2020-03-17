@@ -10,7 +10,7 @@ class Job(object):
         self.parsing = JobParsing(self.client)
         self.scoring = JobScoring(self.client)
 
-    def add(self, name, agent_id, job_reference, job_labels=[], job_metadatas=[], **kwargs):
+    def add_json(self, name, agent_id, job_reference, job_labels=[], job_metadatas=[], **kwargs):
         """Use the api to add a new job using json_data."""
         payload = {
             'name': name,

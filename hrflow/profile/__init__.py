@@ -86,8 +86,8 @@ class Profile(object):
         Args:
             source_id:              <string>
                                     source id
-            profile_file:           <bytes>
-                                    binary resume file
+            profile_file:           <binary>
+                                    profile binary
             profile_reference:      <string> (default to "")
                                     reference to assign to the profile
             timestamp_reception:    <string>
