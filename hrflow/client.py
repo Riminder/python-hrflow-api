@@ -6,7 +6,7 @@ from .profile import Profile
 from .webhook import Webhook
 from .source import Source
 
-CLIENT_API_URL = "https://www.rimstaging.net/sf/public/api/v1.0/"
+CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 
 
 class Client(object):

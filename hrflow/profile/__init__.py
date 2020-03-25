@@ -60,15 +60,16 @@ class Profile(object):
         self.scoring = ProfileScoring(self.client)
         self.reasoning = ProfileReasoning(self.client)
 
-    def add_json(self, source_id, profile_json, profile_reference=None, profile_labels=None,
-                 profile_metadatas=None, timestamp_reception=None):
+    def add_json(self, source_id, profile_json, profile_reference=None, profile_labels=[], profile_tags=[],
+                 profile_metadatas=[], timestamp_reception=None):
         """Use the api to add a new profile using profile_data."""
         payload = {
             'source_id': validate_source_id(source_id),
             'profile_type': 'json',
             'profile_reference': validate_profile_reference(profile_reference),
-            'profile_labels': profile_labels,
-            'profile_metadatas': profile_metadatas,
+            'profile_labels': json.dumps(profile_labels),
+            'profile_tags': json.dumps(profile_tags),
+            'profile_metadatas': json.dumps(profile_metadatas),
             'profile_json': json.dumps(profile_json)
         }
         # some enrichement for profile_json
@@ -78,8 +79,8 @@ class Profile(object):
         response = self.client.post("profile", data=payload)
         return response.json()
 
-    def add_file(self, source_id, profile_file, profile_reference='', profile_labels=None,
-                 profile_metadatas=None, sync_parsing=0, timestamp_reception=None):
+    def add_file(self, source_id, profile_file, profile_content_type=None, profile_reference='', profile_labels=[],
+                 profile_tags=[], profile_metadatas=[], sync_parsing=0, timestamp_reception=None):
         """
         Add a profile resume to a sourced id.
 
@@ -88,9 +89,19 @@ class Profile(object):
                                     source id
             profile_file:           <binary>
                                     profile binary
+            profile_content_type    <string>
+                                    file content type
             profile_reference:      <string> (default to "")
                                     reference to assign to the profile
-            timestamp_reception:    <string>
+            profile_labels:         <dict>
+                                    profile's label
+            profile_tags:         <dict>
+                                    profile's tag
+            profile_metadatas:      <dict>
+                                    profile's metadatas
+            sync_parsing            <bool>
+                                    0 or 1
+            timestamp_reception:    <int>
                                     original date of the application of the profile
 
         Returns
@@ -101,9 +112,11 @@ class Profile(object):
         payload = {
             'source_id': validate_source_id(source_id),
             'profile_type': 'file',
+            'profile_content_type': profile_content_type,
             'profile_reference': validate_profile_reference(profile_reference),
-            'profile_labels': profile_labels,
-            'profile_metadatas': profile_metadatas,
+            'profile_labels': json.dumps(profile_labels),
+            'profile_tags': json.dumps(profile_tags),
+            'profile_metadatas': json.dumps(profile_metadatas),
             'sync_parsing': sync_parsing
         }
         # some enrichement for profile_
