@@ -12,12 +12,11 @@ CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 class Client(object):
     """client api wrapper client."""
 
-    def __init__(self, api_key, mode_api='read', webhook_secret=None, url=CLIENT_API_URL):
+    def __init__(self, api_url=CLIENT_API_URL, api_secret=None, webhook_secret=None):
         """Init."""
-        self.url = url
+        self.api_url = api_url
         self.auth_header = {
-            "X-API-Key": api_key,
-            "API_MODE": mode_api
+            "X-API-Key": api_secret
         }
         self.webhook_secret = webhook_secret
         self.job = Job(self)
@@ -27,7 +26,7 @@ class Client(object):
 
     def _create_request_url(self, resource_url):
         return "{api_endpoint}{resource_url}".format(
-            api_endpoint=self.url,
+            api_endpoint=self.api_url,
             resource_url=resource_url
         )
 
@@ -45,7 +44,6 @@ class Client(object):
     def get(self, resource_endpoint, query_params={}):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
-        print(url)
         if query_params:
             return req.get(url, headers=self.auth_header, params=query_params)
         else:

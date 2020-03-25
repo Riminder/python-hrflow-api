@@ -16,7 +16,7 @@ setup(
     # so far ignore paragraph embedding part for package
 
     name='hrflow',
-    version='1.6.1',
+    version='1.6.2',
     description='python hrflow api package',
     #long_description=open('README.md', 'rt').read(),
     #long_description_content_type="text/markdown",
