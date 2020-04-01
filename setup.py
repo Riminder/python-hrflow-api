@@ -18,8 +18,6 @@ setup(
     name='hrflow',
     version='1.6.2',
     description='python hrflow api package',
-    #long_description=open('README.md', 'rt').read(),
-    #long_description_content_type="text/markdown",
     url='https://github.com/hrflow/python-hrflow-api',
     author='riminder',
     author_email='contact@rimider.net',
