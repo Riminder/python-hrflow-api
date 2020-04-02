@@ -4,7 +4,7 @@
 # Installation
 The package is available for python >= 3.5
 ```sh
-$ pip install hrflow
+$ pip3 install hrflow
 ```
 
 # Usage
@@ -12,19 +12,22 @@ $ pip install hrflow
 Example Source
 
 ```sh
-    >>> import hrflow
-    >>> client = hrflow.Hrflow(api_key="YOUR_API_KEY")
-    >>> result = client.source.list()
+    >>> import hrflow as hf
+    >>> client = hf.Client(api_key="YOUR_API_KEY")
+    >>> result = client.source.search(name='python', limit=1)
     >>> print(result)
     {
-    "code": 200,
-    "message": "ok",
-    "data": [
-        {
-        "_id": "7c94e981cd23d16f5c549eea21a7554db0c927a7",
-        "name": "Careers website",
-        "type": "api",
-        "archive": false
+     'code': 200,
+     'page': 1,
+     'maxPage': 2,
+     'count': 1,
+     'total': 2,
+     'message': 'Source list',
+     'data': [{'source_id': 'a62ae2d5560fca7b34bb6c0c389a378f99bcdd52',
+       'name': 'python',
+       'type': 'api',
+       'sub_type': 'api',
+       'archive': False,
         ...
 
 ```
@@ -32,38 +35,40 @@ Example Source
 Example Profile
 
 ```sh
-    >>> import hrflow
-    >>> client = hrflow.Hrflow(api_key="YOUR_API_KEY")
-    >>> result = client.profile.list(source_ids=["source_id"])
+    >>> import hrflow as hf
+    >>> client = hf.Client(api_key="YOUR_API_KEY")
+    >>> result = client.profile.search(source_ids=["source_id"], limit=1)
     >>> print(result)
     {
-        "code": 200,
-        "message": "OK",
-        "data": {
-            "page": 1,
-            "maxPage": 3,
-            "count_profiles": 85,
-            "profiles": [
-            {
-                "profile_id": "215de6cb5099f4895149ec0a6ac91be94ffdd246",
-                "profile_reference": "49583",
+     'code': 200,
+     'message': 'Profiles list',
+     'page': 1,
+     'max_page': 3,
+     'count': 1,
+     'total': 3,
+     'data': {'profiles': [{'date_creation': '2020-03-31T12:04:52.858408',
+        'date_reception': '2020-03-31T12:04:42',
+        'educations': [{'description': 'Master data',
+          'end_date': {'date': None, 'text': '12550'},
+          'id': 'b03c71f748a048f96bcda33397457a81d8bf1301',
+          'location': {'geocoder': {'fields': {'category': None,
                 ...
 
 ```
-Example Filter
+Example Job
 
 ```sh
-    >>> import hrflow
-    >>> client = hrflow.Hrflow(api_key="YOUR_API_KEY")
-    >>> result = client.filter.list()
+    >>> import hrflow as hf
+    >>> client = hf.Client(api_key="YOUR_API_KEY")
+    >>> result = client.job.search()
     >>> print(result)
     {
         "code": 200,
         "message": "ok",
         "data": [
             {
-            "filter_id": "7c94e981cd23d16f5c549eea21a7554db0c927a7",
-            "filter_reference": "1248593",
+            "job_id": "7c94e981cd23d16f5c549eea21a7554db0c927a7",
+            "job_reference": "1248593",
             "name": "Talent Acquisition Specialist",
             "archive": false,
             "date_creation": {
@@ -80,33 +85,28 @@ For any methods that needs `*_id` and `*_reference`
 you need to provide at least one of them but not necessarily both, keep in mind that reference override id.
 ## Profile
 
-* profile.list().    
+
 Retreive all profiles that match the query param, only source_ids are required
 
 ```python
-    client.profile.list(source_ids, seniority, stage, date_start, date_end, filter_id, page, limit, sort_by, filter_reference, order_by)
+    client.profile.search(source_ids, seniority, stage, date_start, date_end, filter_id, page, limit, sort_by, order_by)
 ```
 source_ids is required
 
-* profile.add().   
-Add a profile resume to a source id
+* profile.add_file().   
+Add a profile resume as binary or json to a source id
 
 ```python
-    client.profile.add(source_id, file_path, profile_reference, timestamp_reception, training_metadata)
+    client.profile.add_file(source_id, profile_file, sync_parsing, profile_content_type, profile_tags, profile_labels, profile_metadas, timestamp_reception)
 ```
-source_id and file_path are required
+source_id and profile_file are required
 
-* profile.addList().    
-Add all resume from a directory to a source id
-
+* profile.add_json(). 
 ```python
-    response = client.profile.addList(source_id, file_path, is_recurcive, timestamp_reception, training_metadata)
-    # file successfully sent
-    serverResponse = response['success']['path/to/file']
-    # file not sent
-    error = response['fail']['path/to/file']
+    client.profile.add_json(source_id, profile_json, profile_tags, profile_labels, profile_metadas, timestamp_reception)
 ```
-source_id and file_path are required.
+source_id and profile_json are required
+
 
 * profile.get().     
 Retrieve the profile information associated with profile id.
@@ -116,11 +116,11 @@ Retrieve the profile information associated with profile id.
 ```
 source_id and whether profile_id or profile_reference are required.
 
-* profile.document.list().     
+* profile.attachments.get().     
 Retrieve the profile information associated with profile id.
 
 ```python
-    client.profile.document.list(source_id, profile_id, profile_reference)
+    client.profile.attachments.get(source_id, profile_id, profile_reference)
 ```
 source_id and whether profile_id or profile_reference are required.
 
@@ -133,124 +133,21 @@ Retrieve the profile parsing data path associated with profile id.
 ```
 source_id and whether profile_id or profile_reference are required.
 
-* profile.scoring.list().     
+* profile.scoring.search().     
 Retrieve the profile scoring associated with profile id.
 
 ```python
-    client.profile.scoring.list(source_id, profile_id)
+    client.profile.scoring.search(source_ids, job_id, stage, limit, use_agent)
 ```
-source_id and whether profile_id or profile_reference are required.
-
-* profile.revealing.get().
-Reveal the profile interpretability associated with profile id related to the filter.
-
-```python
-    client.profile.revealing.get(source_id, profile_id, filter_id)
-```
-source_id and whether profile_id or profile_reference and filter_id or filter_reference are required.
-
-* profile.stage.set().     
-Edit the profile stage given a filter.
-
-```python
-    client.profile.stage.set(source_id, profile_id, filter_id, stage, profile_reference, filter_reference)
-```
-source_id, stage, whether profile_id or profile_reference and whether filter_id or filter_reference are required.
-
-* profile.rating.set().     
-Edit the profile rating given a filter, all params are required
-
-```python
-    client.profile.rating.set(source_id, profile_id, filter_id, rating, profile_reference, filter_reference)
-```
-source_id, rating, whether profile_id or profile_reference and whether filter_id or filter_reference are required.
-
-* profile.json.check().     
-Check validate a parsed profile is valid for upload.
-
-```python
-  client.profile.json.check(profile_data, training_metadata)
-```
-profile_data is required.
-
-* profile.json.add().     
-Add a parsed profile to the platform.
-
-```python
-  client.profile.json.add(source_id, profile_data, training_metadata, profile_reference, timestamp_reception)
-```
-profile_data and source_id are required.
-
-`training_metadata` is a list of object like this:
-```python
-training_metadata = [
-      {
-        "filter_reference": "reference0",
-        "stage": null,
-        "stage_timestamp": null,
-        "rating": 2,
-        "rating_timestamp": 1530607434
-      },
-      {
-        "filter_reference": "reference1",
-        "stage": null,
-        "stage_timestamp": null,
-        "rating": 2,
-        "rating_timestamp": 1530607434
-      }
-    ]
-```
-
-`profile_data` is an object like this:
-```python
-profile_data = {
-            "name": "Hari Seldon",
-            "email": "harisledon@trantor.trt",
-            "address": "1 rue streeling",
-            "experiences": [
-              {
-                "start": "15/02/12600",
-                "end": "",
-                "title": "Lead",
-                "company": "Departement de la psychohistoire",
-                "location": "Trator",
-                "description": "Developping psychohistoire."
-              }
-            ],
-            "educations": [
-              {
-                "start": "12540",
-                "end": "12550",
-                "title": "Diplome d'ingénieur mathematicien",
-                "school": "Université de Hélicon",
-                "description": "Etude des mathematique",
-                "location": "Hélicon"
-              }
-            ],
-            "skills": [
-              "manual skill",
-              "Creative spirit",
-              "Writing skills",
-              "Communication",
-              "Project management",
-              "French",
-              "German",
-              "Korean",
-              "English",
-              "Esquive",
-              "Research",
-              "Mathematique"
-            ]
-          }
-```
+source_ids and job_id are required.
 
 ## Source
 
-* source.list().     
+* source.search().     
 get all sources
 
 ```python
-    client.source.list()
+    client.source.search(name)
 ```
 
 * source.get().     
@@ -261,24 +158,24 @@ Retrieve the source information associated with source id
 ```
 source_id is required.
 
-## filter
+## job
 
-* filter.list().     
-Retrieve all filters for given team account
-
-```python
-    client.filter.list()
-```
-
-* filter.get().     
-Retrieve the filter information associated with the filter_id or filter_reference
+* job.search().     
+Retrieve all jobs for given team account
 
 ```python
-    client.filter.get(filter_id, filter_reference)
+    client.job.search(name)
 ```
-filter_id or filter_reference is required.
 
-## webhook
+* job.get().     
+Retrieve the job information associated with the job_id or job_reference
+
+```python
+    client.job.get(job_id, job_reference)
+```
+job_id or job_reference is required.
+
+## webhook
 
 * webhook.check()
 Checks weither your webhook integration is enabled and works.
@@ -326,12 +223,12 @@ event_name is required
 Here is an example of how to handle webhooks
 
 ```python
-  import hrflow
+  import hrflow as hf
 
   def func_callback(event_name, webhook_data):
     print("{} {}".format(event_name, webhook_data)
 
-  client = hrflow.client('api_key', webhook_secret='webhook_key')
+  client = hf.client('api_key', webhook_secret='webhook_key')
 
   # Set an handler for webhook event.
   callback = func_callback
@@ -345,53 +242,30 @@ Here is an example of how to handle webhooks
 ```
 
 
-# Tests
-
-All code is unit tested.
-To run the test, please follow these steps
-* `git clone https://github.com/hrflow/python-hrflow-api`
-* From your python virtual environment navigate to the project directory and install requirements
-```sh
-$ pip3 install -r requirements.txt
-```
-or
-```sh
-$ pip install -r requirements.txt
-```
-* run test
-```sh
-$ ./run_test
-```
-
 # Help
 
 * Here an example on how to get help:
 
  ```sh
-    >>> from hrflow import hrflow
+    >>> import hrflow
     >>> from hrflow.profile import Profile
-    >>> help(Profile.update_rating)
+    >>> help(Profile.get)
 
-    Help on function update_rating in module hrflow.profile:
+    Help on function get in module hrflow.profile:
 
-    update_rating(self, source_id=None, profile_id=None, filter_id=None, rating=None)
-    Edit the profile rating given a filter
+    get(self, source_id=None, profile_id=None, profile_reference='')
+        Retrieve the profile information associated with profile id.
 
-    Args:
-        profile_id:             <string>
-                                profile id
-    body params:
-        source_id:              <string>
-                                source id associated to the profile
+        Args:
+            source_id:              <string>
+                                    source id
+            profile_id:             <string>
+                                    profile id
+            profile_reference:      <string>
+                                    profile_reference
 
-        filter_id:                 <string>
-                                filter id
-        rating:                 <int32>
-                                profile rating from 1 to 4 associated to the filter.
-
-    Returns:
-        Response that contains code 201 if successful
-        Other status codes otherwise.
+        Returns
+            profile information
 (END)
 
 ```
