@@ -175,7 +175,7 @@ Retrieve the job information associated with the job_id or job_reference
 ```
 job_id or job_reference is required.
 
-## webhook
+## webhook
 
 * webhook.check()
 Checks weither your webhook integration is enabled and works.
@@ -247,30 +247,25 @@ Here is an example of how to handle webhooks
 * Here an example on how to get help:
 
  ```sh
-    >>> import hrflow as hf
+    >>> import hrflow
     >>> from hrflow.profile import Profile
-    >>> help(Profile.update_rating)
+    >>> help(Profile.get)
 
-    Help on function update_rating in module hrflow.profile:
+    Help on function get in module hrflow.profile:
 
-    update_rating(self, source_id=None, profile_id=None, filter_id=None, rating=None)
-    Edit the profile rating given a filter
+    get(self, source_id=None, profile_id=None, profile_reference='')
+        Retrieve the profile information associated with profile id.
 
-    Args:
-        profile_id:             <string>
-                                profile id
-    body params:
-        source_id:              <string>
-                                source id associated to the profile
+        Args:
+            source_id:              <string>
+                                    source id
+            profile_id:             <string>
+                                    profile id
+            profile_reference:      <string>
+                                    profile_reference
 
-        filter_id:                 <string>
-                                filter id
-        rating:                 <int32>
-                                profile rating from 1 to 4 associated to the filter.
-
-    Returns:
-        Response that contains code 201 if successful
-        Other status codes otherwise.
+        Returns
+            profile information
 (END)
 
 ```
