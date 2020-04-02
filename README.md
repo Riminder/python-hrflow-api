@@ -101,6 +101,7 @@ Add a profile resume as binary or json to a source id
 ```
 source_id and profile_file are required
 
+* profile.add_json(). 
 ```python
     client.profile.add_json(source_id, profile_json, profile_tags, profile_labels, profile_metadas, timestamp_reception)
 ```
