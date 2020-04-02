@@ -67,8 +67,8 @@ Example Job
         "message": "ok",
         "data": [
             {
-            "filter_id": "7c94e981cd23d16f5c549eea21a7554db0c927a7",
-            "filter_reference": "1248593",
+            "job_id": "7c94e981cd23d16f5c549eea21a7554db0c927a7",
+            "job_reference": "1248593",
             "name": "Talent Acquisition Specialist",
             "archive": false,
             "date_creation": {
@@ -163,7 +163,7 @@ source_id is required.
 Retrieve all jobs for given team account
 
 ```python
-    client.filter.list()
+    client.job.search(name)
 ```
 
 * job.get().     
@@ -222,12 +222,12 @@ event_name is required
 Here is an example of how to handle webhooks
 
 ```python
-  import hrflow
+  import hrflow as hf
 
   def func_callback(event_name, webhook_data):
     print("{} {}".format(event_name, webhook_data)
 
-  client = hrflow.client('api_key', webhook_secret='webhook_key')
+  client = hf.client('api_key', webhook_secret='webhook_key')
 
   # Set an handler for webhook event.
   callback = func_callback
@@ -241,30 +241,12 @@ Here is an example of how to handle webhooks
 ```
 
 
-# Tests
-
-All code is unit tested.
-To run the test, please follow these steps
-* `git clone https://github.com/hrflow/python-hrflow-api`
-* From your python virtual environment navigate to the project directory and install requirements
-```sh
-$ pip3 install -r requirements.txt
-```
-or
-```sh
-$ pip install -r requirements.txt
-```
-* run test
-```sh
-$ ./run_test
-```
-
 # Help
 
 * Here an example on how to get help:
 
  ```sh
-    >>> from hrflow import hrflow
+    >>> import hrflow as hf
     >>> from hrflow.profile import Profile
     >>> help(Profile.update_rating)
 
