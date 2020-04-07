@@ -9,7 +9,7 @@ class ProfileEmbedding():
         """Init."""
         self.client = api
 
-    def get(self, source_id, profile_id, profile_reference=None, profile_email=None, fields=[]):
+    def get(self, source_id, profile_id, profile_reference=None, profile_email=None, fields={}):
         """
         Retrieve the interpretability information.
 
@@ -22,7 +22,7 @@ class ProfileEmbedding():
                                     profile_reference
             profile_email:          <string>
                                     profile_email
-            fields:                 <array>
+            fields:                 json object
                                     fields
 
         Returns
@@ -38,6 +38,6 @@ class ProfileEmbedding():
         if profile_email:
             query_params["profile_email"] = profile_email
         if fields:
-            query_params["fields"] = json.dumps(format_fields(fields))
+            query_params["fields"] = json.dumps(fields)
         response = self.client.get('profile/embedding', query_params)
         return response.json()
