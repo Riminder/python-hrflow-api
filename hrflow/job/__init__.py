@@ -1,5 +1,6 @@
 from .parsing import JobParsing
 from .scoring import JobScoring
+from .embedding import JobEmbedding
 from .validator import validate_job_id, validate_job_reference
 
 
@@ -9,6 +10,7 @@ class Job(object):
         self.client = client
         self.parsing = JobParsing(self.client)
         self.scoring = JobScoring(self.client)
+        self.embedding = JobEmbedding(self.client)
 
     def add_json(self, name, agent_id, job_reference, job_labels=[], job_metadatas=[], **kwargs):
         """
