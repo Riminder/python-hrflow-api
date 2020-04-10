@@ -1,17 +1,17 @@
 """Profile related calls."""
 import json
-import time
 from .feedback import ProfileFeedback
 from .attachments import ProfileAttachments
+from .tags import ProfileTags
+from .metadatas import ProfileMetadatas
 from .parsing import ProfileParsing
 from .revealing import ProfileRevealing
 from .embedding import ProfileEmbedding
+from .searching import ProfileSearching
 from .scoring import ProfileScoring
 from .reasoning import ProfileReasoning
 
 from .validator import *
-
-TIMESTAMP_NOW = time.time()
 
 
 class Profile(object):
@@ -54,9 +54,12 @@ class Profile(object):
         self.client = client
         self.feedback = ProfileFeedback(self.client)
         self.attachments = ProfileAttachments(self.client)
+        self.tags = ProfileTags(self.client)
+        self.metadatas = ProfileMetadatas(self.client)
         self.parsing = ProfileParsing(self.client)
         self.revealing = ProfileRevealing(self.client)
         self.embedding = ProfileEmbedding(self.client)
+        self.searching = ProfileSearching(self.client)
         self.scoring = ProfileScoring(self.client)
         self.reasoning = ProfileReasoning(self.client)
 
@@ -150,41 +153,7 @@ class Profile(object):
         }
         return result
 
-    def search(self, source_ids=None, seniority="all", stage=None, date_start="1494539999", date_end=TIMESTAMP_NOW,
-               page=1, limit=30, sort_by='date_reception', order_by=None):
-        """
-        Retreive all profiles that match the query param.
-
-        Args:
-            date_end:   <string> REQUIRED (default to timestamp of now)
-                        profiles' last date of reception
-            date_start: <string> REQUIRED (default to "1494539999")
-                        profiles' first date of reception
-            limit:      <int> (default to 30)
-                        number of fetched profiles/page
-            page:       <int> REQUIRED default to 1
-                        number of the page associated to the pagination
-            seniority:  <string> defaut to "all"
-                        profiles' seniority ("all", "senior", "junior")
-            sort_by:    <string>
-            source_ids: <array of strings> REQUIRED
-            stage:      <string>
-
-        Returns
-            Retrieve the profiles data as <dict>
-
-        """
-        query_params = {"source_ids": json.dumps(validate_source_ids(source_ids)), "stage": validate_stage(stage),
-                        "seniority": validate_seniority(seniority),
-                        "date_end": validate_timestamp(date_end, "date_end"),
-                        "date_start": validate_timestamp(date_start, "date_start"), "limit": validate_limit(limit),
-                        "page": validate_page(page), "sort_by": validate_sort_by(sort_by),
-                        "order_by": validate_order_by(order_by)}
-
-        response = self.client.get("profiles/searching", query_params)
-        return response.json()
-
-    def get(self, source_id=None, profile_id=None, profile_reference=''):
+    def get(self, source_id=None, profile_id=None, profile_reference=None):
         """
         Retrieve the profile information associated with profile id.
 
