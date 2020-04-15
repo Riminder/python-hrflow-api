@@ -24,7 +24,7 @@ demo_app/pictures/*
 ExtPage*
 ExtDocument*
 
-tests/*
+test/*
 scripts/data/*
 tests/collections/*
 !tests/collections/test_template.postman_collection.json
