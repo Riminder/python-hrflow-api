@@ -1,0 +1,6 @@
+[submodule "libs/exporter"]
+	path = libs/exporter
+	url = git@github.com:Riminder/hrflow-exporter.git
+[submodule "libs/importer"]
+	path = libs/importer
+	url = git@github.com:Riminder/hrflow-importer.git

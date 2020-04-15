@@ -7,10 +7,6 @@ try:
 except ImportError:
     from pip.req import parse_requirements
 
-FILE_PATH = os.path.dirname(os.path.realpath(__file__))
-
-install_reqs = parse_requirements(os.path.join(FILE_PATH, 'requirements.txt'), session="hack")
-reqs = [ir.req.__str__() for ir in install_reqs]
 
 setup(
     # so far ignore paragraph embedding part for package
