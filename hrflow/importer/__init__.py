@@ -1,5 +1,4 @@
-from importer.supervisor import Supervisor
-
+from libs.importer.importer.supervisor import Supervisor
 
 class Importer(object):
     """

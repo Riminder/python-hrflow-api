@@ -7,7 +7,8 @@
 *.h5
 credentials
 credentials_seg
-
+test/*
+test_assets/*
 .htpasswd
 
 docker/dependencies/libs/*
@@ -24,10 +25,10 @@ demo_app/pictures/*
 ExtPage*
 ExtDocument*
 
-test/*
+test/*.ipynb
 scripts/data/*
 tests/collections/*
-!tests/collections/test_template.postman_collection.json
+tests/collections/test_template.postman_collection.json
 
 weights/*
 !weights/__init__.py
