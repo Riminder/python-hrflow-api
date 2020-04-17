@@ -1,9 +1,9 @@
 """Profile related calls."""
 import json
 from .feedback import ProfileFeedback
-from .attachments import ProfileAttachments
-from .tags import ProfileTags
-from .metadatas import ProfileMetadatas
+from .attachment import ProfileAttachments
+from .tag import ProfileTags
+from .metadata import ProfileMetadatas
 from .parsing import ProfileParsing
 from .revealing import ProfileRevealing
 from .embedding import ProfileEmbedding
@@ -53,9 +53,9 @@ class Profile(object):
         """
         self.client = client
         self.feedback = ProfileFeedback(self.client)
-        self.attachments = ProfileAttachments(self.client)
-        self.tags = ProfileTags(self.client)
-        self.metadatas = ProfileMetadatas(self.client)
+        self.attachment = ProfileAttachments(self.client)
+        self.tag = ProfileTags(self.client)
+        self.metadata = ProfileMetadatas(self.client)
         self.parsing = ProfileParsing(self.client)
         self.revealing = ProfileRevealing(self.client)
         self.embedding = ProfileEmbedding(self.client)
@@ -152,27 +152,3 @@ class Profile(object):
             'fail': failed_upload
         }
         return result
-
-    def get(self, source_id=None, profile_id=None, profile_reference=None):
-        """
-        Retrieve the profile information associated with profile id.
-
-        Args:
-            source_id:              <string>
-                                    source id
-            profile_id:             <string>
-                                    profile id
-            profile_reference:      <string>
-                                    profile_reference
-
-        Returns
-            profile information
-
-        """
-        query_params = {"source_id": validate_source_ids(source_id)}
-        if profile_id:
-            query_params["profile_id"] = validate_profile_id(profile_id)
-        if profile_reference:
-            query_params["profile_reference"] = validate_profile_reference(profile_reference)
-        response = self.client.get('profile', query_params)
-        return response.json()

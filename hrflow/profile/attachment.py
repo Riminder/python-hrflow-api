@@ -1,16 +1,16 @@
 from .validator import validate_source_ids, validate_profile_id, validate_profile_reference
 
 
-class ProfileMetadatas():
-    """Manage metadatas related profile calls."""
+class ProfileAttachments():
+    """Manage documents related profile calls."""
 
     def __init__(self, api):
         """Init."""
         self.client = api
 
-    def get(self, source_id=None, profile_id=None, profile_reference=None):
+    def list(self, source_id=None, profile_id=None, profile_reference=None):
         """
-        Retrieve the profile's metadatas.
+        Retrieve the file information.
 
         Args:
             source_id:              <string>
@@ -28,5 +28,5 @@ class ProfileMetadatas():
             query_params["profile_id"] = validate_profile_id(profile_id)
         if profile_reference:
             query_params["profile_reference"] = validate_profile_reference(profile_reference)
-        response = self.client.get('profile/metadatas', query_params)
+        response = self.client.get('profile/attachments', query_params)
         return response.json()

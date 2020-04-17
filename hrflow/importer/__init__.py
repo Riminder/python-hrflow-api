@@ -19,7 +19,7 @@ class Importer(object):
         """
         self.client = client
 
-    def set(self, source_id, target, timestamp_reception=None, is_recurcive=True, silent=False, verbose=True, sleep=1,
+    def upload(self, source_id, target, timestamp_reception=None, is_recurcive=True, silent=False, verbose=True, sleep=1,
             n_worker=3, logfile=None):
         """
         Use the api to add a new profile using profile_data.

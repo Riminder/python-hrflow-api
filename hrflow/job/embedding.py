@@ -1,4 +1,3 @@
-import json
 from .validator import validate_job_id, validate_job_reference
 
 

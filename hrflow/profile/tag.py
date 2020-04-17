@@ -1,16 +1,16 @@
 from .validator import validate_source_ids, validate_profile_id, validate_profile_reference
 
 
-class ProfileAttachments():
-    """Manage documents related profile calls."""
+class ProfileTags():
+    """Manage Tags related profile calls."""
 
     def __init__(self, api):
         """Init."""
         self.client = api
 
-    def get(self, source_id=None, profile_id=None, profile_reference=None):
+    def list(self, source_id=None, profile_id=None, profile_reference=None):
         """
-        Retrieve the file information.
+        Retrieve Profile's tags.
 
         Args:
             source_id:              <string>
@@ -28,5 +28,5 @@ class ProfileAttachments():
             query_params["profile_id"] = validate_profile_id(profile_id)
         if profile_reference:
             query_params["profile_reference"] = validate_profile_reference(profile_reference)
-        response = self.client.get('profile/attachments', query_params)
+        response = self.client.get('profile/tags', query_params)
         return response.json()

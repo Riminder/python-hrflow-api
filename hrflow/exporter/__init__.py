@@ -19,7 +19,7 @@ class Exporter(object):
         """
         self.client = client
 
-    def get(self, source_ids, target, v_level=None, n_worker=3, logfile=None):
+    def download(self, source_ids, target, v_level=None, n_worker=3, logfile=None):
         """Use the api to add a new profile using profile_data."""
         export_supervisor = Supervisor(client=self.client, source_ids=source_ids, target=target, v_level=v_level,
                                        n_worker=n_worker, logfile=logfile)
