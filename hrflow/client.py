@@ -5,8 +5,7 @@ from hrflow.job import Job
 from .profile import Profile
 from .webhook import Webhook
 from .source import Source
-from .exporter import Exporter
-from .importer import Importer
+
 
 CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 
@@ -25,8 +24,6 @@ class Client(object):
         self.profile = Profile(self)
         self.webhooks = Webhook(self)
         self.source = Source(self)
-        self.exporter = Exporter(self)
-        self.importer = Importer(self)
 
     def _create_request_url(self, resource_url):
         return "{api_endpoint}{resource_url}".format(

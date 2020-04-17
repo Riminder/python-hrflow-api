@@ -12,7 +12,7 @@ setup(
     # so far ignore paragraph embedding part for package
 
     name='hrflow',
-    version='1.6.5',
+    version='1.6.7',
     description='python hrflow api package',
     url='https://github.com/hrflow/python-hrflow-api',
     author='riminder',

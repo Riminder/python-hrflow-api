@@ -10,6 +10,8 @@ from .embedding import ProfileEmbedding
 from .searching import ProfileSearching
 from .scoring import ProfileScoring
 from .reasoning import ProfileReasoning
+from .importer import ProfileImporter
+from .exporter import ProfileExporter
 
 from .validator import *
 
@@ -62,6 +64,8 @@ class Profile(object):
         self.searching = ProfileSearching(self.client)
         self.scoring = ProfileScoring(self.client)
         self.reasoning = ProfileReasoning(self.client)
+        self.importer = ProfileImporter(self.client)
+        self.exporter = ProfileExporter(self.client)
 
     def add_json(self, source_id, profile_json, profile_reference=None, profile_labels=[], profile_tags=[],
                  profile_metadatas=[], timestamp_reception=None):

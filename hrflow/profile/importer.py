@@ -1,6 +1,7 @@
 from libs.importer.importer.supervisor import Supervisor
 
-class Importer(object):
+
+class ProfileImporter(object):
     """
     Class that interacts with hrflow API profiles endpoint.
 
