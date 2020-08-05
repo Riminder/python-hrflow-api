@@ -38,7 +38,7 @@ class Client(object):
 
     def _validate_args(self, bodyparams):
         for key, value in bodyparams.items():
-            if isinstance(value, dict) or isinstance(value, list):
+            if isinstance(value, list):
                 bodyparams[key] = json.dumps(value)
         return bodyparams
 

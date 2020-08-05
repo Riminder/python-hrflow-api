@@ -12,11 +12,11 @@ setup(
     # so far ignore paragraph embedding part for package
 
     name='hrflow',
-    version='1.7.2',
+    version='1.7.4',
     description='python hrflow api package',
     url='https://github.com/hrflow/python-hrflow-api',
-    author='riminder',
-    author_email='contact@rimider.net',
+    author='hrflow',
+    author_email='contact@hrflow.net',
     license='MIT',
     packages=find_packages(),
     install_requires=[
