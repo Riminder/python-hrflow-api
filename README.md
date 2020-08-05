@@ -132,7 +132,7 @@ resp = client.profile.parsing.get(source_key="source_key", key="profile_key")
 In order to add Json profile you can index them using HrFlow search engine
 ```python
 profile_json = {
-  "source_key": "d8f998d13ab809f7591e67ea29b5b06794da5e28",
+  "source_key": "source_key",
   
   "consent_algorithmic": {
             "owner": {
