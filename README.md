@@ -449,4 +449,4 @@ get(self, source_key=None, key=None, reference=None, email=None)
 
 ```
 
-* More help ? see  [hrflow API Docs](https://developers.hrflow.net/v1.0/reference#authentication)
+* More help ? see  [hrflow API Docs](https://developers.hrflow.ai/)
