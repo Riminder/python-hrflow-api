@@ -69,5 +69,4 @@ class Client(object):
     def put(self, resource_endpoint, json={}):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
-        json = self._validate_args(json)
         return req.put(url, headers=self.auth_header, json=json)
