@@ -36,7 +36,7 @@ class Client(object):
             base[key] = value
         return base
 
-    def _prepare_params_for_file_upload(self, bodyparams):
+    def _validate_args(self, bodyparams):
         for key, value in bodyparams.items():
             if isinstance(value, dict) or isinstance(value, list):
                 bodyparams[key] = json.dumps(value)
@@ -46,6 +46,7 @@ class Client(object):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
         if query_params:
+            query_params = self._validate_args(query_params)
             return req.get(url, headers=self.auth_header, params=query_params)
         else:
             return req.get(url, headers=self.auth_header)
@@ -54,7 +55,7 @@ class Client(object):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
         if files:
-            data = self._prepare_params_for_file_upload(data)
+            data = self._validate_args(data)
             return req.post(url, headers=self.auth_header, files=files, data=data)
         else:
             return req.post(url, headers=self.auth_header, data=data, json=json)
@@ -62,4 +63,11 @@ class Client(object):
     def patch(self, resource_endpoint, data={}):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
+        data = self._validate_args(data)
         return req.patch(url, headers=self.auth_header, data=data)
+
+    def put(self, resource_endpoint, json={}):
+        """Don't use it."""
+        url = self._create_request_url(resource_endpoint)
+        json = self._validate_args(json)
+        return req.put(url, headers=self.auth_header, json=json)

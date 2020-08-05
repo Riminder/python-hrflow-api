@@ -1,9 +1,7 @@
 import json
-import time
-from .validator import validate_source_ids, validate_job_id, validate_stage, validate_timestamp, validate_limit, validate_page, \
-    validate_sort_by, validate_order_by
 
-TIMESTAMP_NOW = time.time()
+from ..utils import validate_key, validate_limit, validate_page, validate_sort_by, validate_order_by, validate_stage, \
+    validate_provider_keys
 
 
 class ProfileScoring():
@@ -13,24 +11,24 @@ class ProfileScoring():
         """Init."""
         self.client = api
 
-    def get(self, source_ids=None, job_id=None, stage=None, use_agent=None, date_start="1494539999", date_end=TIMESTAMP_NOW,
-            page=1, limit=30, sort_by='date_reception', order_by=None, **kwargs):
+    def get(self, source_keys=None, board_key=None, job_key=None, use_agent=1, agent_key=None,  stage=None, page=1,
+            limit=30, sort_by='created_at', order_by=None, **kwargs):
         """
         Retrieve the scoring information.
 
         Args:
-            source_ids:         <list>
-                                source ids
-            job_id:             <string>
-                                job id
-            stage:              <string>
-                                stage
+            source_keys:        <list>
+                                source_keys
+            board_key:          <string>
+                                board_key
+            job_key:            <string>
+                                job_key
             use_agent:          <int>
                                 use_agent
-            date_end:           <string> REQUIRED (default to timestamp of now)
-                                profiles' last date of reception
-            date_start:         <string> REQUIRED (default to "1494539999")
-                                profiles' first date of reception
+            agent_key:            <string>
+                                agent_key
+            stage:              <string>
+                                stage
             limit:              <int> (default to 30)
                                 number of fetched profiles/page
             page:               <int> REQUIRED default to 1
@@ -42,20 +40,18 @@ class ProfileScoring():
             parsing information
 
         """
-        query_params = {}
 
-        query_params = {"source_ids": json.dumps(validate_source_ids(source_ids)),
-                        "stage": validate_stage(stage),
-                        "date_end": validate_timestamp(date_end, "date_end"),
-                        "date_start": validate_timestamp(date_start, "date_start"),
-                        "limit": validate_limit(limit),
-                        "page": validate_page(page),
-                        "sort_by": validate_sort_by(sort_by),
-                        "order_by": validate_order_by(order_by),
-                        "use_agent": use_agent
+        query_params = {'source_keys': json.dumps(validate_provider_keys(source_keys)),
+                        'board_key': validate_key('Board', board_key),
+                        'job_key': validate_key('Job', job_key),
+                        'use_agent': use_agent,
+                        'agent_key': validate_key('Agent', agent_key),
+                        'stage': validate_stage(stage),
+                        'limit': validate_limit(limit),
+                        'page': validate_page(page),
+                        'sort_by': validate_sort_by(sort_by),
+                        'order_by': validate_order_by(order_by)
                         }
-        if job_id:
-            query_params["job_id"] = validate_job_id(job_id)
 
         params = {**query_params, **kwargs}
         response = self.client.get('profiles/scoring', params)

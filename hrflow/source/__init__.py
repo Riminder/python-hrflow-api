@@ -1,3 +1,6 @@
+from ..utils import validate_key, validate_page, validate_limit, validate_order_by, validate_sort_by
+
+
 class Source(object):
 
     def __init__(self, client):
@@ -26,32 +29,24 @@ class Source(object):
         query_params = {}
         if name:
             query_params["name"] = name
-        query_params["page"] = page
-        query_params["limit"] = limit
+        query_params["page"] = validate_page(page)
+        query_params["limit"] = validate_limit(limit)
         query_params["sort_by"] = sort_by
-        query_params["order_by"] = order_by
+        query_params["order_by"] = validate_order_by(order_by)
         response = self.client.get("sources", query_params)
         return response.json()
 
-    def get(self, source_id=None):
+    def get(self, key=None):
         """
             Get source given a source id.
 
             Args:
-                source_id:          <string>
-                                    source id
+                source_key:         <string>
+                                    source_key
             Returns
                 Source if exists
 
         """
-        query_params = {}
-        query_params["source_id"] = self._validate_source_id(source_id)
+        query_params = {"source_key": validate_key("Source", key)}
         response = self.client.get('source', query_params)
         return response.json()
-
-    @staticmethod
-    def _validate_source_id(value):
-        if not isinstance(value, str) and value is not None:
-            raise TypeError("source_id must be string")
-
-        return value
