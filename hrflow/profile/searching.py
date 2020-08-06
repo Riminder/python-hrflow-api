@@ -11,7 +11,7 @@ class ProfileSearching():
         """Init."""
         self.client = api
 
-    def get(self, source_keys=None, stage=None, page=1, limit=30, sort_by='created_at', order_by=None, **kwargs):
+    def list(self, source_keys=None, stage=None, page=1, limit=30, sort_by='created_at', order_by=None, **kwargs):
         """
         Retrieve the scoring information.
 

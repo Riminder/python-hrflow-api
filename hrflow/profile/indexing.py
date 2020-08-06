@@ -1,4 +1,4 @@
-from ..utils import get_item
+from ..utils import get_item, validate_key
 
 
 class ProfileIndexing():
@@ -8,17 +8,20 @@ class ProfileIndexing():
         """Init."""
         self.client = api
 
-    def add(self, profile_json):
+    def add_json(self, source_key, profile_json):
         """Use the api to add a new profile using profile_data."""
+        profile_json['source_key'] = validate_key("Source", source_key)
         response = self.client.post("profile/indexing", json=profile_json)
         return response.json()
 
-    def put(self, profile_json):
+    def edit(self, source_key, key, profile_json):
         """Use the api to add a new profile using profile_data."""
+        profile_json['source_key'] = validate_key("Source", source_key)
+        profile_json['key'] = validate_key("Profile", key)
         response = self.client.put("profile/indexing", json=profile_json)
         return response.json()
 
-    def get(self, source_key, key, reference=None, email=None):
+    def get(self, source_key, key=None, reference=None, email=None):
         """
         Retrieve the interpretability information.
 

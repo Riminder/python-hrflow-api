@@ -8,7 +8,7 @@ class ProfileAttachments():
         """Init."""
         self.client = api
 
-    def get(self, source_key, key, reference=None, email=None):
+    def list(self, source_key, key=None, reference=None, email=None):
         """
         Retrieve the interpretability information.
 

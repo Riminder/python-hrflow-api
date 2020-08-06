@@ -11,7 +11,7 @@ class ProfileParsing():
         """Init."""
         self.client = api
 
-    def add(self, source_key, key=None, profile_file=None, profile_content_type=None, reference=None, created_at=None,
+    def add_file(self, source_key, key=None, profile_file=None, profile_content_type=None, reference=None, created_at=None,
             labels=[], tags=[], metadatas=[], sync_parsing=0, sync_parsing_indexing=1, webhook_parsing_sending=0):
         """
         Add a profile resume to a sourced key.
@@ -25,7 +25,7 @@ class ProfileParsing():
                                      profile binary
             profile_content_type     <string>
                                      file content type
-            reference:               <string> (default to None)
+            reference:       <string> (default to None)
                                      reference to assign to the profile
             created_at:              <string>
                                      original date of the application of the profile as ISO format
@@ -74,7 +74,7 @@ class ProfileParsing():
             try:
                 with open(file_path) as f:
                     profile_file = f.read()
-                resp = self.add(source_key=source_key, profile_file=profile_file, created_at=created_at,
+                resp = self.add_file(source_key=source_key, profile_file=profile_file, created_at=created_at,
                                 sync_parsing=sync_parsing)
                 if resp['code'] != 200 and resp['code'] != 201:
                     failed_upload[file_path] = ValueError('Invalid response: ' + str(resp))

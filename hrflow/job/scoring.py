@@ -10,7 +10,7 @@ class JobScoring():
         """Init."""
         self.client = api
 
-    def get(self, board_keys=None, source_key=None, profile_key=None, use_agent=None, agent_key=None, stage=None,
+    def list(self, board_keys=None, source_key=None, profile_key=None, use_agent=None, agent_key=None, stage=None,
             page=1, limit=30, sort_by='created_at', order_by=None, **kwargs):
         """
         Retrieve the scoring information.

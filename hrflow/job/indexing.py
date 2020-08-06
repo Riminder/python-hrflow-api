@@ -1,4 +1,4 @@
-from ..utils import get_item
+from ..utils import get_item, validate_key
 
 
 class JobIndexing():
@@ -8,12 +8,15 @@ class JobIndexing():
         """Init."""
         self.client = api
 
-    def add(self, job_json):
+    def add_json(self, board_key, job_json):
         """Use the api to add a new profile using profile_data."""
+        job_json['board_key'] = validate_key("Board", board_key)
         response = self.client.post("job/indexing", json=job_json)
         return response.json()
 
-    def put(self, job_json):
+    def put(self, board_key, key, job_json):
+        job_json['board_key'] = validate_key("Board", board_key)
+        job_json['key'] = validate_key("Job", key)
         """Use the api to add a new profile using profile_data."""
         response = self.client.put("job/indexing", json=job_json)
         return response.json()
