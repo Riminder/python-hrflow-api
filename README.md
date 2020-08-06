@@ -58,7 +58,7 @@ Example Profile
 ```sh
     >>> import hrflow as hf
     >>> client = hf.Client(api_secret="YOUR_API_KEY")
-    >>> result = client.profile.searching.get(source_keys=["source_key"],
+    >>> result = client.profile.searching.list(source_keys=["source_key"],
                                               page=1, limit=30,
                                               sort_by='created_at',
                                               order_by="desc")
@@ -78,7 +78,7 @@ Example Job
 ```sh
     >>> import hrflow as hf
     >>> client = hf.Client(api_secret="YOUR_API_KEY")
-    >>> result = client.job.searching.get(board_keys=["board_key"], page=1,
+    >>> result = client.job.searching.list(board_keys=["board_key"], page=1,
                                           limit=30, sort_by='created_at')
     >>> print(result)
     {
@@ -101,7 +101,7 @@ you need to provide at least one of them but not necessarily both, keep in mind 
 Retreive all profiles that match the query param, only source_ids are required
 
 ```python
-client.profile.searching.get(source_keys=["source_key"], page=1, limit=30,.
+client.profile.searching.list(source_keys=["source_key"], page=1, limit=30,.
                              sort_by='created_at', order_by="desc",
                              text_keywords=['python'], 
                              created_at_min='2020-07-09T13:35:11+0000')
@@ -115,7 +115,7 @@ Add a profile resume as binary to a given source
 with open('path/2/file', "rb") as f:
     profile_file = f.read()
 
-resp = client.profile.parsing.add(source_key="source_key", 
+resp = client.profile.parsing.add_file(source_key="source_key", 
                                   profile_file=profile_file, sync_parsing=1,
                                   sync_parsing_indexing=1,
                                   webhook_parsing_sending=0, 
@@ -198,13 +198,13 @@ profile_json = {
   "labels":[{"stage":"yes", "job_id":"job_id"}],
   "attachments": []
 }
-resp = client.profile.indexing.add(profile_json=profile_json)
+resp = client.profile.indexing.add_json(source_key="source_key", profile_json=profile_json)
 ```
 
 * PUT Profile:
 Json profile must include profile's key
 ```python
-resp = client.profile.indexing.put(profile_json=profile_json)
+resp = client.profile.indexing.edit(source_key="source_key", key="profile_key", profile_json=profile_json)
 ```
 
 * Retrieve Profile Object:
@@ -215,13 +215,13 @@ resp = client.profile.indexing.get(source_key="source_key", key="profile_key")
 
 * Retrieve Profile's attachment:
 ```python
-resp = client.profile.attachment.get(source_key="source_key", key="profile_key")
+resp = client.profile.attachment.list(source_key="source_key", key="profile_key")
 ```
 
 * Searching (ProfileAPI):     
 
 ```python
-resp = client.profile.searching.get(source_keys=["source_key"], page=1, 
+resp = client.profile.searching.list(source_keys=["source_key"], page=1, 
                                     limit=30, sort_by='created_at',
                                     order_by="desc", text_keywords=['python'],
                                     created_at_min='2020-07-09T13:35:11+0000')
@@ -230,7 +230,7 @@ resp = client.profile.searching.get(source_keys=["source_key"], page=1,
 * Scoring (ProfileAPI):     
 
 ```python
-resp = client.profile.scoring.get(source_keys=["source_key"], 
+resp = client.profile.scoring.list(source_keys=["source_key"], 
                                   board_key="board_key", job_key="job_key",
                                   use_agent=1, page=1, limit=30,
                                   sort_by='created_at', order_by=None, 
@@ -244,7 +244,6 @@ Index json Job
 
 ```python
 job_json = {
-    "board_key": "board_key",
     "name": "Data Engineer",
     "agent_key": "agent_key",
     "reference": "Job's reference abc",
@@ -310,13 +309,13 @@ job_json = {
                   ]
 }
 
-resp = client.job.indexing.add(job_json=job_json)
+resp = client.job.indexing.add_json(board_key="board_key", job_json=job_json)
 ```
 
 * PUT Job:
 Json profile must include job's key
 ```python
-resp = client.job.indexing.put(job_json=job_json)
+resp = client.job.indexing.edit(board_key="board_key", key="job_key", job_json=job_json)
 ```
 
 * GET Job:    
@@ -328,13 +327,13 @@ resp = client.job.indexing.get(board_key="board_key", key="job_key")
 
 * Search (JobAPI):     
 ```python
-resp = client.job.searching.get(board_keys=["board_key"], page=1, limit=30, 
+resp = client.job.searching.list(board_keys=["board_key"], page=1, limit=30, 
                                 sort_by='created_at', order_by=None)
 ```
 
 * Scoring (JobAPI):     
 ```python
-resp = client.job.scoring.get(board_keys=["board_key"], source_key="source_key",
+resp = client.job.scoring.list(board_keys=["board_key"], source_key="source_key",
                               profile_key="profile_key", use_agent=1,
                               agent_key="agent_key", page=1, limit=30, 
                               sort_by='created_at', order_by=None)
