@@ -13,11 +13,12 @@ CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 class Client(object):
     """client api wrapper client."""
 
-    def __init__(self, api_url=CLIENT_API_URL, api_secret=None, webhook_secret=None):
+    def __init__(self, api_url=CLIENT_API_URL, api_secret=None, api_user=None, webhook_secret=None):
         """Init."""
         self.api_url = api_url
         self.auth_header = {
-            "X-API-Key": api_secret
+            "X-API-KEY": api_secret,
+            "X-USER-EMAIL": api_user
         }
         self.webhook_secret = webhook_secret
         self.job = Job(self)
