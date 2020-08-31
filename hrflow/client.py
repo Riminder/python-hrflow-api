@@ -1,7 +1,8 @@
 import requests as req
 import json
 
-from hrflow.job import Job
+from .job import Job
+from .document import Document
 from .profile import Profile
 from .webhook import Webhook
 from .source import Source
@@ -23,6 +24,7 @@ class Client(object):
         self.webhook_secret = webhook_secret
         self.job = Job(self)
         self.profile = Profile(self)
+        self.document = Document(self)
         self.webhooks = Webhook(self)
         self.source = Source(self)
 

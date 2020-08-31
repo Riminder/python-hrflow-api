@@ -338,6 +338,36 @@ resp = client.job.scoring.list(board_keys=["board_key"], source_key="source_key"
                               agent_key="agent_key", page=1, limit=30, 
                               sort_by='created_at', order_by=None)
 ```
+
+## Document
+* Text Revealing    
+
+```python
+resp = client.document.revealing.post(text="hello")
+```
+
+* Item Embedding:
+
+This endpoint allows profile/job 's embedding, it returns embedding encoded as base64.
+
+In order to retrieve Item embeddings, you must decode response's body, and reshape the output as shown in below example.
+ 
+```python
+import base64
+import numpy as np
+
+dfloat32 = np.dtype('>f4')
+
+response = client.document.embedding.post(item_type="profile", item=profile_json, return_sequences=True)
+
+embeddings_reponse = response.get('data')
+embeddings_decoded = base64.b64decode(embeddings_reponse)
+embeddings_as_np = np.frombuffer(embeddings_decoded, dtype=dfloat32)
+
+embeddings = np.reshape(embeddings_as_np, (-1, 1024)).tolist()
+```
+
+
 ## Source
 
 * List sources:
