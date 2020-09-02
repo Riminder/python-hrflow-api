@@ -1,6 +1,7 @@
 import requests as req
 import json
 
+from .board import Board
 from .job import Job
 from .document import Document
 from .profile import Profile
@@ -27,6 +28,7 @@ class Client(object):
         self.document = Document(self)
         self.webhooks = Webhook(self)
         self.source = Source(self)
+        self.board = Board(self)
 
     def _create_request_url(self, resource_url):
         return "{api_endpoint}{resource_url}".format(

@@ -379,7 +379,21 @@ resp = client.source.list(name='async')
 Retrieve source's information for a given key
 
 ```python
-resp = client.source.get(source_key=key)
+resp = client.source.get(key=key)
+```
+
+## Board
+
+* List boards:
+```python
+resp = client.board.list(name='compaign')
+```
+
+* GET boars:     
+Retrieve boards's information for a given key
+
+```python
+resp = client.board.get(key=key)
 ```
 
 ## webhook

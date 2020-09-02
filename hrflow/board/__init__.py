@@ -1,14 +1,14 @@
 from ..utils import validate_key, validate_page, validate_limit, validate_order_by, validate_sort_by
 
 
-class Source(object):
+class Board(object):
 
     def __init__(self, client):
         self.client = client
 
     def list(self, name=None, page=1, limit=30, sort_by='date', order_by='desc'):
         """
-            Search sources for given filters.
+            Search boards for given filters.
 
             Args:
                 name:             <string>
@@ -33,20 +33,20 @@ class Source(object):
         query_params["limit"] = validate_limit(limit)
         query_params["sort_by"] = sort_by
         query_params["order_by"] = validate_order_by(order_by)
-        response = self.client.get("sources", query_params)
+        response = self.client.get("boards", query_params)
         return response.json()
 
     def get(self, key=None):
         """
-            Get source given a source id.
+            Get source given a board key.
 
             Args:
-                source_key:         <string>
-                                    source_key
+                key:         <string>
+                             board_key
             Returns
-                Source if exists
+                Board if exists
 
         """
-        query_params = {"key": validate_key("Source", key)}
-        response = self.client.get('source', query_params)
+        query_params = {"key": validate_key("Board", key)}
+        response = self.client.get('board', query_params)
         return response.json()
