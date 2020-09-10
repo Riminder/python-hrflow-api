@@ -1,4 +1,4 @@
-from hrflow.utils import get_item
+from hrflow.hrflow.utils import get_item
 
 
 class ProfileRevealing():

@@ -12,7 +12,7 @@ from .source import Source
 CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 
 
-class Client(object):
+class Hrflow(object):
     """client api wrapper client."""
 
     def __init__(self, api_url=CLIENT_API_URL, api_secret=None, api_user=None, webhook_secret=None):

@@ -15,8 +15,8 @@ class Profile(object):
 
     Usage example:
 
-    >>> from hrflow import client
-    >>> from hrflow.profile import Profile
+    >>> from hrflow.hrflow import hrflow
+    >>> from hrflow import Profile
     >>> client = client(api_key="YOUR_API_KEY")
     >>> profile = Profile(self.client)
     >>> result = profile.get_profiles(source_ids=["5823bc959983f7a5925a5356020e60d605e8c9b5"])

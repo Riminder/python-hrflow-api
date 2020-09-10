@@ -12,8 +12,8 @@ $ pip3 install hrflow
 Example Source
 
 ```sh
-    >>> import hrflow as hf
-    >>> client = hf.Client(api_secret="YOUR_API_KEY")
+    >>> from hrflow import Hrflow
+    >>> client = Hrflow(api_secret="YOUR_API_KEY")
     >>> result = client.source.list(name='python', limit=1)
     >>> print(result)
     {
@@ -56,8 +56,8 @@ Example Source
 Example Profile
 
 ```sh
-    >>> import hrflow as hf
-    >>> client = hf.Client(api_secret="YOUR_API_KEY")
+    >>> from hrflow import Hrflow
+    >>> client = Hrflow(api_secret="YOUR_API_KEY")
     >>> result = client.profile.searching.list(source_keys=["source_key"],
                                               page=1, limit=30,
                                               sort_by='created_at',
@@ -76,8 +76,8 @@ Example Profile
 Example Job
 
 ```sh
-    >>> import hrflow as hf
-    >>> client = hf.Client(api_secret="YOUR_API_KEY")
+    >>> from hrflow import Hrflow
+    >>> client = Hrflow(api_secret="YOUR_API_KEY")
     >>> result = client.job.searching.list(board_keys=["board_key"], page=1,
                                           limit=30, sort_by='created_at')
     >>> print(result)
@@ -444,12 +444,12 @@ event_name is required
 Here is an example of how to handle webhooks
 
 ```python
-import hrflow as hf
+from hrflow import Hrflow
 
 def func_callback(event_name, webhook_data):
-print("{} {}".format(event_name, webhook_data)
-
-client = hf.client(api_secret="YOUR_API_KEY", webhook_secret='webhook_key')
+    print("{} {}".format(event_name, webhook_data)
+    
+    client = Hrflow(api_secret="YOUR_API_KEY", webhook_secret='webhook_key')
 
 # Set an handler for webhook event.
 callback = func_callback
@@ -468,8 +468,7 @@ client.webhooks.handle(request_headers=encoded_header)
 * Here an example on how to get help:
 
  ```sh
->>> import hrflow
->>> from hrflow.profile.parsing import ProfileParsing
+>>> from hrflow.hrflow.profile.parsing import ProfileParsing
 >>> help(ProfileParsing.get)
 
 Help on function get in module hrflow.profile.parsing:

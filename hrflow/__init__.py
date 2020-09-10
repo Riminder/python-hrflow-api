@@ -1,2 +1,2 @@
-from .client import Client
+from .hrflow.hrflow import Hrflow
 
