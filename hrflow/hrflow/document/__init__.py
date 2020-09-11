@@ -1,5 +1,6 @@
 """Profile related calls."""
 from .parsing import DocumentParsing
+from.linking import DocumentLinking
 from .revealing import DocumentRevealing
 from .embedding import DocumentEmbedding
 
@@ -43,5 +44,6 @@ class Document(object):
         """
         self.client = client
         self.parsing = DocumentParsing(self.client)
+        self.linking = DocumentLinking(self.client)
         self.embedding = DocumentEmbedding(self.client)
         self.revealing = DocumentRevealing(self.client)

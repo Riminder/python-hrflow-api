@@ -340,6 +340,12 @@ resp = client.job.scoring.list(board_keys=["board_key"], source_key="source_key"
 ```
 
 ## Document
+* Text Parsing    
+
+```python
+resp = client.document.parsing.post(text="Harry Potter is python engineer")
+```
+
 * Text Revealing    
 
 ```python
@@ -367,6 +373,11 @@ embeddings_as_np = np.frombuffer(embeddings_decoded, dtype=dfloat32)
 embeddings = np.reshape(embeddings_as_np, (-1, 1024)).tolist()
 ```
 
+* Text Linking    
+
+```python
+resp = client.document.linking.post(text="python")
+```
 
 ## Source
 

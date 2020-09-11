@@ -9,6 +9,8 @@ VALID_EXTENSIONS = ['.pdf', '.png', '.jpg', '.jpeg', '.bmp', '.doc', '.docx', '.
                     '.pptx', '.rtf', '.msg']
 INVALID_FILENAME = ['.', '..']
 
+ITEM_TYPE = ['profile', 'job']
+
 
 def get_item(item, provider_key, key, reference=None, email=None):
 
@@ -32,17 +34,9 @@ def validate_key(obj, value):
     return value
 
 
-def validate_order_by(value):
-    if value not in ORDER_BY_VALUES:
-        raise ValueError("order_by value must be in {}".format(str(ORDER_BY_VALUES)))
-
-    return value
-
-
-def validate_sort_by(value):
-    if value not in SORT_BY_VALUES:
-        raise ValueError("sort_by value must be in {}".format(str(SORT_BY_VALUES)))
-
+def validate_value(value, values, message="value"):
+    if value not in values:
+        raise ValueError("{} must be in {}".format(message, str(values)))
     return value
 
 
@@ -65,15 +59,6 @@ def validate_page(value):
 def validate_limit(value):
     if not isinstance(value, int):
         raise TypeError("limit must be 'int'")
-
-    return value
-
-
-def validate_stage(value):
-    if value is None:
-        return value
-    if value not in STAGE_VALUES:
-        raise ValueError("stage value must be in {} not {}".format(str(STAGE_VALUES), value))
 
     return value
 

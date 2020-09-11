@@ -1,5 +1,6 @@
-
 import numpy as np
+from ..utils import validate_value, ITEM_TYPE
+
 
 dfloat32 = np.dtype('>f4')
 
@@ -27,7 +28,7 @@ class DocumentEmbedding():
 
         """
         payload = {
-            "item_type": item_type,
+            "item_type": validate_value(item_type, ITEM_TYPE, "item type"),
             "item": item,
             "return_sequences": return_sequences
         }

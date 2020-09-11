@@ -1,4 +1,6 @@
-from ..utils import validate_key, validate_page, validate_limit, validate_order_by, validate_sort_by
+from ..utils import validate_key, validate_page, validate_limit, validate_value
+
+from ..utils import ORDER_BY_VALUES
 
 
 class Source(object):
@@ -32,7 +34,7 @@ class Source(object):
         query_params["page"] = validate_page(page)
         query_params["limit"] = validate_limit(limit)
         query_params["sort_by"] = sort_by
-        query_params["order_by"] = validate_order_by(order_by)
+        query_params["order_by"] = validate_value(order_by, ORDER_BY_VALUES, "order by")
         response = self.client.get("sources", query_params)
         return response.json()
 
