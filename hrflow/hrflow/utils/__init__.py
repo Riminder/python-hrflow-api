@@ -80,6 +80,7 @@ def is_valid_filename(file_path):
     name = os.path.basename(file_path)
     return name not in INVALID_FILENAME
 
+
 def get_files_from_dir(dir_path, is_recurcive):
     file_res = []
     files_path = os.listdir(dir_path)
@@ -93,3 +94,12 @@ def get_files_from_dir(dir_path, is_recurcive):
         if is_valid_extension(true_path):
             file_res.append(true_path)
     return file_res
+
+
+def validate_response(response):
+    if response.status_code == 500:
+        return {
+            "code": 500,
+            "message": "A generic error occurred on the server"
+        }
+    return response.json()

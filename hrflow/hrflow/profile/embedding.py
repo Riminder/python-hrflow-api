@@ -1,6 +1,6 @@
 import json
 
-from ..utils import get_item
+from ..utils import get_item, validate_response
 
 
 class ProfileEmbedding():
@@ -34,4 +34,4 @@ class ProfileEmbedding():
         if fields:
             query_params["fields"] = json.dumps(fields)
         response = self.client.get('profile/embedding', query_params)
-        return response.json()
+        return validate_response(response)

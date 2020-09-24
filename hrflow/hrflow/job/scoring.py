@@ -1,5 +1,5 @@
 import json
-from ..utils import validate_key, validate_provider_keys, validate_limit, validate_page, validate_value
+from ..utils import validate_key, validate_provider_keys, validate_limit, validate_page, validate_value, validate_response
 
 from ..utils import ORDER_BY_VALUES, SORT_BY_VALUES, STAGE_VALUES
 
@@ -55,4 +55,4 @@ class JobScoring():
 
         params = {**query_params, **kwargs}
         response = self.client.get('jobs/scoring', params)
-        return response.json()
+        return validate_response(response)

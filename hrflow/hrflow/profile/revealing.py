@@ -1,4 +1,4 @@
-from hrflow.hrflow.utils import get_item
+from ..utils import get_item, validate_response
 
 
 class ProfileRevealing():
@@ -28,4 +28,4 @@ class ProfileRevealing():
         """
         query_params = get_item("profile", source_key, key, reference, email)
         response = self.client.get('profile/revealing', query_params)
-        return response.json()
+        return validate_response(response)

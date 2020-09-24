@@ -1,4 +1,4 @@
-from ..utils import get_item
+from ..utils import get_item, validate_response
 
 
 class JobEmbedding():
@@ -26,4 +26,4 @@ class JobEmbedding():
         """
         query_params = get_item('job', board_key, key, reference)
         response = self.client.get('job/embedding', query_params)
-        return response.json()
+        return validate_response(response)

@@ -376,7 +376,7 @@ embeddings = np.reshape(embeddings_as_np, (-1, 1024)).tolist()
 * Text Linking    
 
 ```python
-resp = client.document.linking.post(text="python")
+resp = client.document.linking.post(text="python", top_n=20)
 ```
 
 ## Source

@@ -1,4 +1,4 @@
-from ..utils import validate_key, validate_page, validate_limit, validate_value
+from ..utils import validate_key, validate_page, validate_limit, validate_value, validate_response
 
 from ..utils import ORDER_BY_VALUES
 
@@ -36,7 +36,7 @@ class Board(object):
         query_params["sort_by"] = sort_by
         query_params["order_by"] = validate_value(order_by, ORDER_BY_VALUES, "order by")
         response = self.client.get("boards", query_params)
-        return response.json()
+        return validate_response(response)
 
     def get(self, key=None):
         """
@@ -51,4 +51,4 @@ class Board(object):
         """
         query_params = {"key": validate_key("Board", key)}
         response = self.client.get('board', query_params)
-        return response.json()
+        return validate_response(response)

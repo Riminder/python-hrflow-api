@@ -1,5 +1,5 @@
 import numpy as np
-from ..utils import validate_value, ITEM_TYPE
+from ..utils import validate_value, ITEM_TYPE, validate_response
 
 
 dfloat32 = np.dtype('>f4')
@@ -34,4 +34,4 @@ class DocumentEmbedding():
         }
         response = self.client.post('document/embedding', json=payload)
 
-        return response.json()
+        return validate_response(response)

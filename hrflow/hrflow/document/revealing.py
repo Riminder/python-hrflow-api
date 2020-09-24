@@ -1,3 +1,6 @@
+from ..utils import validate_response
+
+
 class DocumentRevealing():
     """Manage revealing related profile calls."""
 
@@ -20,4 +23,4 @@ class DocumentRevealing():
             "text": text
         }
         response = self.client.post('document/revealing', json=payload)
-        return response.json()
+        return validate_response(response)

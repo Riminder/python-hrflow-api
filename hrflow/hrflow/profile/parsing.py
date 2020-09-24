@@ -1,7 +1,7 @@
 import os
 import json
 
-from ..utils import get_item, validate_key, validate_reference, get_files_from_dir
+from ..utils import get_item, validate_key, validate_reference, get_files_from_dir, validate_response
 
 
 class ProfileParsing():
@@ -61,7 +61,7 @@ class ProfileParsing():
             'webhook_parsing_sending': webhook_parsing_sending
         }
         response = self.client.post("profile/parsing/file", data=payload, files={"file": profile_file})
-        return response.json()
+        return validate_response(response)
 
     def add_folder(self, source_key, dir_path, is_recurcive=False, created_at=None, sync_parsing=0):
         """Add all profile from a given directory."""
@@ -108,4 +108,4 @@ class ProfileParsing():
         """
         query_params = get_item("profile", source_key, key, reference, email)
         response = self.client.get('profile/parsing', query_params)
-        return response.json()
+        return validate_response(response)

@@ -1,7 +1,4 @@
-import os
-import json
-
-from ..utils import get_item, validate_key, validate_reference, get_files_from_dir
+from ..utils import validate_response
 
 
 class DocumentLinking():
@@ -29,4 +26,4 @@ class DocumentLinking():
             "top_n": top_n
         }
         response = self.client.post('document/linking', json=payload)
-        return response.json()
+        return validate_response(response)

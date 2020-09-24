@@ -1,7 +1,4 @@
-import os
-import json
-
-from ..utils import get_item, validate_key, validate_reference, get_files_from_dir
+from ..utils import validate_response
 
 
 class DocumentParsing():
@@ -26,4 +23,4 @@ class DocumentParsing():
             "text": text
         }
         response = self.client.post('document/parsing', json=payload)
-        return response.json()
+        return validate_response(response)
