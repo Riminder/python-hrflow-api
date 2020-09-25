@@ -8,16 +8,21 @@ except ImportError:
     from pip.req import parse_requirements
 
 
+here = os.path.abspath(os.path.dirname(__file__))
+about = {}
+with open(os.path.join('hrflow', '__version__.py'), 'r') as f:
+    exec(f.read(), about)
+
 setup(
     # so far ignore paragraph embedding part for package
 
-    name='hrflow',
-    version='1.8.4',
-    description='python hrflow api package',
-    url='https://github.com/hrflow/python-hrflow-api',
-    author='hrflow',
-    author_email='contact@hrflow.net',
-    license='MIT',
+    name=about['__title__'],
+    version=about['__version__'],
+    description=about['__description__'],
+    url=about['__url__'],
+    author=about['__author__'],
+    author_email=about['__author_email__'],
+    license=about['__license__'],
     packages=find_packages(),
     install_requires=[
         'requests',

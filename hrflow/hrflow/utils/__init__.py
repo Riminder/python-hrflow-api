@@ -97,9 +97,9 @@ def get_files_from_dir(dir_path, is_recurcive):
 
 
 def validate_response(response):
-    if response.status_code == 500:
+    if response.headers['Content-Type'] != 'application/json':
         return {
-            "code": 500,
+            "code": response.status_code,
             "message": "A generic error occurred on the server"
         }
     return response.json()
