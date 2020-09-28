@@ -21,7 +21,7 @@ class JobIndexing():
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
 
-    def get(self, board_key, key, reference=None):
+    def get(self, board_key, key=None, reference=None):
         """
         Retrieve the parsing information.
 

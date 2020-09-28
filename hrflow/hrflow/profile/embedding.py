@@ -10,7 +10,7 @@ class ProfileEmbedding():
         """Init."""
         self.client = api
 
-    def get(self, source_key, key, reference=None, email=None, fields={}):
+    def get(self, source_key, key=None, reference=None, email=None, fields={}):
         """
         Retrieve the interpretability information.
 
