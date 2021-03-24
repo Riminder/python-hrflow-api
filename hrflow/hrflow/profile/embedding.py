@@ -1,6 +1,6 @@
 import json
 
-from ..utils import get_item, validate_response
+from ..utils import format_item_payload, validate_response
 
 
 class ProfileEmbedding():
@@ -30,7 +30,7 @@ class ProfileEmbedding():
             interpretability information
 
         """
-        query_params = get_item("profile", source_key, key, reference, email)
+        query_params = format_item_payload("profile", source_key, key, reference, email)
         if fields:
             query_params["fields"] = json.dumps(fields)
         response = self.client.get('profile/embedding', query_params)

@@ -1,7 +1,7 @@
 import os
 import json
 
-from ..utils import get_item, validate_key, validate_reference, get_files_from_dir, validate_response
+from ..utils import format_item_payload, validate_key, validate_reference, get_files_from_dir, validate_response
 
 
 class ProfileParsing():
@@ -106,6 +106,6 @@ class ProfileParsing():
             Get information
 
         """
-        query_params = get_item("profile", source_key, key, reference, email)
+        query_params = format_item_payload("profile", source_key, key, reference, email)
         response = self.client.get('profile/parsing', query_params)
         return validate_response(response)

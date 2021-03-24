@@ -65,11 +65,11 @@ class Hrflow(object):
         else:
             return req.post(url, headers=self.auth_header, data=data, json=json)
 
-    def patch(self, resource_endpoint, data={}):
+    def patch(self, resource_endpoint, json={}):
         """Don't use it."""
         url = self._create_request_url(resource_endpoint)
-        data = self._validate_args(data)
-        return req.patch(url, headers=self.auth_header, data=data)
+        data = self._validate_args(json)
+        return req.patch(url, headers=self.auth_header, json=data)
 
     def put(self, resource_endpoint, json={}):
         """Don't use it."""

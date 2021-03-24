@@ -12,19 +12,19 @@ INVALID_FILENAME = ['.', '..']
 ITEM_TYPE = ['profile', 'job']
 
 
-def get_item(item, provider_key, key, reference=None, email=None):
+def format_item_payload(item, provider_key, key, reference=None, email=None):
 
     provider = "source_key" if item == "profile" else "board_key"
 
-    query_params = {provider: validate_key("provider", provider_key)}
+    payload = {provider: validate_key("provider", provider_key)}
     if key:
-        query_params["key"] = validate_key("item", key)
+        payload["key"] = validate_key("item", key)
     if reference:
-        query_params["reference"] = validate_reference(reference)
+        payload["reference"] = validate_reference(reference)
     if email:
-        query_params["profile_email"] = email
+        payload["profile_email"] = email
 
-    return query_params
+    return payload
 
 
 def validate_key(obj, value):

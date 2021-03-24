@@ -1,4 +1,4 @@
-from ..utils import get_item, validate_key, validate_response
+from ..utils import format_item_payload, validate_key, validate_response
 
 
 class ProfileIndexing():
@@ -39,6 +39,28 @@ class ProfileIndexing():
             Get information
 
         """
-        query_params = get_item('profile', source_key, key, reference, email)
+        query_params = format_item_payload('profile', source_key, key, reference, email)
         response = self.client.get('profile/indexing', query_params)
+        return validate_response(response)
+
+    def archive(self, source_key, key=None, reference=None, email=None):
+        """
+        Archive Profile.
+
+        Args:
+            source_key:             <string>
+                                    source_key
+            key:                    <string>
+                                    key
+            reference:              <string>
+                                    profile_reference
+            email:                  <string>
+                                    profile_email
+
+        Returns
+            Archive profile
+
+        """
+        payload = format_item_payload('profile', source_key, key, reference, email)
+        response = self.client.patch("profile/indexing/archive", json=payload)
         return validate_response(response)

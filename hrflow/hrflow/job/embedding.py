@@ -1,4 +1,4 @@
-from ..utils import get_item, validate_response
+from ..utils import format_item_payload, validate_response
 
 
 class JobEmbedding():
@@ -24,6 +24,6 @@ class JobEmbedding():
             parsing information
 
         """
-        query_params = get_item('job', board_key, key, reference)
+        query_params = format_item_payload('job', board_key, key, reference)
         response = self.client.get('job/embedding', query_params)
         return validate_response(response)

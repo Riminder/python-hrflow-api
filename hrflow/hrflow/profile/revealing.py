@@ -1,4 +1,4 @@
-from ..utils import get_item, validate_response
+from ..utils import format_item_payload, validate_response
 
 
 class ProfileRevealing():
@@ -26,6 +26,6 @@ class ProfileRevealing():
             Get information
 
         """
-        query_params = get_item("profile", source_key, key, reference, email)
+        query_params = format_item_payload("profile", source_key, key, reference, email)
         response = self.client.get('profile/revealing', query_params)
         return validate_response(response)
