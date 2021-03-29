@@ -65,7 +65,7 @@ class JobIndexing:
         response = self.client.get('job/indexing', query_params)
         return validate_response(response)
 
-    def archive(self, board_key, key, reference=None):
+    def archive(self, board_key, key=None, reference=None):
         """
         Archive Job
 
