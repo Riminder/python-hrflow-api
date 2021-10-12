@@ -65,21 +65,29 @@ class JobIndexing:
         response = self.client.get('job/indexing', query_params)
         return validate_response(response)
 
-    def archive(self, board_key, key=None, reference=None):
+    def archive(self, board_key, key=None, reference=None, is_archive=1):
         """
-        Archive Job
+        This method allows to archive (is_archive=1) or unarchive (is_archive=0) a job
+        in HrFlow.ai. 
+        The job is identified by either its key or its reference,
+        at least one of the two values must be provided.
 
         Args:
-            board_key:              <string>
-                                    board id
+            board_key:             <string>
+                                    board identifier
             key:                    <string>
-                                    job id
+                                    job identifier (key)
             reference:              <string>
-                                    job_reference
-        Returns
-            archive job
+                                    job identifier (reference)
+            is_archive:             <integer> 
+                                    default = 1
+                                    {0, 1} to indicate archive/unarchive action
 
-        """
+        Returns
+            Archive/unarchive job response 
+
+        """        
         payload = format_item_payload('job', board_key, key, reference)
+        payload["is_archive"] = is_archive
         response = self.client.patch("job/indexing/archive", json=payload)
         return validate_response(response)
