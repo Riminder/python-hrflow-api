@@ -1,8 +1,4 @@
-import numpy as np
 from ..utils import validate_value, ITEM_TYPE, validate_response
-
-
-dfloat32 = np.dtype('>f4')
 
 
 class DocumentEmbedding():
