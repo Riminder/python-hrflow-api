@@ -15,32 +15,31 @@ class JobIndexing:
         response = self.client.post("job/indexing", json=job_json)
         return validate_response(response)
 
-    def edit(self, board_key, key, reference=None, job_json=None):
+    def edit(self, board_key, key=None, job_json=None):
         """
-        Retrieve the parsing information.
-
+        This method allows to edit a job
+        in HrFlow.ai. 
+        The job can be edited either through its key (passed as an argument) or its reference 
+        which is a field in the job_json,
+        at least one of the two values must be provided.
         Args:
             board_key:              <string>
                                     board id
             key:                    <string>
                                     job id
-            reference:              <string>
-                                    job_reference
             job_json:               <string>
-                                    job json
+                                    job json structure must follows the structure here https://developers.hrflow.ai/hr-json/job-objects/job-object
 
         Returns
-            parsing information
+            Edit the job in the board with the specified identifier
 
         """
         if job_json is None:
             job_json = {}
 
         job_json['board_key'] = validate_key("Board", board_key)
-        job_json['key'] = validate_key("Job", key)
-
-        if reference:
-            job_json['reference'] = validate_reference(reference)
+        if key:
+            job_json['key'] = validate_key("Job", key)
         """Use the api to add a new profile using profile_data."""
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
