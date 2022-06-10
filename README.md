@@ -9,7 +9,7 @@ $ pip3 install hrflow
 
 # Usage
 
-Example Source
+**Source example**:
 
 ```sh
     >>> from hrflow import Hrflow
@@ -53,41 +53,250 @@ Example Source
 
 ```
 
-Example Profile
+**Profile example**
 
 ```sh
-    >>> from hrflow import Hrflow
-    >>> client = Hrflow(api_secret="YOUR_API_KEY")
-    >>> result = client.profile.searching.list(source_keys=["source_key"],
-                                              page=1, limit=30,
-                                              sort_by='created_at',
-                                              order_by="desc")
-
-    >>> print(result)
-    {
-        'code': 200,
-        'data': {'profiles': [{...},
-                              {...},
-                              {...}]
-                }
+{
+  "key": "8af2b7a0b48fbc936ace283ec020b0d6d4c4b018",
+  "reference": null,
+  "consent_algorithmic": {
+    "owner": {
+      "parsing": true,
+      "revealing": false,
+      "embedding": true,
+      "searching": true,
+      "scoring": true,
+      "reasoning": false
+    },
+    "controller": {
+      "parsing": true,
+      "revealing": false,
+      "embedding": true,
+      "searching": true,
+      "scoring": true,
+      "reasoning": false
     }
-
+  },
+  "archived_at": null,
+  "updated_at": "2021-12-10T15:18:46+0000",
+  "created_at": "2021-12-10T15:18:46+0000",
+  "info": {
+    "full_name": "Harry James Potter",
+    "first_name": "Harry James",
+    "last_name": "Potter",
+    "email": "harry.potter@hogwarts.net",
+    "phone": "0747532699",
+    "date_birth": "1997-06-26T00:00:00+0000",
+    "location": {
+      "text": "Number 4, Privet Drive, Little Whinging",
+      "lat": null,
+      "lng": null,
+      "gmaps": null,
+      "fields": null
+    },
+    "urls": [
+      {"type": "from_resume", "url" : "https://hrflow.ai/"},
+      {"type": "from_resume", "url" : "https://developers.hrflow.ai/"},
+      {"type": "linkedin", "url" : "https://fr.linkedin.com/doe-john"},
+      {"type": "linkedin", "url" : "https://fr.linkedin.com/doe-jane"},
+      {"type": "twitter", "url" : "https://twitter.com/hrflowai"},
+      {"type": "facebook", "url" : "https://www.facebook.com/hrflowai/"},  
+      {"type": "github", "url" : "https://github.com/harry-james-potter"}
+  ],
+    "picture": null,
+    "gender": "male",
+    "summary": "Sorcerer Apprentice"
+  },
+  "text_language": "en",
+  "text": "Harry James Potter\nSorcerer Apprentice\n\ndate of birth: June 26th 1997\nNumber 4, Privet Drive, Little Whinging\nemail: harry.potter@hogwarts.net\nphone: 0747532699\n\nExperiences\n\nApril 2002 - July 2002\tHogwarts School of Witchcraft and Wizardry\nMagic Investigator\nSolving mysteries about the Sorcerer's stone.\nteamplayer, empathy.\n\nEducations\n\nDecember 2001 - December 2002\tHogwarts School of Witchcraft and Wizardry\nSorcerer Apprentice\nFirst year of study.\nwitchcraft, levitation, lycanthropy.\n\nSkills\n\nwitchcraft\ndark arts\nperseverance\nempathy\n\nInterests\n\nquidditch\nwizard chess",
+  "experiences_duration": 0.25,
+  "educations_duration": 1,
+  "experiences": [
+    {
+      "key": "8af2b7a0b48fbc936ace283ec020b0d6d4c4b019",
+      "company": "Hogwarts School of Witchcraft and Wizardry",
+      "logo": null,
+      "title": "Magic Investigator",
+      "description": "Solving mysteries about the Sorcerer's stone.",
+      "location": {
+        "text": "Hogwarts",
+        "lat": null,
+        "lng": null,
+        "gmaps": null,
+        "fields": null
+      },
+      "date_start": "2002-04-01T00:00:00tps://developers.hrflow.ai/reference/parse-a-resume+0000",
+      "date_end": "2002-07-01T00:00:00+0000",
+      "skills": [
+        {
+          "name": "teamplayer",
+          "type": "soft",
+          "value": null
+        },
+        {
+          "name": "empathy",
+          "type": "soft",
+          "value": null
+        }
+      ],
+      "certifications": [],
+      "courses": [],
+      "tasks": []
+    }
+  ],
+  "educations": [
+    {
+      "key": "8af2b7a0b48fbc936ace283ec020b0d6d4c4b020",
+      "school": "Hogwarts School of Witchcraft and Wizardry",
+      "logo": null,
+      "title": "Sorcerer Apprentice",
+      "description": "First year of study.",
+      "location": {
+        "text": "Hogwarts",
+        "lat": null,
+        "lng": null,
+        "gmaps": null,
+        "fields": null
+      },
+      "date_start": "2001-12-01T00:00:00+0000",
+      "date_end": "2002-12-01T00:00:00+0000",
+      "skills": [
+        {
+          "name": "witchcraft",
+          "type": "hard",
+          "value": null
+        },
+        {
+          "name": "levitation",
+          "type": "hard",
+          "value": null
+        },
+        {
+          "name": "lycanthropy",
+          "type": "hard",
+          "value": null
+        }
+      ],
+      "certifications": [],
+      "courses": [],
+      "tasks": []
+    }
+  ],
+  "attachments": [],
+  "skills": [
+    {
+      "name": "witchcraft",
+      "type": "hard",
+      "value": null
+    },
+    {
+      "name": "dark arts",
+      "type": "hard",
+      "value": null
+    },
+    {
+      "name": "perseverance",
+      "type": "soft",
+      "value": null
+    },
+    {
+      "name": "empathy",
+      "type": "soft",
+      "value": null
+    }
+  ],
+  "languages": [],
+  "certifications": [],
+  "courses": [],
+  "tasks": [],
+  "interests": [
+    {
+      "name": "quidditch",
+      "value": null
+    },
+    {
+      "name": "wizard chess",
+      "value": null
+    }
+  ],
+  "labels": [],
+  "tags": [
+    {
+      "name": "contract_type",
+      "value": "Full Time"
+    }
+  ],
+  "metadatas": []
+}
 ```
-Example Job
+**Job example**
 
 ```sh
-    >>> from hrflow import Hrflow
-    >>> client = Hrflow(api_secret="YOUR_API_KEY")
-    >>> result = client.job.searching.list(board_keys=["board_key"], page=1,
-                                          limit=30, sort_by='created_at')
-    >>> print(result)
     {
-        'code': 200,
-        'data': {'jobs': [{...},
-                          {...},
-                          {...}]
-                }
-    }
+    "name": "Data Scientist",
+    "agent_key": "agent_key",
+    "reference": "Job's reference abc",
+    "url": "https://www.pole-emploi.ai/jobs/data_engineer",
+    "summary": "As an engineer for the Data Engineering Infrastructure team, you will design, build, scale, and evolve our data engineering  platform, services and tooling. Your work will have a critical  impact on all areas of business:supporting detailed internal analytics, calculating customer usage, securing our platform, and much more.",
+    "location": {
+                  "text": "Dampierre en Burly (45)",
+                  "geopoint": {
+                      "lat": 47.7667,
+                      "lon": 2.5167
+                  }
+                 },
+    "sections": [{
+                    "name": "profile",
+                    "title": "Searched Profile",
+                    "description": "Bac+7"
+                  }
+                  ],
+    "skills": [{
+                  "name": "python",
+                  "value": None
+               },
+               {
+                  "name": "spark",
+                  "value": 0.9
+               }
+               ],
+    "languages": [{
+                     "name": "english",
+                     "value": 1
+                  },
+                 {  
+                     "name": "french",
+                     "value": 1
+                  }
+                  ],
+    "tags": [{
+                "name": "archive",
+                "value": True
+             },
+             {  
+                "name": "tag example",
+                "value": "tag"
+              }
+              ],
+    "ranges_date": [{
+                       "name": "Dates",
+                       "value_min": "2020-05-18T21:59",
+                       "value_max": "2020-09-15T21:59"
+                    }
+                    ],
+    "ranges_float": [{
+                       "name": "salary",
+                       "value_min": 30,
+                       "value_max": 40,
+                       "unit": "eur"
+                    }
+                    ],
+    "metadatas": [{
+                     "name": "metadata example",
+                     "value": "metadata"
+                  }
+                  ]
+}
 
 ```
 
@@ -108,35 +317,37 @@ This endpoint allows you to parse a resume and make a profile object from it.
 with open('path/2/file', "rb") as f:
     profile_file = f.read()
 ```
-- Parse it using this method without reference:
+- You can parse a resume without using a reference likr this:
 ```python
 response = client.profile.parsing.add_file(source_key="source_key", 
-                                  profile_file=profile_file, sync_parsing=1,
+                                  profile_file=profile_file, sync_parsing=0,
                                   sync_parsing_indexing=1,
                                   webhook_parsing_sending=0, 
                                   tags=[{"name":"archive", "value":True}])
 ```
 
-- Or using a reference like this:
+- If you would like to specify a custom identifier that you can use later to retrieve the parsed profile more easily you can use the argument reference:
 ```python
 response = client.profile.parsing.add_file(source_key="source_key", reference = "my_resume",
-                                  profile_file=profile_file, sync_parsing=1,
+                                  profile_file=profile_file, sync_parsing=0,
                                   sync_parsing_indexing=1,
                                   webhook_parsing_sending=0, 
                                   tags=[{"name":"archive", "value":True}])
 ```
 In both cases the output should look like this:
 ```
-{'code': 201,
- 'message': 'Profile parsed successfully. Profile extraction finished : 8.00 seconds.',
- ...}
+{'code': 202,
+ 'message': 'Your profile as been sent successfully to the Parsing Queue.',
+ 'data': []}
  ```
-```python
-client.profile.searching.list(source_keys=["source_key"], page=1, limit=30,.
-                             sort_by='created_at', order_by="desc",
-                             text_keywords=['python'], 
-                             created_at_min='2020-07-09T13:35:11+0000')
+Note that the output above corresponds to a asynchronous profile parsing.
+- To parse a profile synchronously you only need to set the parameter `sync-parsing` to `1`. The output should in this case look like this:
 ```
+{'code': 201,
+ 'message': 'Profile parsed successfully. Profile extraction finished : 10.26 seconds.',
+ ...}
+```
+Notice that you need to have real-time parsing enabled. In case you don't the parsing will be asynchronous by default. Check https://developers.hrflow.ai/reference/parse-a-resume for more information.
 ### 🧠 **Get a Resume Parsing from a Source**  
 Retrieve Parsing information using source key and key/reference.
 > ⚠️ **Query parameters**: `reference` and `key` cannot be null at the same time.
@@ -155,7 +366,7 @@ response = client.profile.parsing.get(source_key="source_key", reference="my_res
  ...}
 ```
 ### 💾 **Index a Profile in a Source**
-In order to add a Json profile you can index it using HrFlow search engine
+In order to add a JSON profile you can index it using HrFlow search engine
 - Index a profile in a source using a JSON file `profile_json`
 ```python
 response = client.profile.indexing.add_json(source_key="source_key", profile_json=profile_json)
@@ -192,7 +403,7 @@ response = client.profile.indexing.get(source_key="source_key", key="profile_key
  'message': 'Profile details',
  ...}
 ```
-### **💾 Get a profile's attachment list**
+### **💾 Get a Profile's attachment list**
 - Retrieve a profile's attachment list from a source
 ```python
 response = client.profile.attachment.list(source_key="source_key", key="profile_key")
@@ -217,7 +428,7 @@ response = client.profile.searching.list(source_keys=["source_key"], page=1,
 {'code': 200,
  'message': 'Profile searching results',
 ```
-### 🧠 **Score profiles indexed in sources for a Job**
+### 🧠 **Score Profiles indexed in sources for a Job**
 This endpoint allows you to Score Profiles for a job.
 - Score a profile using a list of `source_key`, a `board_key`, and a`job_key`
 ```python
@@ -358,7 +569,7 @@ response = client.job.scoring.list(board_keys=["board_key"],source_key="source_k
 ```
 
 ## Text
-### 🧠 **Parse a raw Text**
+### 🧠 **Parse a raw text**
 Allows extracting over 50 data point from any raw input text.
 - Parse a raw text given as argument
 ```python
@@ -371,7 +582,7 @@ resp = client.document.parsing.post(text="Your text here)
  'data':...}
 ```
 
-### 🧠 **Reveal missing skills in a Text**
+### 🧠 **Reveal missing skills in a text**
 Predict likely missing skills in a text
 - Predict the skills using the method below
 ```python
