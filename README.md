@@ -11,46 +11,51 @@ $ pip3 install hrflow
 
 Example Source
 
-```sh
-    >>> from hrflow import Hrflow
-    >>> client = Hrflow(api_secret="YOUR_API_KEY")
-    >>> result = client.source.list(name='python', limit=1)
-    >>> print(result)
-    {
-        'code': 200,
-        'data': [{
-            'archive': None,
-            'consent': False,
-            'consent_url': None,
-            'created_at': '2020-07-22T09:11:32+0000',
-            'description': None,
-            'id': id,
-            'key': 'source_key',
-            'members': ['member@hrflow.ai'],
-            'name': 'sync-php',
-            'notification': False,
-            'private': False,
-            'stats': {'size': '0'},
-            'status': True,
-            'subtype': 'php',
-            'type': 'api',
-            'updated_at': '2020-07-22T09:11:32+0000',
-            'user': {
-                'avatarUrl': '/images/user.png',
-                'email': 'member@hrflow.ai',
-                'firstName': None,
-                'id': id,
-                'lastName': None,
-                'locale': 'english',
-                'phone': None,
-                'position': None,
-                'pseudo': None}},
-            .
-            .
-            . ],
-        'message': 'Source list',
-        'meta': {'count': 11, 'maxPage': 1, 'page': 1, 'total': 11}}
+```py
+from hrflow import Hrflow
 
+client = Hrflow(api_secret="YOUR_API_KEY")
+result = client.source.list(name='python', limit=1)
+
+print(result)
+```
+
+The result is a list of
+```py
+{
+    'code': 200,
+    'data': [{
+        'archive': None,
+        'consent': False,
+        'consent_url': None,
+        'created_at': '2020-07-22T09:11:32+0000',
+        'description': None,
+        'id': id,
+        'key': 'source_key',
+        'members': ['member@hrflow.ai'],
+        'name': 'sync-php',
+        'notification': False,
+        'private': False,
+        'stats': {'size': '0'},
+        'status': True,
+        'subtype': 'php',
+        'type': 'api',
+        'updated_at': '2020-07-22T09:11:32+0000',
+        'user': {
+            'avatarUrl': '/images/user.png',
+            'email': 'member@hrflow.ai',
+            'firstName': None,
+            'id': id,
+            'lastName': None,
+            'locale': 'english',
+            'phone': None,
+            'position': None,
+            'pseudo': None}},
+        .
+        .
+        . ],
+    'message': 'Source list',
+    'meta': {'count': 11, 'maxPage': 1, 'page': 1, 'total': 11}}
 ```
 
 Example Profile
