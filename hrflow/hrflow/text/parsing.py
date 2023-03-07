@@ -1,8 +1,8 @@
 from ..utils import validate_response
 
 
-class DocumentRevealing():
-    """Manage revealing related profile calls."""
+class TextParsing:
+    """Manage Text parsing related calls."""
 
     def __init__(self, api):
         """Init."""
@@ -10,17 +10,15 @@ class DocumentRevealing():
 
     def post(self, text):
         """
-        Retrieve revealing.
+        Extract over 50 data point from any raw input text.
 
         Args:
             text:                   <string>
                                     text
         Returns
-            Revealing
+            Parsed entities from the text.
 
         """
-        payload = {
-            "text": text
-        }
-        response = self.client.post('document/revealing', json=payload)
+        payload = {"text": text}
+        response = self.client.post("text/parsing", json=payload)
         return validate_response(response)

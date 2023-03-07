@@ -1,5 +1,10 @@
 import json
-from ..utils import format_item_payload, validate_key, validate_response, validate_reference
+from ..utils import (
+    format_item_payload,
+    validate_key,
+    validate_response,
+    validate_reference,
+)
 
 
 class JobIndexing:
@@ -11,15 +16,15 @@ class JobIndexing:
 
     def add_json(self, board_key, job_json):
         """Use the api to add a new profile using profile_data."""
-        job_json['board_key'] = validate_key("Board", board_key)
+        job_json["board_key"] = validate_key("Board", board_key)
         response = self.client.post("job/indexing", json=job_json)
         return validate_response(response)
 
     def edit(self, board_key, key=None, job_json=None):
         """
         This method allows to edit a job
-        in HrFlow.ai. 
-        The job can be edited either through its key (passed as an argument) or its reference 
+        in HrFlow.ai.
+        The job can be edited either through its key (passed as an argument) or its reference
         which is a field in the job_json,
         at least one of the two values must be provided.
         Args:
@@ -37,9 +42,9 @@ class JobIndexing:
         if job_json is None:
             job_json = {}
 
-        job_json['board_key'] = validate_key("Board", board_key)
+        job_json["board_key"] = validate_key("Board", board_key)
         if key:
-            job_json['key'] = validate_key("Job", key)
+            job_json["key"] = validate_key("Job", key)
         """Use the api to add a new profile using profile_data."""
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
@@ -60,14 +65,14 @@ class JobIndexing:
             parsing information
 
         """
-        query_params = format_item_payload('job', board_key, key, reference)
-        response = self.client.get('job/indexing', query_params)
+        query_params = format_item_payload("job", board_key, key, reference)
+        response = self.client.get("job/indexing", query_params)
         return validate_response(response)
 
     def archive(self, board_key, key=None, reference=None, is_archive=1):
         """
         This method allows to archive (is_archive=1) or unarchive (is_archive=0) a job
-        in HrFlow.ai. 
+        in HrFlow.ai.
         The job is identified by either its key or its reference,
         at least one of the two values must be provided.
 
@@ -78,15 +83,15 @@ class JobIndexing:
                                     job identifier (key)
             reference:              <string>
                                     job identifier (reference)
-            is_archive:             <integer> 
+            is_archive:             <integer>
                                     default = 1
                                     {0, 1} to indicate archive/unarchive action
 
         Returns
-            Archive/unarchive job response 
+            Archive/unarchive job response
 
-        """        
-        payload = format_item_payload('job', board_key, key, reference)
+        """
+        payload = format_item_payload("job", board_key, key, reference)
         payload["is_archive"] = is_archive
         response = self.client.patch("job/indexing/archive", json=payload)
         return validate_response(response)

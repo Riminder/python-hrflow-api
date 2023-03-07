@@ -7,34 +7,10 @@ from .embedding import ProfileEmbedding
 from .searching import ProfileSearching
 from .scoring import ProfileScoring
 from .reasoning import ProfileReasoning
+from .storing import ProfileStoring
 
 
 class Profile(object):
-    """
-    Class that interacts with hrflow API profiles endpoint.
-
-    Usage example:
-
-    >>> from hrflow.hrflow import hrflow
-    >>> from hrflow import Profile
-    >>> client = client(api_key="YOUR_API_KEY")
-    >>> profile = Profile(self.client)
-    >>> result = profile.get_profiles(source_ids=["5823bc959983f7a5925a5356020e60d605e8c9b5"])
-    >>> print(result)
-    {
-        "code": 200,
-        "message": "OK",
-        "data": {
-            "page": 1,
-            "maxPage": 3,
-            "count_profiles": 85,
-            "profiles": [
-            {
-                "profile_id": "215de6cb5099f4895149ec0a6ac91be94ffdd246",
-                "profile_reference": "49583",
-                ...
-    """
-
     def __init__(self, client):
         """
         Initialize Profile object with hrflow client.
@@ -55,3 +31,4 @@ class Profile(object):
         self.scoring = ProfileScoring(self.client)
         self.searching = ProfileSearching(self.client)
         self.reasoning = ProfileReasoning(self.client)
+        self.storing = ProfileStoring(self.client)
