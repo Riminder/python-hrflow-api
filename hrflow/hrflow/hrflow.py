@@ -46,6 +46,7 @@ class Hrflow(object):
         self.job = Job(self)
         self.profile = Profile(self)
         self.text = Text(self)
+        self.document = Text(self) # This is a patch to avoid breaking changes in the API. Will be in future release.
         self.webhooks = Webhook(self)
         self.source = Source(self)
         self.board = Board(self)
