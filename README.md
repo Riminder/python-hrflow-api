@@ -56,7 +56,7 @@ Install using `pip install -U hrflow` or `conda install hrflow -c conda-forge`.
 
 ```py
 from hrflow import Hrflow
-client = Hrflow(api_secret="YOUR_API_KEY"; api_user="YOU_USER_EMAIL")
+client = Hrflow(api_secret="YOUR_API_KEY", api_user="YOU_USER_EMAIL")
 
 # read file from directory (in binary mode) 
 with open("path_to_file.pdf", "rb") as f:
