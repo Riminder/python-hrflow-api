@@ -2,7 +2,7 @@
 ARGS := 
 
 install_req:
-	pip install -U setuptools setuptools_scm wheel
+	pip install -U setuptools setuptools_scm wheel && python -m pip install twine
 
 clean:
 	rm -rf build dist *.egg-info
@@ -14,7 +14,7 @@ git-tag:
 	./tag.sh $(ARGS)
 
 deploy-test:
-	python -m pip install twine && twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
 
 deploy:
-	python -m pip install twine && twine upload dist/*
+	python -m twine upload dist/*
