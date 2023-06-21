@@ -1,6 +1,4 @@
-
-
-class JobParsing():
+class JobParsing:
     """Manage parsing related job calls."""
 
     def __init__(self, api):

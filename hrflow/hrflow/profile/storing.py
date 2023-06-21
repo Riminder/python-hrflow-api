@@ -1,5 +1,6 @@
 import json
 from ..utils import (
+    format_item_payload,
     validate_boolean,
     validate_key,
     validate_limit,
@@ -14,32 +15,76 @@ from ..utils import (
 
 
 class ProfileStoring:
-    """
-    This class manages Profiles storing endpoint (https://api.hrflow.ai/v1/storing/profiles).
-    This endpoint allows you to retrieve the list of profiles stored in a Source.
-    """
+    """Manage Storing related profile calls."""
 
     def __init__(self, api):
         """Init."""
         self.client = api
 
-    # Params list
-    """
-    source_keys:["{{source_key}}"]
-    name:
-    key:
-    reference:
-    location_lat:
-    location_lon:
-    location_dist:
-    return_profile:
-    page:
-    limit:
-    order_by:
-    sort_by:
-    created_at_min:
-    created_at_max:
-    """
+    def add_json(self, source_key, profile_json):
+        """Use the api to add a new profile using profile_data."""
+        profile_json["source_key"] = validate_key("Source", source_key)
+        response = self.client.post("profile/indexing", json=profile_json)
+        return validate_response(response)
+
+    def edit(self, source_key, key, profile_json):
+        """Use the api to add a new profile using profile_data."""
+        profile_json["source_key"] = validate_key("Source", source_key)
+        profile_json["key"] = validate_key("Profile", key)
+        response = self.client.put("profile/indexing", json=profile_json)
+        return validate_response(response)
+
+    def get(self, source_key, key=None, reference=None):
+        """
+        💾 Get a Profile indexed in a Source (https://api.hrflow.ai/v1/profile/indexing).
+        Profiles can either be retrieved using this method by their key or their reference.
+        One of the two values must be provided.
+
+        Args:
+            source_key:             <string>
+                                    The key of the Source where the profile is indexed.
+            key:                    <string>
+                                    The Profile unique identifier.
+            reference:              <string>
+                                    The Profile reference chosen by the customer.
+
+        Returns
+            Get information
+
+        """
+        query_params = format_item_payload("profile", source_key, key, reference)
+        response = self.client.get("profile/indexing", query_params)
+        return validate_response(response)
+
+    def archive(self, source_key, key=None, reference=None, is_archive=1, email=None):
+        """
+        This method allows to archive (is_archive=1) or unarchive (is_archive=0)a profile
+        in HrFlow.ai.
+        The profile is identified by either its key or its reference,
+        at least one of the two values must be provided.
+
+        Args:
+            source_key:             <string>
+                                    source identifier
+            key:                    <string>
+                                    profile identifier (key)
+            reference:              <string>
+                                    profile identifier (reference)
+            is_archive:             <integer>
+                                    default = 1
+                                    {0, 1} to indicate archive/unarchive action
+            email:                  <string>
+                                    profile_email
+
+        Returns
+            Archive/unarchive profile response
+
+        """
+
+        payload = format_item_payload("profile", source_key, key, reference, email)
+        payload["is_archive"] = is_archive
+        response = self.client.patch("profile/indexing/archive", json=payload)
+        return validate_response(response)
 
     def list(
         self,

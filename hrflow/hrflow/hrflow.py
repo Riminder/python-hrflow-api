@@ -7,6 +7,8 @@ from .text import Text
 from .profile import Profile
 from .webhook import Webhook
 from .source import Source
+from .tracking import Tracking
+from .rating import Rating
 
 
 CLIENT_API_URL = "https://api.hrflow.ai/v1/"
@@ -46,10 +48,11 @@ class Hrflow(object):
         self.job = Job(self)
         self.profile = Profile(self)
         self.text = Text(self)
-        self.document = Text(self) # This is a patch to avoid breaking changes in the API. Will be in future release.
         self.webhooks = Webhook(self)
         self.source = Source(self)
         self.board = Board(self)
+        self.tracking = Tracking(self)
+        self.rating = Rating(self)
 
     def _create_request_url(self, resource_url):
         return "{api_endpoint}{resource_url}".format(
