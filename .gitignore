@@ -183,3 +183,9 @@ db.sqlite3
 media
 
 deploy/*.zip
+
+
+# Pyre type checker
+.pyre/
+
+.envrc
