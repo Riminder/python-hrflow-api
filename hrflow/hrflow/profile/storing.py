@@ -27,10 +27,24 @@ class ProfileStoring:
         response = self.client.post("profile/indexing", json=profile_json)
         return validate_response(response)
 
-    def edit(self, source_key, key, profile_json):
-        """Use the api to add a new profile using profile_data."""
+    def edit(self, source_key, profile_json, key=None):
+        """
+        Edit a profile already stored in the given source.
+        This method uses the endpoint : [PUT] https://api.hrflow.ai/v1/profile/indexing
+        It requires : 
+            - source_key : <string> The key of the source where the profile is stored
+            - profile_json : <dict> The profile data to update
+                            The profile object must meet the criteria of the HrFlow.ai Profile Object
+                            Otherwise the Put request will return an error. 
+                            A key or a reference must be provided in the profile object `profile_json`, to identify the profile to update.
+        The method will update the object already stored by the fields provided in the profile_json.
+        """
         profile_json["source_key"] = validate_key("Source", source_key)
-        profile_json["key"] = validate_key("Profile", key)
+        # The argument key is kept for backward compatibility with previous versions of the SDK
+        # It should be removed in the future after a Major release
+        if key:
+            profile_json["key"] = validate_key("Profile", key)
+            
         response = self.client.put("profile/indexing", json=profile_json)
         return validate_response(response)
 

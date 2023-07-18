@@ -27,32 +27,28 @@ class JobStoring:
         response = self.client.post("job/indexing", json=job_json)
         return validate_response(response)
 
-    def edit(self, board_key, key=None, job_json=None):
+    def edit(self, board_key, job_json, key=None):
         """
-        This method allows to edit a job
-        in HrFlow.ai.
-        The job can be edited either through its key (passed as an argument) or its reference
-        which is a field in the job_json,
-        at least one of the two values must be provided.
-        Args:
-            board_key:              <string>
-                                    board id
-            key:                    <string>
-                                    job id
-            job_json:               <string>
-                                    job json structure must follows the structure here https://developers.hrflow.ai/hr-json/job-objects/job-object
-
-        Returns
-            Edit the job in the board with the specified identifier
-
+        Edit a job already stored in the given source.
+        This method uses the endpoint : [PUT] https://api.hrflow.ai/v1/job/indexing
+        It requires : 
+            - source_key : <string> The key of the source where the job is stored
+            - job_json : <dict> The job data to update
+                            The job object must meet the criteria of the HrFlow.ai job Object
+                            Otherwise the Put request will return an error. 
+                            A key or a reference must be provided in the job object `job_json`, to identify the job to update.
+        The method will update the object already stored by the fields provided in the job_json.
         """
+
         if job_json is None:
             job_json = {}
 
         job_json["board_key"] = validate_key("Board", board_key)
+        # The argument key is kept for backward compatibility with previous versions of the SDK
+        # It should be removed in the future after a Major release
         if key:
             job_json["key"] = validate_key("Job", key)
-        """Use the api to add a new profile using profile_data."""
+            
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
 
