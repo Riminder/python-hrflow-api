@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import os
-from setuptools import setup, find_packages
+
+from setuptools import find_packages, setup
 
 try:
     from pip._internal.req import parse_requirements

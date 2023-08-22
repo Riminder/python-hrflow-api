@@ -1,15 +1,16 @@
 import json
+
 from ..utils import (
+    ORDER_BY_VALUES,
+    SORT_BY_VALUES,
     format_item_payload,
     validate_boolean,
     validate_key,
     validate_limit,
     validate_page,
     validate_provider_keys,
-    validate_response,
     validate_reference,
-    ORDER_BY_VALUES,
-    SORT_BY_VALUES,
+    validate_response,
     validate_value,
 )
 
@@ -18,11 +19,91 @@ class JobStoring:
     """Manage Storing related job calls."""
 
     def __init__(self, api):
-        """Init."""
+        """_summary_
+
+        Parameters
+        ----------
+        api : _type_
+            _description_
+        """
         self.client = api
 
     def add_json(self, board_key, job_json):
-        """Use the api to add a new profile using profile_data."""
+        """This endpoint allows you to Index a Job object.
+        Note: If your Job is an unstructured text, make sure to parse it first before indexing it.
+            See how in 🧠 Parse a raw Text at: https://developers.hrflow.ai/ .
+        Parameters
+        ----------
+        board_key : string [required]
+            Identification key of the Board attached to the Job.
+        job_json : dict [required]
+            A dictionary representing the HrFlow.ai Job object. The dictionary should have the following fields:
+
+            - key (str): Identification key of the Job.
+            - reference (str): Custom identifier of the Job.
+            - name (str) [required]: Job title.
+            - location (dict): Location information for the job.
+                - text (str): Location text.
+                - lat (float): Latitude coordinate.
+                - lng (float): Longitude coordinate.
+            - sections (list[dict]): List of sections in the job.
+                Each section is represented by a dictionary with the following fields:
+                - name (str): Section name.
+                - title (str): Section title.
+                - description (str): Section description.
+            - url (str): Job post original URL.
+            - summary (str): Brief summary of the Job.
+            - created_at (str): Creation date of the Job in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ).
+            - skills (list[dict]): List of skills required for the Job.
+                Each skill is represented by a dictionary with the following fields:
+                - name (str): Skill name.
+                - type (str): Skill type: `hard` or `soft`.
+                - value (any): Skill value. The value attached to the Skill. Example: 90/100
+            - languages (list[dict]): List of languages required for the Job.
+                Each language is represented by a dictionary with the following fields:
+                - name (str): Language name.
+                - value (any): Language value. The value attached to the Language. Example: fluent.
+            - cetifications (list[dict]): List of certifications required for the Job.
+                Each certification is represented by a dictionary with the following fields:
+                - name (str): Certification name.
+                - value (any): Certification value. The value attached to the Certification. Example: 4.5/5.
+            - courses (list[dict]): List of courses required for the Job.
+                Each course is represented by a dictionary with the following fields:
+                - name (str): Course name.
+                - value (any): Course value. The value attached to the Course.
+            - tasks (list[dict]): List of tasks required for the Job.
+                Each task is represented by a dictionary with the following fields:
+                - name (str): Task name.
+                - value (any): Task value. The value attached to the Task.
+            - tags (list[dict]): List of tags added to the Job. Tags are a way we can extend the Job object with custom information.
+                Each tag is represented by a dictionary with the following fields:
+                - name (str): The name of the Tag. Example: `is_active`.
+                - value (any): The value of the Tag. Example: `True`.
+            - metadata (list[dict]): Custom metadata added to the Job.
+                Each metadata is represented by a dictionary with the following fields:
+                - name (str): The name of the metadata. Example: interview-note
+                - value (any): The value of the metadata. Example: `The candidate was very good ...`.
+            - ranges_float (list[dict]): List of float ranges added to the Job.
+                Each range is represented by a dictionary with the following fields:
+                - name (str): The name of the range. Example: salary.
+                - value_min (float): The minimum value of the range. Example: 50000.
+                - value_max (float): The maximum value of the range. Example: 60000.
+                - unit (str): The unit of the range. Example: EUR.
+            - ranges_date (list[dict]): List of date ranges added to the Job.
+                Each range is represented by a dictionary with the following fields:
+                - name (str): The name of the range. Example: availability.
+                - value_min (str): The minimum value of the range in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-01-01.
+                - value_max (str): The maximum value of the range in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-03-01.
+            - culture (str): The company culture description in the Job.
+            - benefits (str): The job opening benefits description in the Job.
+            - responsibilities (str): The job opening responsibilities description in the Job.
+            - requirements (str): The job opening requirements description in the Job.
+            - interviews (str): The job opening interviews.
+        Returns
+        -------
+        dict
+            Server response.
+        """
         job_json["board_key"] = validate_key("Board", board_key)
         response = self.client.post("job/indexing", json=job_json)
         return validate_response(response)
@@ -31,11 +112,11 @@ class JobStoring:
         """
         Edit a job already stored in the given source.
         This method uses the endpoint : [PUT] https://api.hrflow.ai/v1/job/indexing
-        It requires : 
+        It requires :
             - source_key : <string> The key of the source where the job is stored
             - job_json : <dict> The job data to update
                             The job object must meet the criteria of the HrFlow.ai job Object
-                            Otherwise the Put request will return an error. 
+                            Otherwise the Put request will return an error.
                             A key or a reference must be provided in the job object `job_json`, to identify the job to update.
         The method will update the object already stored by the fields provided in the job_json.
         """
@@ -48,7 +129,7 @@ class JobStoring:
         # It should be removed in the future after a Major release
         if key:
             job_json["key"] = validate_key("Job", key)
-            
+
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
 
