@@ -1,15 +1,16 @@
 import json
+
 from ..utils import (
+    ORDER_BY_VALUES,
+    SORT_BY_VALUES,
     format_item_payload,
     validate_boolean,
     validate_key,
     validate_limit,
     validate_page,
     validate_provider_keys,
-    validate_response,
     validate_reference,
-    ORDER_BY_VALUES,
-    SORT_BY_VALUES,
+    validate_response,
     validate_value,
 )
 
@@ -22,7 +23,115 @@ class ProfileStoring:
         self.client = api
 
     def add_json(self, source_key, profile_json):
-        """Use the api to add a new profile using profile_data."""
+        """This endpoint allows you to Index a Profile object.
+
+        Parameters
+        ----------
+        source_key : string [required]
+            Identification key of the Source attached to the Profile.
+        profile_json : dict [required]
+            A dictionary representing the HrFlow.ai Profile object. The dictionary should have the following fields:
+
+            - key (str): Identification key of the Profile.
+            - reference (str): Custom identifier of the Profile.
+            - text_language (str): Code language of the Profile. Example : `en` for English.
+            - text (str): Full text of the content of the Profile.
+            - consent_algorithmic (dict) : Algorithmic consent status of the Profile.
+                - owner (dict) : Owner of the Profile.
+                    - parsing (bool)
+                    - revealing (bool)
+                    - embedding (bool)
+                    - searching (bool)
+                    - scoring (bool)
+                    - upskilling (bool)
+            - created_at (str): Creation date of the Profile in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ). This could be the date of the creation of the Profile in your ATS.
+
+            ------------------- Profile's info -------------------
+            - info (dict): Object containing the Profile's info.
+                - full_name (str): Full name of the Profile.
+                - first_name (str): First name of the Profile.
+                - last_name (str): Last name of the Profile.
+                - email (str): Email of the Profile.
+                - phone (str): Phone number of the Profile.
+                - date_birth (str): Date of birth of the Profile in ISO 8601 format (YYYY-MM-DD).
+                - location (dict): Main location of the Profile.
+                    - text (str): Location text.
+                    - lat (float): Latitude coordinate.
+                    - lng (float): Longitude coordinate.
+                    - fields (dict): Location fields.
+                - urls (list): List of urls of the Profile.
+                - picture (str): Url of the Profile's picture.
+                - gender (str): `male`, `female` or `undefined`.
+                - summary (str): Summary of the Profile.
+            ------------------- Profile's sections : skills, languages, interests ... -------------------
+            - skills (list[dict]): List of skills details in the main skills sections of a resume or the Profile.
+                Each skill is represented by a dictionary with the following fields:
+                - name (str): Skill name.
+                - type (str): Skill type: `hard` or `soft`.
+                - value (any): Skill value. The value attached to the Skill. Example: 90/100
+            - languages (list[dict]): List of languages of the Profile.
+                Each language is represented by a dictionary with the following fields:
+                - name (str): Language name.
+                - value (any): Language value. The value attached to the Language. Example: fluent.
+            - cetifications (list[dict]): List of certifications of the Profile.
+                Each certification is represented by a dictionary with the following fields:
+                - name (str): Certification name.
+                - value (any): Certification value. The value attached to the Certification. Example: 4.5/5.
+            - courses (list[dict]): List of courses of the Profile.
+                Each course is represented by a dictionary with the following fields:
+                - name (str): Course name.
+                - value (any): Course value. The value attached to the Course.
+            - tasks (list[dict]): List of tasks of the Profile.
+                Each task is represented by a dictionary with the following fields:
+                - name (str): Task name.
+                - value (any): Task value. The value attached to the Task.
+            - interests (list[dict]): List of interests of the Profile.
+                Each interest is represented by a dictionary with the following fields:
+                - name (str): Interest name. Example : `music`.
+                - value (any): Interest value. The value attached to the Interest. Example: beginner.
+            ------------------- Profile's experiences and educations -------------------
+            - experiences_duration (float): Total duration of the Profile's experiences in years. Example : 2.5 for 2 years and 6 months.
+            - educations_duration (float): Total duration of the Profile's educations in years. Example : 2.5 for 2 years and 6 months.
+            - experiences (list[dict]): List of the Profile's experiences.
+                Each experience is represented by a dictionary with the following fields:
+                - company (str): Name of the company.
+                - title (str): Title of the experience.
+                - description (str): Description of the experience.
+                - location (dict): Same location object as in the Profile's info.
+                - date_start (str): Start date of the experience in ISO 8601 format (YYYY-MM-DD).
+                - date_end (str): End date of the experience in ISO 8601 format (YYYY-MM-DD).
+                - skills (list[str]): List of skills used in the experience. Same format as the Profile's skills.
+                - tasks (list[str]): List of tasks performed in the experience. Same format as the Profile's tasks.
+                - certifications (list[str]): List of certifications obtained in the experience. Same format as the Profile's certifications.
+                - courses (list[str]): List of courses followed in the experience. Same format as the Profile's courses.
+            - educations (list[dict]): List of the Profile's educations.
+                Each education is represented by a dictionary with the following fields:
+                - school (str): Name of the school.
+                - title (str): Title of the education.
+                - description (str): Description of the education.
+                - location (dict): Same location object as in the Profile's info.
+                - date_start (str): Start date of the education in ISO 8601 format (YYYY-MM-DD).
+                - date_end (str): End date of the education in ISO 8601 format (YYYY-MM-DD).
+                - skills (list[str]): List of skills used in the education. Same format as the Profile's skills.
+                - tasks (list[str]): List of tasks performed in the education. Same format as the Profile's tasks.
+                - certifications (list[str]): List of certifications obtained in the education. Same format as the Profile's certifications.
+                - courses (list[str]): List of courses followed in the education. Same format as the Profile's courses.
+            ------------------- Profile's attachments, tags and metadatas -------------------
+            - attachments (list[dict]): List of the Profile's attachments. This field currently is internally handeled by HrFlow.ai.
+            - tags (list[str]): List of the Profile's tags. Tags are used to extend the Profile's information. For example, a tag could be `salary_expectation`.
+                Each tag is represented by a dictionary with the following fields:
+                - name (str): The name of the Tag. Example: `is_active`.
+                - value (any): The value of the Tag. Example: `True`.
+            - metadata (list[dict]): Custom metadata added to the Job. They are similar to tags, but used for non indexable/searchable information.
+                Each metadata is represented by a dictionary with the following fields:
+                - name (str): The name of the metadata. Example: `cover_letter`.
+                - value (any): The value of the metadata. Example: `I am applying for this job because...`.
+
+        Returns
+        -------
+        dict
+            Server response.
+        """
         profile_json["source_key"] = validate_key("Source", source_key)
         response = self.client.post("profile/indexing", json=profile_json)
         return validate_response(response)
@@ -31,11 +140,11 @@ class ProfileStoring:
         """
         Edit a profile already stored in the given source.
         This method uses the endpoint : [PUT] https://api.hrflow.ai/v1/profile/indexing
-        It requires : 
+        It requires :
             - source_key : <string> The key of the source where the profile is stored
             - profile_json : <dict> The profile data to update
                             The profile object must meet the criteria of the HrFlow.ai Profile Object
-                            Otherwise the Put request will return an error. 
+                            Otherwise the Put request will return an error.
                             A key or a reference must be provided in the profile object `profile_json`, to identify the profile to update.
         The method will update the object already stored by the fields provided in the profile_json.
         """
@@ -44,7 +153,7 @@ class ProfileStoring:
         # It should be removed in the future after a Major release
         if key:
             profile_json["key"] = validate_key("Profile", key)
-            
+
         response = self.client.put("profile/indexing", json=profile_json)
         return validate_response(response)
 
