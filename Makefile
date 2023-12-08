@@ -1,9 +1,6 @@
 # Define variables
 ARGS := 
 
-install_req:
-	pip install -U setuptools setuptools_scm wheel && python -m pip install twine
-
 clean:
 	rm -rf build dist *.egg-info
 
