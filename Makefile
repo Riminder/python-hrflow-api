@@ -5,13 +5,13 @@ clean:
 	rm -rf build dist *.egg-info
 
 build:
-	python setup.py sdist bdist_wheel
+	poetry build
 
 git-tag:
 	./tag.sh $(ARGS)
 
 deploy-test:
-	python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	poetry publish -r test-pypi --build
 
 deploy:
-	python -m twine upload dist/*
+	poetry publish --build
