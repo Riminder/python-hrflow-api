@@ -1,6 +1,8 @@
 import os
-import json
+import re
+import typing as t
 
+KEY_REGEX = r"^[0-9a-f]{40}$"
 STAGE_VALUES = [None, "new", "yes", "later", "no"]
 SORT_BY_VALUES = [
     "created_at",
@@ -50,7 +52,8 @@ def format_item_payload(item, provider_key, key, reference=None, email=None):
 
 def validate_boolean(name, value):
     """
-    This function validates the fact that the value is a boolean. If not, it raises a TypeError.
+    This function validates the fact that the value is a boolean. If not, it raises a
+    TypeError.
     If the given value is a string that can be converted to a boolean, it converts it.
     :param name: <string> The name of the variable to validate
     :param value: <any> The value to validate
@@ -66,9 +69,12 @@ def validate_boolean(name, value):
     return value if isinstance(value, bool) else bool(int(value))
 
 
-def validate_key(obj, value):
+def validate_key(obj, value, regex=None):
     if not isinstance(value, str) and value is not None:
         raise TypeError(obj + " key must be string")
+
+    if regex and not bool(re.match(regex, value)):
+        raise ValueError(f"{obj} key must match {regex}")
 
     return value
 

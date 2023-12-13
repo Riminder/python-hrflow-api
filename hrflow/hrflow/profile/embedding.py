@@ -3,7 +3,7 @@ import json
 from ..utils import format_item_payload, validate_response
 
 
-class ProfileEmbedding():
+class ProfileEmbedding:
     """Manage embedding related profile calls."""
 
     def __init__(self, api):
@@ -33,5 +33,5 @@ class ProfileEmbedding():
         query_params = format_item_payload("profile", source_key, key, reference, email)
         if fields:
             query_params["fields"] = json.dumps(fields)
-        response = self.client.get('profile/embedding', query_params)
+        response = self.client.get("profile/embedding", query_params)
         return validate_response(response)

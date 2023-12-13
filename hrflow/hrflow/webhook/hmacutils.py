@@ -1,7 +1,7 @@
 """Some utils for hash(py2 compatibility)."""
 
-import sys
 import hmac
+import sys
 
 
 def _compare_digest_py2(a, b):

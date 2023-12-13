@@ -1,4 +1,4 @@
-class JobReasoning():
+class JobReasoning:
     """Manage embedding related profile calls."""
 
     def __init__(self, api):

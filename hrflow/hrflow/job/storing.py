@@ -30,14 +30,16 @@ class JobStoring:
 
     def add_json(self, board_key, job_json):
         """This endpoint allows you to Index a Job object.
-        Note: If your Job is an unstructured text, make sure to parse it first before indexing it.
+        Note: If your Job is an unstructured text, make sure to parse it first before
+        indexing it.
             See how in 🧠 Parse a raw Text at: https://developers.hrflow.ai/ .
         Parameters
         ----------
         board_key : string [required]
             Identification key of the Board attached to the Job.
         job_json : dict [required]
-            A dictionary representing the HrFlow.ai Job object. The dictionary should have the following fields:
+            A dictionary representing the HrFlow.ai Job object. The dictionary should
+            have the following fields:
 
             - key (str): Identification key of the Job.
             - reference (str): Custom identifier of the Job.
@@ -53,20 +55,25 @@ class JobStoring:
                 - description (str): Section description.
             - url (str): Job post original URL.
             - summary (str): Brief summary of the Job.
-            - created_at (str): Creation date of the Job in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ).
+            - created_at (str): Creation date of the Job in ISO 8601 format
+            (YYYY-MM-DDTHH:MM:SSZ).
             - skills (list[dict]): List of skills required for the Job.
                 Each skill is represented by a dictionary with the following fields:
                 - name (str): Skill name.
                 - type (str): Skill type: `hard` or `soft`.
-                - value (any): Skill value. The value attached to the Skill. Example: 90/100
+                - value (any): Skill value. The value attached to the Skill.
+                Example: 90/100
             - languages (list[dict]): List of languages required for the Job.
                 Each language is represented by a dictionary with the following fields:
                 - name (str): Language name.
-                - value (any): Language value. The value attached to the Language. Example: fluent.
+                - value (any): Language value. The value attached to the Language.
+                Example: fluent.
             - cetifications (list[dict]): List of certifications required for the Job.
-                Each certification is represented by a dictionary with the following fields:
+                Each certification is represented by a dictionary with the following
+                fields:
                 - name (str): Certification name.
-                - value (any): Certification value. The value attached to the Certification. Example: 4.5/5.
+                - value (any): Certification value. The value attached to the
+                Certification. Example: 4.5/5.
             - courses (list[dict]): List of courses required for the Job.
                 Each course is represented by a dictionary with the following fields:
                 - name (str): Course name.
@@ -75,14 +82,16 @@ class JobStoring:
                 Each task is represented by a dictionary with the following fields:
                 - name (str): Task name.
                 - value (any): Task value. The value attached to the Task.
-            - tags (list[dict]): List of tags added to the Job. Tags are a way we can extend the Job object with custom information.
+            - tags (list[dict]): List of tags added to the Job. Tags are a way we can
+            extend the Job object with custom information.
                 Each tag is represented by a dictionary with the following fields:
                 - name (str): The name of the Tag. Example: `is_active`.
                 - value (any): The value of the Tag. Example: `True`.
             - metadata (list[dict]): Custom metadata added to the Job.
                 Each metadata is represented by a dictionary with the following fields:
                 - name (str): The name of the metadata. Example: interview-note
-                - value (any): The value of the metadata. Example: `The candidate was very good ...`.
+                - value (any): The value of the metadata. Example: `The candidate was
+                very good ...`.
             - ranges_float (list[dict]): List of float ranges added to the Job.
                 Each range is represented by a dictionary with the following fields:
                 - name (str): The name of the range. Example: salary.
@@ -92,11 +101,14 @@ class JobStoring:
             - ranges_date (list[dict]): List of date ranges added to the Job.
                 Each range is represented by a dictionary with the following fields:
                 - name (str): The name of the range. Example: availability.
-                - value_min (str): The minimum value of the range in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-01-01.
-                - value_max (str): The maximum value of the range in ISO 8601 format (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-03-01.
+                - value_min (str): The minimum value of the range in ISO 8601 format
+                (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-01-01.
+                - value_max (str): The maximum value of the range in ISO 8601 format
+                (YYYY-MM-DDTHH:MM:SSZ). Example: 2020-03-01.
             - culture (str): The company culture description in the Job.
             - benefits (str): The job opening benefits description in the Job.
-            - responsibilities (str): The job opening responsibilities description in the Job.
+            - responsibilities (str): The job opening responsibilities description in
+            the Job.
             - requirements (str): The job opening requirements description in the Job.
             - interviews (str): The job opening interviews.
         Returns
@@ -115,18 +127,21 @@ class JobStoring:
         It requires :
             - source_key : <string> The key of the source where the job is stored
             - job_json : <dict> The job data to update
-                            The job object must meet the criteria of the HrFlow.ai job Object
+                            The job object must meet the criteria of the HrFlow.ai
+                            job Object
                             Otherwise the Put request will return an error.
-                            A key or a reference must be provided in the job object `job_json`, to identify the job to update.
-        The method will update the object already stored by the fields provided in the job_json.
+                            A key or a reference must be provided in the job object
+                            `job_json`, to identify the job to update.
+        The method will update the object already stored by the fields provided in
+        the job_json.
         """
 
         if job_json is None:
             job_json = {}
 
         job_json["board_key"] = validate_key("Board", board_key)
-        # The argument key is kept for backward compatibility with previous versions of the SDK
-        # It should be removed in the future after a Major release
+        # The argument key is kept for backward compatibility with previous versions
+        # of the SDK. It should be removed in the future after a Major release.
         if key:
             job_json["key"] = validate_key("Job", key)
 
@@ -202,7 +217,8 @@ class JobStoring:
 
         Args:
             board_keys:         <list>
-                                The list of the keys of the Boards containing the targeted Jobs. Example : ["xxx", "yyy", "zzz"]
+                                The list of the keys of the Boards containing the
+                                targeted Jobs. Example : ["xxx", "yyy", "zzz"]
             name:               <string>
                                 The name of the targeted Jobs.
             key:                <string>
@@ -214,23 +230,31 @@ class JobStoring:
             location_lon:        <string>
                                 The longitude of the targeted Jobs.
             location_dist:       <string>
-                                The distance of the targeted Jobs. (Set a radius around the Jobs'' location address (in Km).)
+                                The distance of the targeted Jobs. (Set a radius
+                                around the Jobs'' location address (in Km).)
             return_job:         <boolean>
-                                If set to true, the full JSON of each job in the array response will be returned, otherwise only the dates, the reference and the keys.
+                                If set to true, the full JSON of each job in the
+                                array response will be returned, otherwise only the
+                                dates, the reference and the keys.
             page:               <integer>
                                 The page number of the targeted Jobs.
             limit:              <integer>
                                 The number of Jobs to return per page.
             order_by:           <string>
-                                The order of the Jobs to return. Possible values are "asc" and "desc".
+                                The order of the Jobs to return. Possible values are
+                                "asc" and "desc".
             sort_by:            <string>
-                                The field on which the Jobs will be sorted. Possible values are "created_at" or "updated_at".
+                                The field on which the Jobs will be sorted. Possible
+                                values are "created_at" or "updated_at".
             created_at_min:     <string>
-                                The minimum date of creation of the targeted Jobs. Format : "YYYY-MM-DD".
+                                The minimum date of creation of the targeted Jobs.
+                                Format : "YYYY-MM-DD".
             created_at_max:     <string>
-                                The maximum date of creation of the targeted Jobs. Format : "YYYY-MM-DD".
+                                The maximum date of creation of the targeted Jobs.
+                                Format : "YYYY-MM-DD".
         Returns:
-            Applies the params to filter on Jobs in the targeted Boards and returns the response from the endpoint.
+            Applies the params to filter on Jobs in the targeted Boards and returns
+            the response from the endpoint.
             Response examples :
                 - Success response :
                     {

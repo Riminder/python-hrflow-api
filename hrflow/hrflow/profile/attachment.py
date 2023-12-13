@@ -1,7 +1,7 @@
 from ..utils import format_item_payload, validate_response
 
 
-class ProfileAttachments():
+class ProfileAttachments:
     """Manage documents related profile calls."""
 
     def __init__(self, api):
@@ -27,5 +27,5 @@ class ProfileAttachments():
 
         """
         query_params = format_item_payload("profile", source_key, key, reference, email)
-        response = self.client.get('profile/indexing/attachments', query_params)
+        response = self.client.get("profile/indexing/attachments", query_params)
         return validate_response(response)
