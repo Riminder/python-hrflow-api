@@ -1,15 +1,16 @@
-import requests as req
 import json
 
+import requests as req
+
+from .auth import Auth
 from .board import Board
 from .job import Job
-from .text import Text
 from .profile import Profile
-from .webhook import Webhook
-from .source import Source
-from .tracking import Tracking
 from .rating import Rating
-
+from .source import Source
+from .text import Text
+from .tracking import Tracking
+from .webhook import Webhook
 
 CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 
@@ -32,10 +33,12 @@ class Hrflow(object):
                                     The API URL. Defaults to https://api.hrflow.ai/v1/
 
             api_secret:             <string>
-                                    The API secret key. You can find it in your Hrflow.ai account.
+                                    The API secret key. You can find it in your
+                                    Hrflow.ai account.
 
             api_user:               <string>
-                                    The API user email. You can find it in your Hrflow.ai account.
+                                    The API user email. You can find it in your
+                                    Hrflow.ai account.
 
             webhook_secret:         <string>
 
@@ -45,6 +48,7 @@ class Hrflow(object):
         self.api_url = api_url
         self.auth_header = {"X-API-KEY": api_secret, "X-USER-EMAIL": api_user}
         self.webhook_secret = webhook_secret
+        self.auth = Auth(self)
         self.job = Job(self)
         self.profile = Profile(self)
         self.text = Text(self)
@@ -81,10 +85,12 @@ class Hrflow(object):
                                     The resource endpoint. For example: "job/indexing"
 
             query_params:           <dict>
-                                    The query parameters to be sent to the API. It must be a dictionary.
+                                    The query parameters to be sent to the API. It
+                                    must be a dictionary.
 
         Returns
-            Make the corresponding GET request to the Hrflow API and returns the response object.
+            Make the corresponding GET request to the Hrflow API and returns the
+            response object.
         """
         url = self._create_request_url(resource_endpoint)
         if query_params:
@@ -104,16 +110,21 @@ class Hrflow(object):
                                     The resource endpoint. For example: "job/indexing"
 
             data:                   <dict>
-                                    The data payload (for multipart/formdata) to be sent to the API. It must be a dictionary.
+                                    The data payload (for multipart/formdata) to be
+                                    sent to the API. It must be a dictionary.
 
             json:                   <dict>
-                                    The json payload to be sent to the API. It must be a dictionary.
+                                    The json payload to be sent to the API. It must
+                                    be a dictionary.
 
             files:                  <dict>
-                                    The files payload to be sent to the API. It must be a dictionary. (ie. {"file": open("file.pdf", "rb")}
+                                    The files payload to be sent to the API. It must
+                                    be a dictionary. (ie. {"file": open("file.pdf",
+                                    "rb")}
 
         Returns:
-            Makes the corresponding POST request to the Hrflow API and returns the response object.
+            Makes the corresponding POST request to the Hrflow API and returns the
+            response object.
         """
         url = self._create_request_url(resource_endpoint)
         if files:
@@ -133,11 +144,12 @@ class Hrflow(object):
                                     The resource endpoint. For example: "job/indexing"
 
             json:                   <dict>
-                                    The json payload to be sent to the API. It must be a dictionary.
+                                    The json payload to be sent to the API. It must
+                                    be a dictionary.
 
         Returns:
-            Makes the corresponding PATCH request to the Hrflow API and returns the response object.
-
+            Makes the corresponding PATCH request to the Hrflow API and returns the
+            response object.
         """
         url = self._create_request_url(resource_endpoint)
         data = self._validate_args(json)
@@ -154,11 +166,12 @@ class Hrflow(object):
                                     The resource endpoint. For example: "job/indexing"
 
             json:                   <dict>
-                                    The json payload to be sent to the API. It must be a dictionary.
+                                    The json payload to be sent to the API. It must
+                                    be a dictionary.
 
         Returns:
-            Makes the corresponding PUT request to the Hrflow API and returns the response object.
-
+            Makes the corresponding PUT request to the Hrflow API and returns the
+            response object.
         """
         url = self._create_request_url(resource_endpoint)
         return req.put(url, headers=self.auth_header, json=json)

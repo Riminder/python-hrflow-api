@@ -1,11 +1,11 @@
 """Profile related calls."""
-from .parsing import TextParsing
-from .linking import TextLinking
-from .revealing import TextRevealing
+
 from .embedding import TextEmbedding
-from .tagging import TextTagging
-from .ocr import TextOCR
 from .imaging import TextImaging
+from .linking import TextLinking
+from .ocr import TextOCR
+from .parsing import TextParsing
+from .tagging import TextTagging
 
 
 class Text(object):
@@ -26,7 +26,6 @@ class Text(object):
         self.parsing = TextParsing(self.client)
         self.linking = TextLinking(self.client)
         self.embedding = TextEmbedding(self.client)
-        self.revealing = TextRevealing(self.client)
         self.tagging = TextTagging(self.client)
         self.ocr = TextOCR(self.client)
         self.imaging = TextImaging(self.client)

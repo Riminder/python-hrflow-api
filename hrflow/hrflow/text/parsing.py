@@ -1,3 +1,5 @@
+import typing as t
+
 from ..utils import validate_response
 
 
@@ -8,17 +10,21 @@ class TextParsing:
         """Init."""
         self.client = api
 
-    def post(self, text):
+    def post(self, texts: t.List[str]) -> t.Dict[str, t.Any]:
         """
-        Extract over 50 data point from any raw input text.
+        Parse a raw Text. Extract over 50 data point from any raw input text.
 
         Args:
-            text:                   <string>
-                                    text
-        Returns
-            Parsed entities from the text.
+            texts:      <list[str]>
+                        Parse a list of texts. Each text can be: the full text
+                        of a Job, a Resume, a Profile, an experience, a Job and more.
 
+        Returns:
+            `/text/parsing` response
         """
-        payload = {"text": text}
+
+        payload = dict(texts=texts)
+
         response = self.client.post("text/parsing", json=payload)
+
         return validate_response(response)

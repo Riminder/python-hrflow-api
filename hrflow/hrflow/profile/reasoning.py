@@ -1,4 +1,4 @@
-class ProfileReasoning():
+class ProfileReasoning:
     """Manage embedding related profile calls."""
 
     def __init__(self, api):
