@@ -164,6 +164,7 @@ def test_linking_zero():
 
 @pytest.mark.text
 @pytest.mark.linking
+@pytest.mark.skip(reason="backend: negative top_n not correctly handled yet")
 def test_linking_negative_amount():
     model = TextLinkingResponse.model_validate(
         Hrflow(
