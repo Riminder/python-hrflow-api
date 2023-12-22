@@ -146,7 +146,7 @@ def test_job_scoring_basic():
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_keys=[_var_from_env_get("HRFLOW_BOARD_KEY")],
             profile_key=_var_from_env_get("HRFLOW_PROFILE_KEY"),
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY"),
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             limit=5,  # allows to bypass the bug with archived jobs
         )
     )

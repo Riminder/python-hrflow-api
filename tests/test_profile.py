@@ -119,7 +119,8 @@ def _profile_get() -> t.Dict[str, t.Any]:
 
 @pytest.mark.profile
 @pytest.mark.parsing_file_sync
-def test_profile_parsing_file_sync_basic():
+@pytest.mark.quicksilver
+def test_profile_parsing_file_quicksilver_sync_basic():
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
@@ -129,7 +130,103 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.parsing.add_file(
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY"), profile_file=file
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"), profile_file=file
+        )
+    )
+    assert model.code == http_codes.created
+    assert model.data.profile
+    profile = model.data.profile.model_dump()
+    if profile.get("info"):
+        info = profile["info"]
+        full_name_lower = info["full_name"].lower()
+        assert "nico" in full_name_lower and "durant" in full_name_lower
+        assert "nico" in info["first_name"].lower()
+        assert "durant" in info["last_name"].lower()
+        assert info["phone"] == "+33631245722"
+        assert info["driving_license"] == "B"
+        assert info["email"] == "exempledecv@cvmaker.com"
+    if profile.get("languages"):
+        languages_str_lower = json.dumps(profile["languages"]).lower()
+        assert (
+            "espagnol" in languages_str_lower
+            or "allemand" in languages_str_lower
+            or "anglais" in languages_str_lower
+        )
+    if profile.get("skills"):
+        skills_str_lower = json.dumps(profile["skills"]).lower()
+        assert (
+            "word" in skills_str_lower
+            or "excel" in skills_str_lower
+            or "power point" in skills_str_lower
+            or "photoshop" in skills_str_lower
+        )
+    if profile.get("educations"):
+        educations_str_lower = json.dumps(
+            profile["educations"], ensure_ascii=False
+        ).lower()
+        assert "ecole de commerce" in educations_str_lower
+        assert (
+            "comptabilité" in educations_str_lower or "gestion" in educations_str_lower
+        )
+        assert (
+            "audit" in educations_str_lower
+            or "droit des affaires" in educations_str_lower
+        )
+        assert "baccalauréat général économique" in educations_str_lower
+        assert "lycée" in educations_str_lower
+        assert "paris" in educations_str_lower
+        assert "bureau des étudiants" in educations_str_lower
+    if profile.get("experiences"):
+        experiences_str_lower = json.dumps(
+            profile["experiences"], ensure_ascii=False
+        ).lower()
+        assert "paris" in experiences_str_lower
+        assert (
+            "vendeur" in experiences_str_lower
+            or "sport magasin" in experiences_str_lower
+        )
+        assert (
+            "accueil des clients" in experiences_str_lower
+            or "gestion du stock" in experiences_str_lower
+            or "gestion de la caisse" in experiences_str_lower
+            or "rangement du stock" in experiences_str_lower
+        )
+        assert "animateur" in experiences_str_lower
+        assert (
+            "accueil des vacanciers" in experiences_str_lower
+            or "animation d'ateliers pour les jeunes de 8 à 10 ans"
+            in experiences_str_lower
+            or "soutien administratif" in experiences_str_lower
+        )
+        assert (
+            "camping sable & me" in experiences_str_lower
+            or "juan-les-bains" in experiences_str_lower
+        )
+        assert "baby-sitting" in experiences_str_lower
+        assert (
+            "garde d'enfants âgés de 5 ans et 7 ans" in experiences_str_lower
+            or "sortie d'école" in experiences_str_lower
+            or "aide aux devoirs" in experiences_str_lower
+            or "préparation de repas" in experiences_str_lower
+            or "jeux éducatifs" in experiences_str_lower
+        )
+
+
+
+@pytest.mark.profile
+@pytest.mark.parsing_file_sync
+@pytest.mark.hawk
+def test_profile_parsing_file_hawk_sync_basic():
+    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
+teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
+495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
+    file = _file_get(s3_url, "profile_sync")
+    model = ProfileParsingFileResponse.model_validate(
+        Hrflow(
+            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
+            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
+        ).profile.parsing.add_file(
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"), profile_file=file
         )
     )
     assert model.code == http_codes.created
@@ -213,8 +310,9 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 
 @pytest.mark.profile
 @pytest.mark.parsing_file_async
-def test_profile_parsing_file_async_basic():
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_ASYNC")
+@pytest.mark.quicksilver
+def test_profile_parsing_file_quicksilver_async_basic():
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_ASYNC")
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
@@ -291,6 +389,86 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         or "jquery" in experiences_str_lower
     )
 
+@pytest.mark.profile
+@pytest.mark.parsing_file_async
+@pytest.mark.mozart
+def test_profile_parsing_file_mozart_async_basic():
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_MOZART_ASYNC")
+    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
+teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
+3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
+    file = _file_get(s3_url, "profile_async")
+    reference = str(uuid4())
+    hf = Hrflow(
+        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
+        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
+    )
+    model = ProfileParsingFileResponse.model_validate(
+        hf.profile.parsing.add_file(
+            source_key=SOURCE_KEY,
+            profile_file=file,
+            reference=reference,
+        )
+    )
+    assert model.code == http_codes.accepted
+    assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
+    for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
+        model = ProfileIndexingResponse.model_validate(
+            hf.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
+        )
+        if model.code == http_codes.ok:
+            break
+        sleep(_ASYNC_RETRY_INTERVAL_SECONDS)
+    assert model.code == http_codes.ok or pytest.fail(
+        "failed to retrieve an asynchronously parsed profile with"
+        f" timeout={_ASYNC_TIMEOUT_SECONDS} and"
+        f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
+    )
+    assert model.data is not None
+    profile = model.data.model_dump()
+    assert "john" in profile["info"]["full_name"].lower()
+    assert "john@smith.com" in profile["info"]["email"].lower()
+    assert profile["info"]["phone"].count("5") >= 9
+    location_text_lower = profile["info"]["location"]["text"].lower()
+    assert (
+        "141 highway street road" in location_text_lower
+        or "scottsdale" in location_text_lower
+        or "hawaii" in location_text_lower
+    )
+    skills_str_lower = json.dumps(profile["skills"]).lower()
+    assert (
+        "web development" in skills_str_lower
+        or "adobe photoshop" in skills_str_lower
+        or "adobe dreamweaver" in skills_str_lower
+        or "indesign" in skills_str_lower
+        or "illustrator" in skills_str_lower
+        or "after effects" in skills_str_lower
+        or "css" in skills_str_lower
+        or "javascript" in skills_str_lower
+        or "responsive web design" in skills_str_lower
+        or "php" in skills_str_lower
+        or "jquery" in skills_str_lower
+        or "wordpress" in skills_str_lower
+        or "cmd/sharepoint" in skills_str_lower
+        or "animated gifs" in skills_str_lower
+        or "web banners" in skills_str_lower
+        or "project management" in skills_str_lower
+        or "technical writing" in skills_str_lower
+        or "seo" in skills_str_lower
+    )
+    educations_str_lower = json.dumps(profile["educations"]).lower()
+    assert (
+        "masters of information systems" in educations_str_lower
+        or "bachelors of science" in educations_str_lower
+    )
+    experiences_str_lower = json.dumps(profile["experiences"]).lower()
+    assert "web designer intern" in experiences_str_lower
+    assert "scottsdale, hawaii" in experiences_str_lower
+    assert (
+        "html" in experiences_str_lower
+        or "css" in experiences_str_lower
+        or "jquery" in experiences_str_lower
+    )
 
 @pytest.mark.profile
 @pytest.mark.indexing
@@ -301,7 +479,7 @@ def test_profile_indexing_basic():
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.storing.add_json(
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY"), profile_json=profile
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"), profile_json=profile
         )
     )
     assert model.code == http_codes.created
@@ -317,7 +495,7 @@ def test_profiles_searching_basic():
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.searching.list(
-            source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY")],
+            source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
             limit=5,  # allows to bypass the bug with archived profiles
         )
     )
@@ -334,7 +512,7 @@ def test_profiles_scoring_basic():
         ).profile.scoring.list(
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_key=_var_from_env_get("HRFLOW_BOARD_KEY"),
-            source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY")],
+            source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
             job_key=_var_from_env_get("HRFLOW_JOB_KEY"),
             limit=5,  # allows to bypass the bug with archived profiles
         )
@@ -349,7 +527,7 @@ def test_profile_asking_basic():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     model = ProfileAskingResponse.model_validate(
         hf.profile.asking.get(
             source_key=SOURCE_KEY,
@@ -372,7 +550,7 @@ def test_profile_asking_multiple_questions():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     questions = [
         "What is the full name of the profile ?",
         "Does the applicant have a driver's licence ?",
@@ -399,7 +577,7 @@ def test_profile_asking_no_question():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     model = ProfileAskingResponse.model_validate(
         hf.profile.asking.get(
             source_key=SOURCE_KEY,
@@ -417,7 +595,7 @@ def test_profile_unfolding_basic():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     if profile.get("experiences") and len(profile["experiences"]) == 1:
         profile["experiences"].append(profile["experiences"][0].copy())  # shallow copy
@@ -446,7 +624,7 @@ def test_profile_unfolding_no_experience():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     profile["experiences"] = list()
     model = ProfileUnfoldingResponse.model_validate(
@@ -465,7 +643,7 @@ def test_profile_archive_basic():
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_key = _indexed_response_get(hf, SOURCE_KEY, _profile_get()).data.key
     model = ProfileArchiveResponse.model_validate(
         hf.profile.storing.archive(source_key=SOURCE_KEY, key=mock_key)
@@ -477,7 +655,7 @@ def test_profile_archive_basic():
 @pytest.mark.profile
 @pytest.mark.editing
 def test_profile_editing_basic():
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY")
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     hf = Hrflow(
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
