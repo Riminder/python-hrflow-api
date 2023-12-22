@@ -193,6 +193,8 @@ def _indexed_response_get(
         getattr(hf, "job" if is_job else "profile").storing.add_json(holder_key, json)
     )
 
-    assert model.code == requests.codes.created, f"{model.code=} != {requests.codes.created=}, {model.message=}"
+    assert (
+        model.code == requests.codes.created
+    ), f"{model.code=} != {requests.codes.created=}, {model.message=}"
 
     return model
