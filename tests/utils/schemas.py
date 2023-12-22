@@ -101,8 +101,7 @@ class TextTaggingDataItem(BaseModel):
     @classmethod
     def _check(cls, values: t.Dict[str, t.List[t.Any]]) -> t.Dict[str, t.List[t.Any]]:
         if isinstance(values, list):
-            return [cls._check(item) for item in values
-        ]
+            return [cls._check(item) for item in values]
         li = len(values.get("ids"))
         lp = len(values.get("predictions"))
         lt = len(values.get("tags"))

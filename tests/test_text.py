@@ -33,12 +33,14 @@ TAGGING_TEXTS = [
     ),
 ]
 
+
 @pytest.fixture(scope="module")
 def hrflow_client():
     return Hrflow(
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
+
 
 @pytest.mark.text
 @pytest.mark.embedding
@@ -171,6 +173,7 @@ def test_tagger_rome_family_with_text_param(hrflow_client):
     assert model.code == requests.codes.ok
     assert isinstance(model.data, TextTaggingDataItem)
 
+
 @pytest.mark.text
 @pytest.mark.tagging
 def test_tagger_rome_family_with_texts_param(hrflow_client):
@@ -185,6 +188,7 @@ def test_tagger_rome_family_with_texts_param(hrflow_client):
     assert isinstance(model.data, list)
     assert len(model.data) == len(TAGGING_TEXTS)
 
+
 @pytest.mark.text
 @pytest.mark.tagging
 def test_tagger_rome_family_with_text_and_texts_param(hrflow_client):
@@ -198,9 +202,10 @@ def test_tagger_rome_family_with_text_and_texts_param(hrflow_client):
             )
         )
         pytest.fail("Should have raised a ValueError")
-    except ValueError as e:
+    except ValueError:
         pass
-    
+
+
 @pytest.mark.text
 @pytest.mark.tagging
 def test_tagger_rome_family_without_text_or_texts_param(hrflow_client):
@@ -212,8 +217,9 @@ def test_tagger_rome_family_without_text_or_texts_param(hrflow_client):
             )
         )
         pytest.fail("Should have raised a ValueError")
-    except ValueError as e:
+    except ValueError:
         pass
+
 
 def _tagging_test(
     hrflow_client: Hrflow,
@@ -359,9 +365,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 495c951bbae6b/profiles/52e3c23a5f21190c59f53c41b5630ecb5d414f94/parsing/resume.pdf"""
     file = _file_get(s3_url, "ocr")
     assert file is not None
-    model = TextOCRResponse.model_validate(
-        hrflow_client.text.ocr.post(file=file)
-    )
+    model = TextOCRResponse.model_validate(hrflow_client.text.ocr.post(file=file))
     assert model.code == requests.codes.ok
     assert "ocr" in model.message.lower()
 
