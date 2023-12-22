@@ -20,6 +20,12 @@ from .utils.tools import (
     _var_from_env_get,
 )
 
+@pytest.fixture(scope="module")
+def hrflow_client():
+    return Hrflow(
+        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
+        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
+    )
 
 def _job_get() -> t.Dict[str, t.Any]:
     return dict(
@@ -103,13 +109,10 @@ def _job_get() -> t.Dict[str, t.Any]:
 
 @pytest.mark.job
 @pytest.mark.indexing
-def test_job_indexing_basic():
+def test_job_indexing_basic(hrflow_client):
     job = _job_get()
     model = JobIndexingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).job.storing.add_json(
+        hrflow_client.job.storing.add_json(
             board_key=_var_from_env_get("HRFLOW_BOARD_KEY"),
             job_json=job,
         )
@@ -121,12 +124,9 @@ def test_job_indexing_basic():
 
 @pytest.mark.job
 @pytest.mark.searching
-def test_job_searching_basic():
+def test_job_searching_basic(hrflow_client):
     model = JobsSearchingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).job.searching.list(
+        hrflow_client.job.searching.list(
             board_keys=[_var_from_env_get("HRFLOW_BOARD_KEY")],
             limit=5,  # allows to bypass the bug with archived jobs
         )
@@ -137,12 +137,9 @@ def test_job_searching_basic():
 
 @pytest.mark.job
 @pytest.mark.scoring
-def test_job_scoring_basic():
+def test_job_scoring_basic(hrflow_client):
     model = JobsScoringResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).job.scoring.list(
+        hrflow_client.job.scoring.list(
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_keys=[_var_from_env_get("HRFLOW_BOARD_KEY")],
             profile_key=_var_from_env_get("HRFLOW_PROFILE_KEY"),
@@ -156,16 +153,12 @@ def test_job_scoring_basic():
 
 @pytest.mark.job
 @pytest.mark.asking
-def test_job_asking_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_job_asking_basic(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
     model = JobAskingResponse.model_validate(
-        hf.job.asking.get(
+        hrflow_client.job.asking.get(
             board_key=BOARD_KEY,
-            key=_indexed_response_get(hf, BOARD_KEY, _job_get()).data.key,
+            key=_indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data.key,
             questions=[
                 "What is the company proposing this job offer ?",
             ],
@@ -179,11 +172,7 @@ def test_job_asking_basic():
 @pytest.mark.skip(reason="backend: multiple questions are not correctly handled yet")
 @pytest.mark.job
 @pytest.mark.asking
-def test_job_asking_multiple_questions():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_job_asking_multiple_questions(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
     questions = [
         "What is the job title ?",
@@ -192,9 +181,9 @@ def test_job_asking_multiple_questions():
         "What are the expected skills for this job ?",
     ]
     model = JobAskingResponse.model_validate(
-        hf.job.asking.get(
+        hrflow_client.job.asking.get(
             board_key=BOARD_KEY,
-            key=_indexed_response_get(hf, BOARD_KEY, _job_get()).data.key,
+            key=_indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data.key,
             questions=questions,
         )
     )
@@ -208,16 +197,12 @@ def test_job_asking_multiple_questions():
 
 @pytest.mark.job
 @pytest.mark.asking
-def test_job_asking_no_questions():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_job_asking_no_questions(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
     model = JobAskingResponse.model_validate(
-        hf.job.asking.get(
+        hrflow_client.job.asking.get(
             board_key=BOARD_KEY,
-            key=_indexed_response_get(hf, BOARD_KEY, _job_get()).data.key,
+            key=_indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data.key,
             questions=None,
         )
     )
@@ -226,15 +211,11 @@ def test_job_asking_no_questions():
 
 @pytest.mark.job
 @pytest.mark.archive
-def test_job_archive_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_job_archive_basic(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
-    mock_key = _indexed_response_get(hf, BOARD_KEY, _job_get()).data.key
+    mock_key = _indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data.key
     model = JobArchiveResponse.model_validate(
-        hf.job.storing.archive(board_key=BOARD_KEY, key=mock_key)
+        hrflow_client.job.storing.archive(board_key=BOARD_KEY, key=mock_key)
     )
     assert model.code == http_codes.ok
     assert model.data.key == mock_key
@@ -242,18 +223,14 @@ def test_job_archive_basic():
 
 @pytest.mark.job
 @pytest.mark.editing
-def test_job_editing_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_job_editing_basic(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
-    mock_job = _indexed_response_get(hf, BOARD_KEY, _job_get()).data
+    mock_job = _indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data
     mock_job.interviews = (
         f"To access the interview call you must use the token {uuid4()}."
     )
     model = JobIndexingResponse.model_validate(
-        hf.job.storing.edit(
+        hrflow_client.job.storing.edit(
             board_key=BOARD_KEY,
             job_json=mock_job.model_dump(),
         )

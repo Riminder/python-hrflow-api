@@ -32,16 +32,19 @@ TAGGING_TEXTS = [
     ),
 ]
 
+@pytest.fixture(scope="module")
+def hrflow_client():
+    return Hrflow(
+        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
+        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
+    )
 
 @pytest.mark.text
 @pytest.mark.embedding
-def test_embedding_basic():
+def test_embedding_basic(hrflow_client):
     text = "I love using embeddings in order do transfer learning with my AI algorithms"
     model = TextEmbeddingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.embedding.post(text=text)
+        hrflow_client.text.embedding.post(text=text)
     )
     assert model.code == requests.codes.ok
     assert len(model.data) > 0
@@ -49,12 +52,9 @@ def test_embedding_basic():
 
 @pytest.mark.text
 @pytest.mark.embedding
-def test_embedding_no_text():
+def test_embedding_no_text(hrflow_client):
     model = TextEmbeddingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.embedding.post(text=None)
+        hrflow_client.text.embedding.post(text=None)
     )
     assert model.code == requests.codes.bad_request
     assert "null" in model.message.lower()
@@ -98,12 +98,9 @@ def test_imaging_basic_512():
 
 @pytest.mark.text
 @pytest.mark.imaging
-def test_imaging_unsupported_size():
+def test_imaging_unsupported_size(hrflow_client):
     model = TextImagingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.imaging.post(text="mechanic", width=111)
+        hrflow_client.text.imaging.post(text="mechanic", width=111)
     )
     assert model.code == requests.codes.bad_request
     assert "111" in model.message
@@ -111,12 +108,9 @@ def test_imaging_unsupported_size():
 
 @pytest.mark.text
 @pytest.mark.imaging
-def test_imaging_no_text():
+def test_imaging_no_text(hrflow_client):
     model = TextImagingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.imaging.post(text=None, width=256)
+        hrflow_client.text.imaging.post(text=None, width=256)
     )
     assert model.code == requests.codes.bad_request
     assert "null" in model.message.lower()
@@ -124,13 +118,10 @@ def test_imaging_no_text():
 
 @pytest.mark.text
 @pytest.mark.linking
-def test_linking_basic():
+def test_linking_basic(hrflow_client):
     top_n = 7
     model = TextLinkingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.linking.post(word="ai", top_n=top_n)
+        hrflow_client.text.linking.post(word="ai", top_n=top_n)
     )
     assert model.code == requests.codes.ok
     assert len(model.data) == top_n
@@ -138,12 +129,9 @@ def test_linking_basic():
 
 @pytest.mark.text
 @pytest.mark.linking
-def test_linking_no_text():
+def test_linking_no_text(hrflow_client):
     model = TextLinkingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.linking.post(word=None, top_n=1)
+        hrflow_client.text.linking.post(word=None, top_n=1)
     )
     assert model.code == requests.codes.bad_request
     assert "null" in model.message.lower()
@@ -151,12 +139,9 @@ def test_linking_no_text():
 
 @pytest.mark.text
 @pytest.mark.linking
-def test_linking_zero():
+def test_linking_zero(hrflow_client):
     model = TextLinkingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.linking.post(word="ai", top_n=0)
+        hrflow_client.text.linking.post(word="ai", top_n=0)
     )
     assert model.code == requests.codes.ok
     assert len(model.data) == 0
@@ -165,17 +150,15 @@ def test_linking_zero():
 @pytest.mark.text
 @pytest.mark.linking
 @pytest.mark.skip(reason="backend: negative top_n not correctly handled yet")
-def test_linking_negative_amount():
+def test_linking_negative_amount(hrflow_client):
     model = TextLinkingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.linking.post(word="ai", top_n=-42)
+        hrflow_client.text.linking.post(word="ai", top_n=-42)
     )
     assert model.code == requests.codes.bad_request
 
 
 def _tagging_test(
+    hrflow_client: Hrflow,
     algorithm_key: TAGGING_ALGORITHM,
     texts: t.List[str],
     context: t.Optional[str] = None,
@@ -183,10 +166,7 @@ def _tagging_test(
     top_n: t.Optional[int] = 1,
 ) -> TextTaggingReponse:
     model = TextTaggingReponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.tagging.post(
+        hrflow_client.text.tagging.post(
             algorithm_key=algorithm_key,
             texts=texts,
             context=context,
@@ -215,8 +195,9 @@ def _tagging_test(
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_rome_family_basic():
+def test_tagger_rome_family_basic(hrflow_client):
     _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
         texts=TAGGING_TEXTS,
         top_n=2,
@@ -225,8 +206,9 @@ def test_tagger_rome_family_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_rome_subfamily_basic():
+def test_tagger_rome_subfamily_basic(hrflow_client):
     _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_SUBFAMILY,
         texts=TAGGING_TEXTS,
         top_n=3,
@@ -235,8 +217,9 @@ def test_tagger_rome_subfamily_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_rome_category_basic():
+def test_tagger_rome_category_basic(hrflow_client):
     _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_CATEGORY,
         texts=TAGGING_TEXTS,
         top_n=4,
@@ -245,8 +228,9 @@ def test_tagger_rome_category_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_rome_jobtitle_basic():
+def test_tagger_rome_jobtitle_basic(hrflow_client):
     _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_JOBTITLE,
         texts=TAGGING_TEXTS,
         top_n=5,
@@ -255,8 +239,9 @@ def test_tagger_rome_jobtitle_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_hrflow_skills_basic():
+def test_tagger_hrflow_skills_basic(hrflow_client):
     _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_HRFLOW_SKILLS,
         texts=TAGGING_TEXTS,
         top_n=6,
@@ -265,8 +250,9 @@ def test_tagger_hrflow_skills_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_hrflow_labels_basic():
+def test_tagger_hrflow_labels_basic(hrflow_client):
     model = _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_HRFLOW_LABELS,
         texts=TAGGING_TEXTS,
         context=(
@@ -285,8 +271,9 @@ def test_tagger_hrflow_labels_basic():
 
 @pytest.mark.text
 @pytest.mark.tagging
-def test_tagger_hrflow_labels_no_context():
+def test_tagger_hrflow_labels_no_context(hrflow_client):
     model = _tagging_test(
+        hrflow_client=hrflow_client,
         algorithm_key=TAGGING_ALGORITHM.TAGGER_HRFLOW_LABELS,
         texts=[
             (
@@ -308,17 +295,14 @@ def test_tagger_hrflow_labels_no_context():
 
 @pytest.mark.text
 @pytest.mark.ocr
-def test_ocr_basic():
+def test_ocr_basic(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/52e3c23a5f21190c59f53c41b5630ecb5d414f94/parsing/resume.pdf"""
     file = _file_get(s3_url, "ocr")
     assert file is not None
     model = TextOCRResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.ocr.post(file=file)
+        hrflow_client.text.ocr.post(file=file)
     )
     assert model.code == requests.codes.ok
     assert "ocr" in model.message.lower()
@@ -326,13 +310,10 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 
 @pytest.mark.text
 @pytest.mark.parsing
-def test_parsing_basic():
+def test_parsing_basic(hrflow_client):
     texts = ["John Doe can be contacted on john.doe@hrflow.ai"]
     model = TextParsingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.parsing.post(texts=texts)
+        hrflow_client.text.parsing.post(texts=texts)
     )
     assert model.code == requests.codes.ok
     assert len(model.data) == len(texts)
