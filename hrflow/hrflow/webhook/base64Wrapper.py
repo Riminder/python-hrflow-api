@@ -1,6 +1,7 @@
 """A wrapper for base64 (python2 compatibility)."""
-import sys
+
 import base64
+import sys
 
 
 def _decodebytes_py3(input):
