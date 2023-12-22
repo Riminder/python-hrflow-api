@@ -14,9 +14,12 @@ class TextImaging:
 
         Args:
             text:                   <string>
-                                    Job text that describes the image to be generated. Ideally it should includes a "Job title".
+                                    Job text that describes the image to be generated.
+                                    Ideally it should includes a "Job title".
             width:                  <int>
-                                    Width of the image to be generated. Default is 256. (The width and height of the image should be among the following pixel values : [256, 512, 1024 ])
+                                    Width of the image to be generated. Default is 256.
+                                    (The width and height of the image should be among
+                                    the following pixel values : [256, 512, 1024 ])
         Returns
             A public url to the generated image.
 

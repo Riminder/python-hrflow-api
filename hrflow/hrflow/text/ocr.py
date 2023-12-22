@@ -2,7 +2,7 @@ from ..utils import validate_response
 
 
 class TextOCR:
-    """Manage Text extraction from documents using in-house advance OCR related calls."""
+    "Manage Text extraction from documents using in-house advance OCR related calls."
 
     def __init__(self, api):
         """Init."""
@@ -10,8 +10,10 @@ class TextOCR:
 
     def post(self, file):
         """
-        This endpoint allows you to extract a the text from a document across all formats (pdf, docx, png, and more).
-        Supported extensions by the Profile Parsing API are .pdf, .png, .jpg, .jpeg, .bmp, .doc, .docx, .odt, .rtf, .odp, ppt, and .pptx .
+        This endpoint allows you to extract a the text from a document across all
+        formats (pdf, docx, png, and more).
+        Supported extensions by the Profile Parsing API are .pdf, .png, .jpg, .jpeg,
+        .bmp, .doc, .docx, .odt, .rtf, .odp, ppt, and .pptx.
 
         Args:
             file:                   <binary file>

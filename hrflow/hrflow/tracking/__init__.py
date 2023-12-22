@@ -80,22 +80,28 @@ class Tracking:
         created_at=None,
     ):
         """
-        This endpoint allows you to track a Profile (resp. a Job) for Job (resp. a Profile) as a recruiter
+        This endpoint allows you to track a Profile (resp. a Job) for Job (resp. a
+        Profile) as a recruiter
         (resp. a candidate) with a specific action
 
         Visit : https://developers.hrflow.ai/reference for more information.
 
-        Note : The job_key and the job_reference cannot be null at the same time in the Request Parameters.
+        Note : The job_key and the job_reference cannot be null at the same time in
+        the Request Parameters.
         The same for the profile_key and profile_reference .
 
         Args:
             action:                 <string>
-                                    The 'action' refers to a unique identifier for a profile or job stage.
-                                    This can be a specific stage ID within a CRM, ATS, or Job site.
-                                    Examples of such stages include "view," "apply," "hire," or any other stage relevant to your system.
+                                    The 'action' refers to a unique identifier for a
+                                    profile or job stage.
+                                    This can be a specific stage ID within a CRM,
+                                    ATS, or Job site.
+                                    Examples of such stages include "view," "apply,"
+                                    "hire," or any other stage relevant to your system.
 
             role:                   <string>
-                                    Role of the user rating the job (role: recruiter, candidate, employee, manager).
+                                    Role of the user rating the job (role: recruiter,
+                                    candidate, employee, manager).
             board_key:              <string>
                                     The key of Board attached to the given Job.
             source_key:             <string>
@@ -103,22 +109,31 @@ class Tracking:
             job_key:                <string>
                                     The Job's unique identifier.
             job_reference:          <string>
-                                    The Job's reference chosen by the customer / external system.
-                                    If you use the job_key you do not need to specify the job_reference and vice versa.
+                                    The Job's reference chosen by the customer /
+                                    external system.
+                                    If you use the job_key you do not need to specify
+                                    the job_reference and vice versa.
             profile_key:            <string>
                                     The Profile's unique identifier.
             profile_reference:      <string>
-                                    The Profile's reference chosen by the customer / external system.
-                                    If you use the profile_key you do not need to specify the profile_reference and vice versa.
+                                    The Profile's reference chosen by the customer /
+                                    external system.
+                                    If you use the profile_key you do not need to
+                                    specify the profile_reference and vice versa.
             author_email:           <string>
-                                    Email of the HrFlow.ai user who rated the profile for the job.
+                                    Email of the HrFlow.ai user who rated the profile
+                                    for the job.
             comment:                <string>
                                     Comment explaining the reason behind the score.
             created_at:             <string>
                                     ISO Date of the rating.
-                                    Format : yyyy-MM-dd'T'HH:mm:ss.SSSXXX — for example, "2000-10-31T01:30:00.000-05:00"
-                                    It associates a creation date to the profile (ie: this can be for example the original date of the application of the profile).
-                                    If not provided the creation date will be now by default.
+                                    Format : yyyy-MM-dd'T'HH:mm:ss.SSSXXX — for
+                                    example, "2000-10-31T01:30:00.000-05:00"
+                                    It associates a creation date to the profile (ie:
+                                    this can be for example the original date of the
+                                    application of the profile).
+                                    If not provided the creation date will be now by
+                                    default.
 
         """
         args = locals()

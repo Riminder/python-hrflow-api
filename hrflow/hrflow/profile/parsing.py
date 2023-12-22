@@ -1,18 +1,37 @@
-import os
 import json
+import os
 
-from ..utils import format_item_payload, validate_key, validate_reference, get_files_from_dir, validate_response
+from ..utils import (
+    format_item_payload,
+    get_files_from_dir,
+    validate_key,
+    validate_reference,
+    validate_response,
+)
 
 
-class ProfileParsing():
+class ProfileParsing:
     """Manage parsing related profile calls."""
 
     def __init__(self, api):
         """Init."""
         self.client = api
 
-    def add_file(self, source_key, key=None, profile_file=None, profile_content_type=None, reference=None, created_at=None,
-            labels=[], tags=[], metadatas=[], sync_parsing=0, sync_parsing_indexing=1, webhook_parsing_sending=0):
+    def add_file(
+        self,
+        source_key,
+        key=None,
+        profile_file=None,
+        profile_content_type=None,
+        reference=None,
+        created_at=None,
+        labels=[],
+        tags=[],
+        metadatas=[],
+        sync_parsing=0,
+        sync_parsing_indexing=1,
+        webhook_parsing_sending=0,
+    ):
         """
         Add a profile resume to a sourced key.
 
@@ -28,7 +47,8 @@ class ProfileParsing():
             reference:       <string> (default to None)
                                      reference to assign to the profile
             created_at:              <string>
-                                     original date of the application of the profile as ISO format
+                                     original date of the application of the
+                                     profile as ISO format
             labels:                  <list>
                                      profile's label
             tags:                    <list>
@@ -48,25 +68,29 @@ class ProfileParsing():
 
         """
         payload = {
-            'source_key': validate_key("Source", source_key),
-            'key': validate_key("profile", key),
-            'profile_content_type': profile_content_type,
-            'reference': validate_reference(reference),
-            'created_at': created_at,
-            'labels': json.dumps(labels),
-            'tags': json.dumps(tags),
-            'metadatas': json.dumps(metadatas),
-            'sync_parsing': sync_parsing,
-            'sync_parsing_indexing': sync_parsing_indexing,
-            'webhook_parsing_sending': webhook_parsing_sending
+            "source_key": validate_key("Source", source_key),
+            "key": validate_key("profile", key),
+            "profile_content_type": profile_content_type,
+            "reference": validate_reference(reference),
+            "created_at": created_at,
+            "labels": json.dumps(labels),
+            "tags": json.dumps(tags),
+            "metadatas": json.dumps(metadatas),
+            "sync_parsing": sync_parsing,
+            "sync_parsing_indexing": sync_parsing_indexing,
+            "webhook_parsing_sending": webhook_parsing_sending,
         }
-        response = self.client.post("profile/parsing/file", data=payload, files={"file": profile_file})
+        response = self.client.post(
+            "profile/parsing/file", data=payload, files={"file": profile_file}
+        )
         return validate_response(response)
 
-    def add_folder(self, source_key, dir_path, is_recurcive=False, created_at=None, sync_parsing=0):
+    def add_folder(
+        self, source_key, dir_path, is_recurcive=False, created_at=None, sync_parsing=0
+    ):
         """Add all profile from a given directory."""
         if not os.path.isdir(dir_path):
-            raise ValueError(dir_path + ' is not a directory')
+            raise ValueError(dir_path + " is not a directory")
         files_to_send = get_files_from_dir(dir_path, is_recurcive)
         succeed_upload = {}
         failed_upload = {}
@@ -74,18 +98,21 @@ class ProfileParsing():
             try:
                 with open(file_path) as f:
                     profile_file = f.read()
-                resp = self.add_file(source_key=source_key, profile_file=profile_file, created_at=created_at,
-                                sync_parsing=sync_parsing)
-                if resp['code'] != 200 and resp['code'] != 201:
-                    failed_upload[file_path] = ValueError('Invalid response: ' + str(resp))
+                resp = self.add_file(
+                    source_key=source_key,
+                    profile_file=profile_file,
+                    created_at=created_at,
+                    sync_parsing=sync_parsing,
+                )
+                if resp["code"] != 200 and resp["code"] != 201:
+                    failed_upload[file_path] = ValueError(
+                        "Invalid response: " + str(resp)
+                    )
                 else:
                     succeed_upload[file_path] = resp
             except BaseException as e:
                 failed_upload[file_path] = e
-        result = {
-            'success': succeed_upload,
-            'fail': failed_upload
-        }
+        result = {"success": succeed_upload, "fail": failed_upload}
         return result
 
     def get(self, source_key=None, key=None, reference=None, email=None):
@@ -107,5 +134,5 @@ class ProfileParsing():
 
         """
         query_params = format_item_payload("profile", source_key, key, reference, email)
-        response = self.client.get('profile/parsing', query_params)
+        response = self.client.get("profile/parsing", query_params)
         return validate_response(response)
