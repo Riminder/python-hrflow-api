@@ -130,7 +130,8 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.parsing.add_file(
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"), profile_file=file
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
+            profile_file=file,
         )
     )
     assert model.code == http_codes.created
@@ -212,7 +213,6 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
         )
 
 
-
 @pytest.mark.profile
 @pytest.mark.parsing_file_sync
 @pytest.mark.hawk
@@ -226,7 +226,8 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.parsing.add_file(
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"), profile_file=file
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"),
+            profile_file=file,
         )
     )
     assert model.code == http_codes.created
@@ -389,6 +390,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         or "jquery" in experiences_str_lower
     )
 
+
 @pytest.mark.profile
 @pytest.mark.parsing_file_async
 @pytest.mark.mozart
@@ -470,6 +472,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         or "jquery" in experiences_str_lower
     )
 
+
 @pytest.mark.profile
 @pytest.mark.indexing
 def test_profile_indexing_basic():
@@ -479,7 +482,8 @@ def test_profile_indexing_basic():
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
         ).profile.storing.add_json(
-            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"), profile_json=profile
+            source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
+            profile_json=profile,
         )
     )
     assert model.code == http_codes.created
