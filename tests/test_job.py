@@ -20,12 +20,14 @@ from .utils.tools import (
     _var_from_env_get,
 )
 
+
 @pytest.fixture(scope="module")
 def hrflow_client():
     return Hrflow(
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
+
 
 def _job_get() -> t.Dict[str, t.Any]:
     return dict(

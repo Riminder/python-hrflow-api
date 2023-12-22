@@ -29,12 +29,14 @@ _MAX_RETRIES = 5
 _ASYNC_RETRY_INTERVAL_SECONDS = 5
 _ASYNC_TIMEOUT_SECONDS = 60
 
+
 @pytest.fixture(scope="module")
 def hrflow_client():
     return Hrflow(
         api_secret=_var_from_env_get("HRFLOW_API_KEY"),
         api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
     )
+
 
 def _profile_get() -> t.Dict[str, t.Any]:
     return dict(
@@ -330,7 +332,9 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
         model = ProfileIndexingResponse.model_validate(
-            hrflow_client.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
+            hrflow_client.profile.storing.get(
+                source_key=SOURCE_KEY, reference=reference
+            )
         )
         if model.code == http_codes.ok:
             break
@@ -408,7 +412,9 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
         model = ProfileIndexingResponse.model_validate(
-            hrflow_client.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
+            hrflow_client.profile.storing.get(
+                source_key=SOURCE_KEY, reference=reference
+            )
         )
         if model.code == http_codes.ok:
             break
@@ -514,7 +520,9 @@ def test_profile_asking_basic(hrflow_client):
     model = ProfileAskingResponse.model_validate(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
-            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(
+                hrflow_client, SOURCE_KEY, _profile_get()
+            ).data.key,
             questions=[
                 "What is the full name of the profile ?",
             ],
@@ -539,7 +547,9 @@ def test_profile_asking_multiple_questions(hrflow_client):
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             questions=questions,
-            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(
+                hrflow_client, SOURCE_KEY, _profile_get()
+            ).data.key,
         )
     )
     assert model.code == http_codes.ok
@@ -556,7 +566,9 @@ def test_profile_asking_no_question(hrflow_client):
     model = ProfileAskingResponse.model_validate(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
-            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(
+                hrflow_client, SOURCE_KEY, _profile_get()
+            ).data.key,
             questions=None,
         )
     )

@@ -70,7 +70,7 @@ class TextTagging:
             output_lang=output_lang,
             top_n=top_n,
         )
-        
+
         if texts is None and text is not None:
             payload["text"] = text
         elif text is None and texts is not None:
@@ -79,6 +79,6 @@ class TextTagging:
             raise ValueError("Either text or texts must be provided.")
         else:
             raise ValueError("Only one of text or texts must be provided.")
-        
+
         response = self.client.post("text/tagging", json=payload)
         return validate_response(response)
