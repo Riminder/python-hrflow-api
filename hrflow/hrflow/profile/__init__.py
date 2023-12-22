@@ -1,12 +1,15 @@
 """Profile related calls."""
+
+from .asking import ProfileAsking
 from .attachment import ProfileAttachments
-from .parsing import ProfileParsing
-from .storing import ProfileStoring
-from .revealing import ProfileRevealing
 from .embedding import ProfileEmbedding
-from .searching import ProfileSearching
-from .scoring import ProfileScoring
+from .parsing import ProfileParsing
 from .reasoning import ProfileReasoning
+from .revealing import ProfileRevealing
+from .scoring import ProfileScoring
+from .searching import ProfileSearching
+from .storing import ProfileStoring
+from .unfolding import ProfileUnfolding
 
 
 class Profile(object):
@@ -22,6 +25,7 @@ class Profile(object):
 
         """
         self.client = client
+        self.asking = ProfileAsking(self.client)
         self.attachment = ProfileAttachments(self.client)
         self.parsing = ProfileParsing(self.client)
         self.storing = ProfileStoring(self.client)
@@ -30,3 +34,4 @@ class Profile(object):
         self.scoring = ProfileScoring(self.client)
         self.searching = ProfileSearching(self.client)
         self.reasoning = ProfileReasoning(self.client)
+        self.unfolding = ProfileUnfolding(self.client)

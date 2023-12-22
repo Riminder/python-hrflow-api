@@ -1,3 +1,6 @@
+# Env
+.env
+
 # Datas
 *.png
 *.jpg
@@ -9,6 +12,7 @@ credentials
 credentials_seg
 test/*
 test_assets/*
+tests/assets
 .htpasswd
 
 docker/dependencies/libs/*
