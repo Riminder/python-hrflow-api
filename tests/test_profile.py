@@ -29,6 +29,12 @@ _MAX_RETRIES = 5
 _ASYNC_RETRY_INTERVAL_SECONDS = 5
 _ASYNC_TIMEOUT_SECONDS = 60
 
+@pytest.fixture(scope="module")
+def hrflow_client():
+    return Hrflow(
+        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
+        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
+    )
 
 def _profile_get() -> t.Dict[str, t.Any]:
     return dict(
@@ -120,16 +126,13 @@ def _profile_get() -> t.Dict[str, t.Any]:
 @pytest.mark.profile
 @pytest.mark.parsing_file_sync
 @pytest.mark.quicksilver
-def test_profile_parsing_file_quicksilver_sync_basic():
+def test_profile_parsing_file_quicksilver_sync_basic(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_sync")
     model = ProfileParsingFileResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).profile.parsing.add_file(
+        hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_file=file,
         )
@@ -216,16 +219,13 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 @pytest.mark.profile
 @pytest.mark.parsing_file_sync
 @pytest.mark.hawk
-def test_profile_parsing_file_hawk_sync_basic():
+def test_profile_parsing_file_hawk_sync_basic(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_sync")
     model = ProfileParsingFileResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).profile.parsing.add_file(
+        hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"),
             profile_file=file,
         )
@@ -312,19 +312,15 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 @pytest.mark.profile
 @pytest.mark.parsing_file_async
 @pytest.mark.quicksilver
-def test_profile_parsing_file_quicksilver_async_basic():
+def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_ASYNC")
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
     reference = str(uuid4())
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
     model = ProfileParsingFileResponse.model_validate(
-        hf.profile.parsing.add_file(
+        hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
             reference=reference,
@@ -334,7 +330,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
         model = ProfileIndexingResponse.model_validate(
-            hf.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
+            hrflow_client.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
         )
         if model.code == http_codes.ok:
             break
@@ -394,19 +390,15 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 @pytest.mark.profile
 @pytest.mark.parsing_file_async
 @pytest.mark.mozart
-def test_profile_parsing_file_mozart_async_basic():
+def test_profile_parsing_file_mozart_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_MOZART_ASYNC")
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
     reference = str(uuid4())
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
     model = ProfileParsingFileResponse.model_validate(
-        hf.profile.parsing.add_file(
+        hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
             reference=reference,
@@ -416,7 +408,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
         model = ProfileIndexingResponse.model_validate(
-            hf.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
+            hrflow_client.profile.storing.get(source_key=SOURCE_KEY, reference=reference)
         )
         if model.code == http_codes.ok:
             break
@@ -475,13 +467,10 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 
 @pytest.mark.profile
 @pytest.mark.indexing
-def test_profile_indexing_basic():
+def test_profile_indexing_basic(hrflow_client):
     profile = _profile_get()
     model = ProfileIndexingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).profile.storing.add_json(
+        hrflow_client.profile.storing.add_json(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_json=profile,
         )
@@ -493,12 +482,9 @@ def test_profile_indexing_basic():
 
 @pytest.mark.profile
 @pytest.mark.searching
-def test_profiles_searching_basic():
+def test_profiles_searching_basic(hrflow_client):
     model = ProfilesSearchingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).profile.searching.list(
+        hrflow_client.profile.searching.list(
             source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
             limit=5,  # allows to bypass the bug with archived profiles
         )
@@ -508,12 +494,9 @@ def test_profiles_searching_basic():
 
 @pytest.mark.profile
 @pytest.mark.scoring
-def test_profiles_scoring_basic():
+def test_profiles_scoring_basic(hrflow_client):
     model = ProfilesScoringResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).profile.scoring.list(
+        hrflow_client.profile.scoring.list(
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_key=_var_from_env_get("HRFLOW_BOARD_KEY"),
             source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
@@ -526,16 +509,12 @@ def test_profiles_scoring_basic():
 
 @pytest.mark.profile
 @pytest.mark.asking
-def test_profile_asking_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_asking_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     model = ProfileAskingResponse.model_validate(
-        hf.profile.asking.get(
+        hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
-            key=_indexed_response_get(hf, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
             questions=[
                 "What is the full name of the profile ?",
             ],
@@ -549,11 +528,7 @@ def test_profile_asking_basic():
 @pytest.mark.skip(reason="backend: multiple questions are not correctly handled yet")
 @pytest.mark.profile
 @pytest.mark.asking
-def test_profile_asking_multiple_questions():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_asking_multiple_questions(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     questions = [
         "What is the full name of the profile ?",
@@ -561,10 +536,10 @@ def test_profile_asking_multiple_questions():
         "What year did the profile finish school ?",
     ]
     model = ProfileAskingResponse.model_validate(
-        hf.profile.asking.get(
+        hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             questions=questions,
-            key=_indexed_response_get(hf, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
         )
     )
     assert model.code == http_codes.ok
@@ -576,16 +551,12 @@ def test_profile_asking_multiple_questions():
 
 @pytest.mark.profile
 @pytest.mark.asking
-def test_profile_asking_no_question():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_asking_no_question(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     model = ProfileAskingResponse.model_validate(
-        hf.profile.asking.get(
+        hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
-            key=_indexed_response_get(hf, SOURCE_KEY, _profile_get()).data.key,
+            key=_indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key,
             questions=None,
         )
     )
@@ -594,11 +565,7 @@ def test_profile_asking_no_question():
 
 @pytest.mark.profile
 @pytest.mark.unfolding
-def test_profile_unfolding_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_unfolding_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     if profile.get("experiences") and len(profile["experiences"]) == 1:
@@ -610,9 +577,9 @@ def test_profile_unfolding_basic():
                 last_experience[dkey] = str(int(datestr[:4]) + 1) + datestr[4:]
     for _ in range(_MAX_RETRIES):
         model = ProfileUnfoldingResponse.model_validate(
-            hf.profile.unfolding.get(
+            hrflow_client.profile.unfolding.get(
                 source_key=SOURCE_KEY,
-                key=_indexed_response_get(hf, SOURCE_KEY, profile).data.key,
+                key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
             )
         )
         if model.code != http_codes.server_error:
@@ -623,18 +590,14 @@ def test_profile_unfolding_basic():
 
 @pytest.mark.profile
 @pytest.mark.unfolding
-def test_profile_unfolding_no_experience():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_unfolding_no_experience(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     profile["experiences"] = list()
     model = ProfileUnfoldingResponse.model_validate(
-        hf.profile.unfolding.get(
+        hrflow_client.profile.unfolding.get(
             source_key=SOURCE_KEY,
-            key=_indexed_response_get(hf, SOURCE_KEY, profile).data.key,
+            key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
         )
     )
     assert model.code == http_codes.bad_request
@@ -642,15 +605,11 @@ def test_profile_unfolding_no_experience():
 
 @pytest.mark.profile
 @pytest.mark.archive
-def test_profile_archive_basic():
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
+def test_profile_archive_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    mock_key = _indexed_response_get(hf, SOURCE_KEY, _profile_get()).data.key
+    mock_key = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key
     model = ProfileArchiveResponse.model_validate(
-        hf.profile.storing.archive(source_key=SOURCE_KEY, key=mock_key)
+        hrflow_client.profile.storing.archive(source_key=SOURCE_KEY, key=mock_key)
     )
     assert model.code == http_codes.ok
     assert model.data.key == mock_key
@@ -658,16 +617,12 @@ def test_profile_archive_basic():
 
 @pytest.mark.profile
 @pytest.mark.editing
-def test_profile_editing_basic():
+def test_profile_editing_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    hf = Hrflow(
-        api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-        api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-    )
-    mock_profile = _indexed_response_get(hf, SOURCE_KEY, _profile_get()).data
+    mock_profile = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data
     mock_profile.text = f"The password of my bitcoin wallet is {uuid4()}."
     model = ProfileIndexingResponse.model_validate(
-        hf.profile.storing.edit(
+        hrflow_client.profile.storing.edit(
             source_key=SOURCE_KEY,
             profile_json=mock_profile.model_dump(),
         )
