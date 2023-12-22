@@ -13,7 +13,8 @@ class TextTagging:
     def post(
         self,
         algorithm_key: str,
-        texts: t.List[str],
+        text: t.Optional[str] = None,
+        texts: t.Optional[t.List[str]] = None,
         context: t.Optional[str] = None,
         labels: t.Optional[t.List[str]] = None,
         top_n: t.Optional[int] = 1,
@@ -62,16 +63,22 @@ class TextTagging:
                 Returns:
                     `/text/tagging` response
         """
-
         payload = dict(
             algorithm_key=algorithm_key,
-            texts=texts,
             context=context,
             labels=labels,
             output_lang=output_lang,
             top_n=top_n,
         )
-
+        
+        if texts is None and text is not None:
+            payload["text"] = text
+        elif text is None and texts is not None:
+            payload["texts"] = texts
+        elif text is None and texts is None:
+            raise ValueError("Either text or texts must be provided.")
+        else:
+            raise ValueError("Only one of text or texts must be provided.")
+        
         response = self.client.post("text/tagging", json=payload)
-
         return validate_response(response)

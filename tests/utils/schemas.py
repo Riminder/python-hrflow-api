@@ -100,6 +100,9 @@ class TextTaggingDataItem(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _check(cls, values: t.Dict[str, t.List[t.Any]]) -> t.Dict[str, t.List[t.Any]]:
+        if isinstance(values, list):
+            return [cls._check(item) for item in values
+        ]
         li = len(values.get("ids"))
         lp = len(values.get("predictions"))
         lt = len(values.get("tags"))
@@ -111,7 +114,7 @@ class TextTaggingDataItem(BaseModel):
 
 
 class TextTaggingReponse(HrFlowAPIResponse):
-    data: t.Optional[t.List[TextTaggingDataItem]] = None
+    data: t.Optional[t.Union[t.List[TextTaggingDataItem], TextTaggingDataItem]] = None
 
 
 class TextParsingDataItemEntity(BaseModel):

@@ -12,6 +12,7 @@ from .utils.schemas import (
     TextLinkingResponse,
     TextOCRResponse,
     TextParsingResponse,
+    TextTaggingDataItem,
     TextTaggingReponse,
 )
 from .utils.tools import _file_get, _var_from_env_get
@@ -156,6 +157,63 @@ def test_linking_negative_amount(hrflow_client):
     )
     assert model.code == requests.codes.bad_request
 
+
+@pytest.mark.text
+@pytest.mark.tagging
+def test_tagger_rome_family_with_text_param(hrflow_client):
+    model = TextTaggingReponse.model_validate(
+        hrflow_client.text.tagging.post(
+            algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
+            text=TAGGING_TEXTS[0],
+            top_n=2,
+        )
+    )
+    assert model.code == requests.codes.ok
+    assert isinstance(model.data, TextTaggingDataItem)
+
+@pytest.mark.text
+@pytest.mark.tagging
+def test_tagger_rome_family_with_texts_param(hrflow_client):
+    model = TextTaggingReponse.model_validate(
+        hrflow_client.text.tagging.post(
+            algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
+            texts=TAGGING_TEXTS,
+            top_n=2,
+        )
+    )
+    assert model.code == requests.codes.ok
+    assert isinstance(model.data, list)
+    assert len(model.data) == len(TAGGING_TEXTS)
+
+@pytest.mark.text
+@pytest.mark.tagging
+def test_tagger_rome_family_with_text_and_texts_param(hrflow_client):
+    try:
+        TextTaggingReponse.model_validate(
+            hrflow_client.text.tagging.post(
+                algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
+                text=TAGGING_TEXTS[0],
+                texts=TAGGING_TEXTS,
+                top_n=2,
+            )
+        )
+        pytest.fail("Should have raised a ValueError")
+    except ValueError as e:
+        pass
+    
+@pytest.mark.text
+@pytest.mark.tagging
+def test_tagger_rome_family_without_text_or_texts_param(hrflow_client):
+    try:
+        TextTaggingReponse.model_validate(
+            hrflow_client.text.tagging.post(
+                algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
+                top_n=2,
+            )
+        )
+        pytest.fail("Should have raised a ValueError")
+    except ValueError as e:
+        pass
 
 def _tagging_test(
     hrflow_client: Hrflow,
