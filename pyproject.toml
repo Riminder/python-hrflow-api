@@ -37,26 +37,26 @@ profile = "black"
 
 [tool.pytest.ini_options]
 markers = [
+    "archive",
+    "asking",
     "auth",
-    "text",
+    "editing",
     "embedding",
     "geocoding",
     "imaging",
+    "indexing",
+    "job",
     "linking",
     "ocr",
     "parsing",
-    "tagging",
-    "profile",
     "parsing_file_async",
     "parsing_file_sync",
-    "job",
-    "indexing",
-    "searching",
+    "profile",
     "scoring",
-    "asking",
-    "unfolding",
-    "archive",
-    "editing"
+    "searching",
+    "tagging",
+    "text",
+    "unfolding"
 ]
 
 [build-system]
