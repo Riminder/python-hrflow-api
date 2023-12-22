@@ -1,31 +1,35 @@
-from ..utils import validate_key, validate_page, validate_limit, validate_value, validate_response
-
-from ..utils import ORDER_BY_VALUES
+from ..utils import (
+    ORDER_BY_VALUES,
+    validate_key,
+    validate_limit,
+    validate_page,
+    validate_response,
+    validate_value,
+)
 
 
 class Board(object):
-
     def __init__(self, client):
         self.client = client
 
-    def list(self, name=None, page=1, limit=30, sort_by='date', order_by='desc'):
+    def list(self, name=None, page=1, limit=30, sort_by="date", order_by="desc"):
         """
-            Search boards for given filters.
+        Search boards for given filters.
 
-            Args:
-                name:             <string>
-                                  name
-                page:             <integer>
-                                  page
-                limit:            <integer>
-                                  limit
-                sort_by:          <string>
-                                  sort_by
-                order_by:         <string>
-                                  order_by
+        Args:
+            name:             <string>
+                              name
+            page:             <integer>
+                              page
+            limit:            <integer>
+                              limit
+            sort_by:          <string>
+                              sort_by
+            order_by:         <string>
+                              order_by
 
-            Returns
-                Result of source's search
+        Returns
+            Result of source's search
 
         """
         query_params = {}
@@ -40,15 +44,15 @@ class Board(object):
 
     def get(self, key=None):
         """
-            Get source given a board key.
+        Get source given a board key.
 
-            Args:
-                key:         <string>
-                             board_key
-            Returns
-                Board if exists
+        Args:
+            key:         <string>
+                         board_key
+        Returns
+            Board if exists
 
         """
         query_params = {"key": validate_key("Board", key)}
-        response = self.client.get('board', query_params)
+        response = self.client.get("board", query_params)
         return validate_response(response)

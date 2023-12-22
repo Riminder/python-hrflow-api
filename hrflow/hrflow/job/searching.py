@@ -1,14 +1,15 @@
 import json
 
 from ..utils import (
-    validate_provider_keys,
+    ORDER_BY_VALUES,
+    SORT_BY_VALUES,
+    STAGE_VALUES,
     validate_limit,
     validate_page,
-    validate_value,
+    validate_provider_keys,
     validate_response,
+    validate_value,
 )
-
-from ..utils import ORDER_BY_VALUES, SORT_BY_VALUES, STAGE_VALUES
 
 
 class JobSearching:
@@ -26,7 +27,7 @@ class JobSearching:
         limit=30,
         sort_by="created_at",
         order_by=None,
-        **kwargs
+        **kwargs,
     ):
         """
         Retrieve the scoring information.

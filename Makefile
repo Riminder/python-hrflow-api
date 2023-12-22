@@ -1,20 +1,30 @@
 # Define variables
 ARGS := 
 
-install_req:
-	pip install -U setuptools setuptools_scm wheel && python -m pip install twine
-
 clean:
 	rm -rf build dist *.egg-info
 
+clean_cache:
+	find . -type d \( -name '__pycache__' -o -name '.pytest_cache' \) -exec rm -rf {} +
+	rm -rf tests/assets
+
 build:
-	python setup.py sdist bdist_wheel
+	poetry build
 
 git-tag:
 	./tag.sh $(ARGS)
 
 deploy-test:
-	python -m twine upload --repository-url https://test.pypi.org/legacy/ dist/*
+	poetry publish -r test-pypi --build
 
 deploy:
-	python -m twine upload dist/*
+	poetry publish --build
+
+flake8:
+	poetry run flake8 --config=./.flake8
+
+style:
+	poetry run isort . && poetry run black --config=./pyproject.toml .
+
+check:
+	bash ./check.sh

@@ -1,0 +1,68 @@
+[tool.poetry]
+name = "hrflow"
+version = "3.2.0"
+description = "Python hrflow.ai API package"
+authors = ["HrFlow.ai <contact@hrflow.ai>"]
+license = "MIT"
+readme = "README.md"
+repository = "https://github.com/hrflow/python-hrflow-api"
+documentation = "https://github.com/hrflow/python-hrflow-api"
+exclude = ["Makefile", ".pre-commit-config.yaml", "manifest.json", "tests", "poetry.lock"]
+packages = [{include = "hrflow"}]
+
+[tool.poetry.urls]
+"HrFlow.ai Documentation" = "https://developers.hrflow.ai"
+"Changelog" = "https://github.com/Riminder/python-hrflow-api/releases"
+
+[tool.poetry.dependencies]
+python = "^3.8.1"
+requests = "^2.31.0"
+python-magic = "^0.4.27"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.4.3"
+python-dotenv = "^1.0.0"
+pydantic = "^2.5.2"
+isort = "^5.13.1"
+black = "^23.12.0"
+flake8 = "^6.1.0"
+pytest-timestamper = "^0.0.9"
+
+[tool.black]
+line-length = 88
+target-version = ["py37", "py38", "py39", "py310"]
+preview = true
+
+[tool.isort]
+profile = "black"
+
+[tool.pytest.ini_options]
+markers = [
+    "archive",
+    "asking",
+    "auth",
+    "editing",
+    "embedding",
+    "geocoding",
+    "hawk",
+    "imaging",
+    "indexing",
+    "job",
+    "linking",
+    "mozart",
+    "ocr",
+    "parsing",
+    "parsing_file_async",
+    "parsing_file_sync",
+    "profile",
+    "quicksilver",
+    "scoring",
+    "searching",
+    "tagging",
+    "text",
+    "unfolding"
+]
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"

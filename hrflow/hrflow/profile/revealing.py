@@ -1,7 +1,7 @@
 from ..utils import format_item_payload, validate_response
 
 
-class ProfileRevealing():
+class ProfileRevealing:
     """Manage revealing related profile calls."""
 
     def __init__(self, api):
@@ -27,5 +27,5 @@ class ProfileRevealing():
 
         """
         query_params = format_item_payload("profile", source_key, key, reference, email)
-        response = self.client.get('profile/revealing', query_params)
+        response = self.client.get("profile/revealing", query_params)
         return validate_response(response)
