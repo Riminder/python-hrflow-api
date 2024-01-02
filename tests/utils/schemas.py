@@ -126,9 +126,7 @@ class TextParsingDataItemEntity(BaseModel):
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         start = values.get("start")
         end = values.get("end")
-        assert start <= end or fail(
-            f"start={start} is expected to be smaller than end={end}"
-        )
+        assert start <= end or fail(f"{start=} is expected to be smaller than {end=}")
         return values
 
 
@@ -161,6 +159,9 @@ class TextParsingDataItem(BaseModel):
     @model_validator(mode="before")
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
+        if isinstance(values, list):
+            return [cls._check(item) for item in values]
+
         text = values.get("text")
         entities = values.get("entities")
         parsing = values.get("parsing")
@@ -179,15 +180,13 @@ class TextParsingDataItem(BaseModel):
             parsed = text[entity["start"] : entity["end"]]
             holder = parsing[parsing_key_name]
 
-            assert parsed in holder or fail(
-                f"parsed='{parsed}' is expected to be in holder='{holder}'"
-            )
+            assert parsed in holder or fail(f"{parsed=} is expected to be in {holder=}")
 
         return values
 
 
 class TextParsingResponse(HrFlowAPIResponse):
-    data: t.Optional[t.List[TextParsingDataItem]] = None
+    data: t.Optional[t.Union[TextParsingDataItem, t.List[TextParsingDataItem]]] = None
 
 
 class TextOCRDataItemPage(BaseModel):
@@ -365,8 +364,7 @@ class Job(BaseModel):
         board_key = values.get("board_key")
         board = values.get("board")
         assert board_key == board["key"] or fail(
-            f"job.board_key='{board_key}' is expected to be the same as"
-            f" job.board.key='{board['key']}'"
+            f"{board_key=} is expected to be the same as {board['key']=}"
         )
         return values
 
@@ -461,8 +459,7 @@ class Profile(BaseModel):
         source_key = values["source_key"]
         source = values["source"]
         assert source_key == source["key"] or fail(
-            f"profile.source_key='{source_key}' is expected to be the same as"
-            f" profile.source.key='{source['key']}'"
+            f"{source_key=} is expected to be the same as {source['key']=}"
         )
         return values
 
