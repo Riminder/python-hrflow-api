@@ -10,7 +10,9 @@ class TextParsing:
         """Init."""
         self.client = api
 
-    def post(self, texts: t.List[str]) -> t.Dict[str, t.Any]:
+    def post(
+        self, text: t.Optional[str] = None, texts: t.Optional[t.List[str]] = None
+    ) -> t.Dict[str, t.Any]:
         """
         Parse a raw Text. Extract over 50 data point from any raw input text.
 
@@ -23,7 +25,16 @@ class TextParsing:
             `/text/parsing` response
         """
 
-        payload = dict(texts=texts)
+        if text is not None:
+            if texts is not None:
+                raise ValueError("Only one of text or texts must be provided.")
+            else:
+                payload = dict(text=text)
+        else:
+            if texts is None:
+                raise ValueError("Either text or texts must be provided.")
+            else:
+                payload = dict(texts=texts)
 
         response = self.client.post("text/parsing", json=payload)
 

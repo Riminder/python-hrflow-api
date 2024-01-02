@@ -73,12 +73,9 @@ def _content_is_png(content: bytes) -> bool:
     return content.startswith(b"\x89PNG\r\n\x1a\n")
 
 
-def _imaging_test_valid_size(width: t.Literal[256, 512]):
+def _imaging_test_valid_size(hrflow_client, width: t.Literal[256, 512]):
     model = TextImagingResponse.model_validate(
-        Hrflow(
-            api_secret=_var_from_env_get("HRFLOW_API_KEY"),
-            api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
-        ).text.imaging.post(text="plumber", width=width)
+        hrflow_client.text.imaging.post(text="plumber", width=width)
     )
     assert model.code == requests.codes.ok
     response = requests.get(model.data.image_url)
@@ -89,14 +86,14 @@ def _imaging_test_valid_size(width: t.Literal[256, 512]):
 
 @pytest.mark.text
 @pytest.mark.imaging
-def test_imaging_basic_256():
-    _imaging_test_valid_size(256)
+def test_imaging_basic_256(hrflow_client):
+    _imaging_test_valid_size(hrflow_client, 256)
 
 
 @pytest.mark.text
 @pytest.mark.imaging
-def test_imaging_basic_512():
-    _imaging_test_valid_size(512)
+def test_imaging_basic_512(hrflow_client):
+    _imaging_test_valid_size(hrflow_client, 512)
 
 
 @pytest.mark.text
@@ -372,10 +369,37 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 
 @pytest.mark.text
 @pytest.mark.parsing
-def test_parsing_basic(hrflow_client):
+def test_parsing_basic_with_texts_param(hrflow_client):
     texts = ["John Doe can be contacted on john.doe@hrflow.ai"]
     model = TextParsingResponse.model_validate(
         hrflow_client.text.parsing.post(texts=texts)
     )
     assert model.code == requests.codes.ok
     assert len(model.data) == len(texts)
+
+
+@pytest.mark.text
+@pytest.mark.parsing
+def test_parsing_basic_with_text_param(hrflow_client):
+    text = "John Doe can be contacted on john.doe@hrflow.ai"
+    model = TextParsingResponse.model_validate(
+        hrflow_client.text.parsing.post(text=text)
+    )
+    assert model.code == requests.codes.ok
+
+
+@pytest.mark.text
+@pytest.mark.parsing
+def test_parsing_basic_with_no_text_or_texts_param(hrflow_client):
+    with pytest.raises(ValueError):
+        TextParsingResponse.model_validate(hrflow_client.text.parsing.post())
+
+
+@pytest.mark.text
+@pytest.mark.parsing
+def test_parsing_basic_with_text_and_texts_param(hrflow_client):
+    text = "John Doe can be contacted on john.doe@hrflow.ai"
+    with pytest.raises(ValueError):
+        TextParsingResponse.model_validate(
+            hrflow_client.text.parsing.post(text=text, texts=[text])
+        )
