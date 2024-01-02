@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hrflow"
-version = "3.2.0"
+version = "3.2.1"
 description = "Python hrflow.ai API package"
 authors = ["HrFlow.ai <contact@hrflow.ai>"]
 license = "MIT"
