@@ -168,7 +168,7 @@ class JobStoring:
         response = self.client.get("job/indexing", query_params)
         return validate_response(response)
 
-    def archive(self, board_key, key=None, reference=None, is_archive=1):
+    def archive(self, board_key, key=None, reference=None):
         """
         This method allows to archive (is_archive=1) or unarchive (is_archive=0) a job
         in HrFlow.ai.
@@ -182,16 +182,13 @@ class JobStoring:
                                     job identifier (key)
             reference:              <string>
                                     job identifier (reference)
-            is_archive:             <integer>
-                                    default = 1
-                                    {0, 1} to indicate archive/unarchive action
 
         Returns
             Archive/unarchive job response
 
         """
         payload = format_item_payload("job", board_key, key, reference)
-        payload["is_archive"] = is_archive
+        payload["is_archive"] = 1
         response = self.client.patch("job/indexing/archive", json=payload)
         return validate_response(response)
 
