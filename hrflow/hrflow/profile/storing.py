@@ -218,7 +218,7 @@ class ProfileStoring:
         response = self.client.get("profile/indexing", query_params)
         return validate_response(response)
 
-    def archive(self, source_key, key=None, reference=None, is_archive=1, email=None):
+    def archive(self, source_key, key=None, reference=None, email=None):
         """
         This method allows to archive (is_archive=1) or unarchive (is_archive=0) a
         profile in HrFlow.ai.
@@ -232,9 +232,6 @@ class ProfileStoring:
                                     profile identifier (key)
             reference:              <string>
                                     profile identifier (reference)
-            is_archive:             <integer>
-                                    default = 1
-                                    {0, 1} to indicate archive/unarchive action
             email:                  <string>
                                     profile_email
 
@@ -244,7 +241,7 @@ class ProfileStoring:
         """
 
         payload = format_item_payload("profile", source_key, key, reference, email)
-        payload["is_archive"] = is_archive
+        payload["is_archive"] = 1
         response = self.client.patch("profile/indexing/archive", json=payload)
         return validate_response(response)
 
