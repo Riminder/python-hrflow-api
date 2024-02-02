@@ -1,7 +1,7 @@
 import json
 import typing as t
 from time import sleep
-from uuid import uuid4
+from uuid import uuid1
 
 import pytest
 from requests import codes as http_codes
@@ -40,7 +40,7 @@ def hrflow_client():
 
 def _profile_get() -> t.Dict[str, t.Any]:
     return dict(
-        reference=str(uuid4()),
+        reference=str(uuid1()),
         text_language="en",
         text=(
             "Harry James PotterSorcerer Apprenticedate of birth: June 26th 1997Number"
@@ -320,7 +320,7 @@ def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
-    reference = str(uuid4())
+    reference = str(uuid1())
     model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
@@ -400,7 +400,7 @@ def test_profile_parsing_file_mozart_async_basic(hrflow_client):
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
-    reference = str(uuid4())
+    reference = str(uuid1())
     model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
@@ -632,7 +632,7 @@ def test_profile_archive_basic(hrflow_client):
 def test_profile_editing_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_profile = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data
-    mock_profile.text = f"The password of my bitcoin wallet is {uuid4()}."
+    mock_profile.text = f"The password of my bitcoin wallet is {uuid1()}."
     model = ProfileIndexingResponse.model_validate(
         hrflow_client.profile.storing.edit(
             source_key=SOURCE_KEY,

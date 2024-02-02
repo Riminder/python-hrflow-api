@@ -1,5 +1,5 @@
 import typing as t
-from uuid import uuid4
+from uuid import uuid1
 
 import pytest
 from requests import codes as http_codes
@@ -31,7 +31,7 @@ def hrflow_client():
 
 def _job_get() -> t.Dict[str, t.Any]:
     return dict(
-        reference=str(uuid4()),
+        reference=str(uuid1()),
         name="r&d engineer",
         location=dict(text="7 rue 4 septembre paris", lat=48.869179, lng=2.33814),
         sections=[
@@ -229,7 +229,7 @@ def test_job_editing_basic(hrflow_client):
     BOARD_KEY = _var_from_env_get("HRFLOW_BOARD_KEY")
     mock_job = _indexed_response_get(hrflow_client, BOARD_KEY, _job_get()).data
     mock_job.interviews = (
-        f"To access the interview call you must use the token {uuid4()}."
+        f"To access the interview call you must use the token {uuid1()}."
     )
     model = JobIndexingResponse.model_validate(
         hrflow_client.job.storing.edit(
