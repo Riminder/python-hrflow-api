@@ -9,7 +9,7 @@ from .utils.tools import _var_from_env_get
 
 @pytest.mark.auth
 def test_valid_all():
-    model = AuthResponse.model_validate(
+    model = AuthResponse.parse_obj(
         Hrflow(
             api_secret=_var_from_env_get("HRFLOW_API_KEY"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
@@ -20,7 +20,7 @@ def test_valid_all():
 
 @pytest.mark.auth
 def test_valid_read():
-    model = AuthResponse.model_validate(
+    model = AuthResponse.parse_obj(
         Hrflow(
             api_secret=_var_from_env_get("HRFLOW_API_KEY_READ"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
@@ -34,7 +34,7 @@ def test_valid_read():
 )
 @pytest.mark.auth
 def test_valid_write():
-    model = AuthResponse.model_validate(
+    model = AuthResponse.parse_obj(
         Hrflow(
             api_secret=_var_from_env_get("HRFLOW_API_KEY_WRITE"),
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
@@ -48,7 +48,7 @@ def test_valid_write():
 
 @pytest.mark.auth
 def test_invalid_valid_askw():
-    model = AuthResponse.model_validate(
+    model = AuthResponse.parse_obj(
         Hrflow(
             api_secret="askw_d86bb249fff3ac66765f04d43c611675",
             api_user=_var_from_env_get("HRFLOW_USER_EMAIL"),
