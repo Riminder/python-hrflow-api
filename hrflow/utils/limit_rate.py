@@ -1,19 +1,20 @@
-from time import time, sleep
 from functools import wraps
+from time import sleep, time
 
 DEFAULT_MAX_REQUESTS_PER_MINUTE = None
 DEFAULT_MIN_SLEEP_PER_REQUEST = 0
 SECONDS_IN_MINUTE = 60
 
+
 def rate_limiter(func):
     """
     Decorator that applies rate limiting to a function.
-    
+
     Parameters in the decorated function:
         max_requests_per_minute: <int> The maximum number of requests that can be made
             in a minute. If None, there is no limit.
         min_sleep_per_request: <float> The minimum time to wait between requests.
-    
+
     Usage:
     >>> @rate_limiter()
     ... def my_function(param1, param2):
@@ -28,12 +29,10 @@ def rate_limiter(func):
     @wraps(func)
     def wrapper(*args, **kwargs):
         max_requests_per_minute = kwargs.pop(
-            "max_requests_per_minute", 
-            DEFAULT_MAX_REQUESTS_PER_MINUTE
+            "max_requests_per_minute", DEFAULT_MAX_REQUESTS_PER_MINUTE
         )
         min_sleep_per_request = kwargs.pop(
-            "min_sleep_per_request", 
-            DEFAULT_MIN_SLEEP_PER_REQUEST
+            "min_sleep_per_request", DEFAULT_MIN_SLEEP_PER_REQUEST
         )
         nonlocal requests_per_minute, last_reset_time
 
@@ -42,9 +41,11 @@ def rate_limiter(func):
 
         if elapsed_time < SECONDS_IN_MINUTE:
             requests_per_minute += 1
-            if max_requests_per_minute is not None\
-                and requests_per_minute > max_requests_per_minute:
-                
+            if (
+                max_requests_per_minute is not None
+                and requests_per_minute > max_requests_per_minute
+            ):
+
                 sleep(SECONDS_IN_MINUTE - elapsed_time)
                 requests_per_minute = 0
                 last_reset_time = time()

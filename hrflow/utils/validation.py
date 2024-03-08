@@ -111,8 +111,6 @@ def is_valid_filename(file_path):
     return name not in INVALID_FILENAME
 
 
-
-
 def validate_response(response):
     if response.headers["Content-Type"] != "application/json":
         return {

@@ -1,10 +1,12 @@
 import typing as t
+
 from tqdm import tqdm
 
+
 def get_all_profiles(
-    client : "Hrflow",
-    source_key : str,
-    show_progress : bool = False,
+    client: "Hrflow",  # noqa: F821
+    source_key: str,
+    show_progress: bool = False,
 ) -> t.List[t.Dict[str, t.Any]]:
     """
     Retrieve all profiles from a source.
@@ -28,14 +30,16 @@ def get_all_profiles(
         page_range = tqdm(page_range, "Retrieving profiles")
     for page in page_range:
         profile_list += client.profile.storing.list(
-            source_keys=[source_key], page=page, return_profile=True)["data"]
-    
+            source_keys=[source_key], page=page, return_profile=True
+        )["data"]
+
     return profile_list
 
+
 def get_all_jobs(
-    client : "Hrflow",
-    board_key : str,
-    show_progress : bool = False,
+    client: "Hrflow",  # noqa: F821
+    board_key: str,
+    show_progress: bool = False,
 ) -> t.List[t.Dict[str, t.Any]]:
     """
     Retrieve all jobs from a board.
@@ -59,6 +63,7 @@ def get_all_jobs(
         page_range = tqdm(page_range, "Retrieving jobs")
     for page in page_range:
         job_list += client.job.storing.list(
-            board_keys=[board_key], page=page, return_job=True)["data"]
-    
+            board_keys=[board_key], page=page, return_job=True
+        )["data"]
+
     return job_list
