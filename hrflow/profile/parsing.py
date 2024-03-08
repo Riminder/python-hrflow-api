@@ -1,5 +1,8 @@
 import json
 import os
+import shutil
+import uuid
+from ..utils import rate_limiter
 
 from ..utils import (
     format_item_payload,
@@ -16,7 +19,8 @@ class ProfileParsing:
     def __init__(self, api):
         """Init."""
         self.client = api
-
+    
+    @rate_limiter
     def add_file(
         self,
         source_key,
@@ -86,15 +90,45 @@ class ProfileParsing:
         return validate_response(response)
 
     def add_folder(
-        self, source_key, dir_path, is_recurcive=False, created_at=None, sync_parsing=0
+        self, 
+        source_key, dir_path, 
+        is_recurcive=False, 
+        created_at=None, 
+        sync_parsing=0,
+        move_failure_to=None,
+        **kwargs
     ):
-        """Add all profile from a given directory."""
+        """
+        Parse a folder of profile resumes to a sourced key.
+        
+        This method will parse the files in the folder, with the authorized extensions,
+        not the subfolders by default.
+        If you want to parse the subfolders, set is_recurcive to True.
+        
+        Args:
+            source_key:              <string>
+                                     source_key
+            dir_path:                <string>
+                                     directory path
+            is_recurcive:            <bool>
+                                     True or False
+            created_at:              <string>
+                                     original date of the application of the
+                                     profile as ISO format
+            sync_parsing             <bool>
+                                     0 or 1
+            move_failure_to          <string | None>
+                                     directory path to move the failed files.
+                                     If None, the failed files will not be moved.
+            **kwargs:                <**kwargs>
+                                     additional parameters to pass to the parsing API
+        """
         if not os.path.isdir(dir_path):
             raise ValueError(dir_path + " is not a directory")
         files_to_send = get_files_from_dir(dir_path, is_recurcive)
         succeed_upload = {}
         failed_upload = {}
-        for file_path in files_to_send:
+        for file_path in files_to_send:           
             try:
                 with open(file_path, "rb") as f:
                     profile_file = f.read()
@@ -103,16 +137,22 @@ class ProfileParsing:
                     profile_file=profile_file,
                     created_at=created_at,
                     sync_parsing=sync_parsing,
+                    **kwargs
                 )
                 response_code = str(resp["code"]) # 200, 201, 202, 400, ...
                 if response_code[0] != "2":
                     failed_upload[file_path] = ValueError(
                         "Invalid response: " + str(resp)
                     )
+                    if move_failure_to is not None:
+                        move_to_failed_dir(file_path, move_failure_to)
                 else:
                     succeed_upload[file_path] = resp
-            except BaseException as e:
+            except Exception as e:
                 failed_upload[file_path] = e
+                if move_failure_to is not None:
+                    move_to_failed_dir(file_path, move_failure_to)
+        
         result = {"success": succeed_upload, "fail": failed_upload}
         return result
 
@@ -137,3 +177,15 @@ class ProfileParsing:
         query_params = format_item_payload("profile", source_key, key, reference, email)
         response = self.client.get("profile/parsing", query_params)
         return validate_response(response)
+
+def move_to_failed_dir(file_path : str, move_failure_to : str):
+    file_name = os.path.basename(file_path)
+    unique_id = str(uuid.uuid4())
+
+    destination_path = os.path.join(move_failure_to, file_name)
+    if os.path.exists(destination_path):
+        destination_path = os.path.join(
+            move_failure_to, f"same-file-name-{unique_id}_{file_name}"
+        )
+    
+    shutil.copyfile(file_path, destination_path)
