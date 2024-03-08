@@ -96,7 +96,7 @@ class ProfileParsing:
         failed_upload = {}
         for file_path in files_to_send:
             try:
-                with open(file_path) as f:
+                with open(file_path, "rb") as f:
                     profile_file = f.read()
                 resp = self.add_file(
                     source_key=source_key,
@@ -104,7 +104,8 @@ class ProfileParsing:
                     created_at=created_at,
                     sync_parsing=sync_parsing,
                 )
-                if resp["code"] != 200 and resp["code"] != 201:
+                response_code = str(resp["code"]) # 200, 201, 202, 400, ...
+                if response_code[0] != "2":
                     failed_upload[file_path] = ValueError(
                         "Invalid response: " + str(resp)
                     )
