@@ -605,7 +605,7 @@ Here is an example on how to handle webhooks
 * Here an example on how to get help:
 
  ```python
-    >>> from hrflow.hrflow.profile.parsing import ProfileParsing
+    >>> from hrflow.profile.parsing import ProfileParsing
     >>> help(ProfileParsing.get)
 
     #Help on function get in module hrflow.profile.parsing:

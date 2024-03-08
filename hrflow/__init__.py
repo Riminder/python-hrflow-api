@@ -7,4 +7,4 @@ from .__version__ import (
     __url__,
     __version__,
 )
-from .hrflow.hrflow import Hrflow
+from .hrflow import Hrflow
