@@ -2,6 +2,7 @@ import json
 import os
 import shutil
 import uuid
+from tqdm import tqdm
 
 from ..utils import (
     format_item_payload,
@@ -97,6 +98,7 @@ class ProfileParsing:
         created_at=None,
         sync_parsing=0,
         move_failure_to=None,
+        show_progress=False,
         **kwargs,
     ):
         """
@@ -121,6 +123,8 @@ class ProfileParsing:
             move_failure_to          <string | None>
                                      directory path to move the failed files.
                                      If None, the failed files will not be moved.
+            show_progress            <bool>
+                                     Show the progress bar
             **kwargs:                <**kwargs>
                                      additional parameters to pass to the parsing API
         """
@@ -129,6 +133,8 @@ class ProfileParsing:
         files_to_send = get_files_from_dir(dir_path, is_recurcive)
         succeed_upload = {}
         failed_upload = {}
+        if show_progress:
+            files_to_send = tqdm(files_to_send, "Parsing")
         for file_path in files_to_send:
             try:
                 with open(file_path, "rb") as f:
