@@ -7,6 +7,7 @@ from .validation import validate_boolean, validate_value, validate_limit, valida
 from .validation import validate_key, validate_reference, validate_provider_keys
 from .validation import is_valid_extension, is_valid_filename
 from .validation import validate_response
+from .limit_rate import rate_limiter
 
 def format_item_payload(item, provider_key, key, reference=None, email=None):
     provider = "source_key" if item == "profile" else "board_key"
