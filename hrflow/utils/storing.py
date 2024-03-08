@@ -1,9 +1,8 @@
 import typing as t
 from tqdm import tqdm
-from ..hrflow import Hrflow
 
 def get_all_profiles(
-    client : Hrflow,
+    client : "Hrflow",
     source_key : str,
     show_progress : bool = False,
 ) -> t.List[t.Dict[str, t.Any]]:
@@ -34,7 +33,7 @@ def get_all_profiles(
     return profile_list
 
 def get_all_jobs(
-    client : Hrflow,
+    client : "Hrflow",
     board_key : str,
     show_progress : bool = False,
 ) -> t.List[t.Dict[str, t.Any]]:
