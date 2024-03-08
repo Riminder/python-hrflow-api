@@ -27,6 +27,7 @@ class ProfileParsing:
         source_key,
         key=None,
         profile_file=None,
+        profile_file_name=None,
         profile_content_type=None,
         reference=None,
         created_at=None,
@@ -47,6 +48,8 @@ class ProfileParsing:
                                      source_key
             profile_file:            <binary>
                                      profile binary
+            profile_file_name:       <string>
+                                     file name
             profile_content_type     <string>
                                      file content type
             reference:       <string> (default to None)
@@ -85,8 +88,14 @@ class ProfileParsing:
             "sync_parsing_indexing": sync_parsing_indexing,
             "webhook_parsing_sending": webhook_parsing_sending,
         }
+        
+        if profile_file_name is None:
+            file_payload = {"file": profile_file}
+        else:
+            file_payload = {"file": (profile_file_name, profile_file)}
+        
         response = self.client.post(
-            "profile/parsing/file", data=payload, files={"file": profile_file}
+            "profile/parsing/file", data=payload, files=file_payload
         )
         return validate_response(response)
 
@@ -136,12 +145,14 @@ class ProfileParsing:
         if show_progress:
             files_to_send = tqdm(files_to_send, "Parsing")
         for file_path in files_to_send:
+            filename = os.path.basename(file_path)
             try:
                 with open(file_path, "rb") as f:
                     profile_file = f.read()
                 resp = self.add_file(
                     source_key=source_key,
                     profile_file=profile_file,
+                    profile_file_name=filename,
                     created_at=created_at,
                     sync_parsing=sync_parsing,
                     **kwargs,
