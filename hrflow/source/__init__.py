@@ -1,4 +1,4 @@
-from ..utils import (
+from ..core.validation import (
     ORDER_BY_VALUES,
     validate_key,
     validate_limit,

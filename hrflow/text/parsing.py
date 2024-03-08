@@ -1,6 +1,6 @@
 import typing as t
 
-from ..utils import validate_response
+from ..core.validation import validate_response
 
 
 class TextParsing:

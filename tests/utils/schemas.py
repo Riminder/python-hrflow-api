@@ -12,7 +12,7 @@ from pydantic import (
 )
 from pytest import fail
 
-from hrflow.utils import KEY_REGEX
+from hrflow.core.validation import KEY_REGEX
 
 from .enums import PERMISSION
 

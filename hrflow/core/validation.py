@@ -32,8 +32,6 @@ VALID_EXTENSIONS = [
 ]
 INVALID_FILENAME = [".", ".."]
 
-ITEM_TYPE = ["profile", "job"]
-
 
 def validate_boolean(name, value):
     """

@@ -1,6 +1,7 @@
 import json
 
-from ..utils import format_item_payload, validate_response
+from ..core.validation import validate_response
+from ..core import format_item_payload
 
 
 class ProfileEmbedding:

@@ -1,6 +1,11 @@
 import typing as t
 
-from ..utils import KEY_REGEX, validate_key, validate_reference, validate_response
+from ..core.validation import (
+    KEY_REGEX,
+    validate_key,
+    validate_reference,
+    validate_response,
+)
 
 
 class ProfileUnfolding:

@@ -1,6 +1,6 @@
 import typing as t
 
-from ..utils import validate_key, validate_response
+from ..core.validation import validate_key, validate_response
 
 API_SECRET_REGEX = r"^ask[rw]?_[0-9a-f]{32}$"
 
