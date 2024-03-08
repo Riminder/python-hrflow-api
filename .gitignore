@@ -14,6 +14,7 @@ test/*
 test_assets/*
 tests/assets
 .htpasswd
+test.ipynb
 
 docker/dependencies/libs/*
 
