@@ -2,16 +2,16 @@ import json
 import os
 import shutil
 import uuid
+
 from tqdm import tqdm
 
-from ..utils import (
-    format_item_payload,
-    get_files_from_dir,
-    rate_limiter,
+from ..core.validation import (
     validate_key,
     validate_reference,
     validate_response,
 )
+from ..core import format_item_payload, get_files_from_dir
+from ..core.rate_limit import rate_limiter
 
 
 class ProfileParsing:
@@ -88,12 +88,12 @@ class ProfileParsing:
             "sync_parsing_indexing": sync_parsing_indexing,
             "webhook_parsing_sending": webhook_parsing_sending,
         }
-        
+
         if profile_file_name is None:
             file_payload = {"file": profile_file}
         else:
             file_payload = {"file": (profile_file_name, profile_file)}
-        
+
         response = self.client.post(
             "profile/parsing/file", data=payload, files=file_payload
         )

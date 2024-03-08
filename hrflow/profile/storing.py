@@ -1,9 +1,8 @@
 import json
 
-from ..utils import (
+from ..core.validation import (
     ORDER_BY_VALUES,
     SORT_BY_VALUES,
-    format_item_payload,
     validate_boolean,
     validate_key,
     validate_limit,
@@ -13,6 +12,7 @@ from ..utils import (
     validate_response,
     validate_value,
 )
+from ..core import format_item_payload
 
 
 class ProfileStoring:
