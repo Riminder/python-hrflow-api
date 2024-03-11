@@ -1,12 +1,13 @@
 import typing as t
 
+from ..core.rate_limit import rate_limiter
 from ..core.validation import (
     KEY_REGEX,
     validate_key,
     validate_reference,
     validate_response,
 )
-from ..core.rate_limit import rate_limiter
+
 
 class ProfileAsking:
     def __init__(self, api):

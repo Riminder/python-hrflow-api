@@ -1,7 +1,7 @@
 import typing as t
 
-from ..core.validation import validate_key, validate_response
 from ..core.rate_limit import rate_limiter
+from ..core.validation import validate_key, validate_response
 
 API_SECRET_REGEX = r"^ask[rw]?_[0-9a-f]{32}$"
 
