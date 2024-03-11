@@ -38,7 +38,7 @@ class Location(BaseModel):
     _fields: t.Optional[LocationFields] = Field(
         None,
         alias="fields",
-        description="other location attributes like country, country_code etc",
+        description="Other location attributes like country, country_code etc",
     )
 
 
@@ -193,11 +193,11 @@ class Url(BaseModel):
 
 
 class ProfileInfo(BaseModel):
-    full_name: t.Optional[str]
-    first_name: t.Optional[str]
-    last_name: t.Optional[str]
-    email: t.Optional[str]
-    phone: t.Optional[str]
+    full_name: t.Optional[str] = Field(None, description="Profile full name")
+    first_name: t.Optional[str] = Field(None, description="Profile first name")
+    last_name: t.Optional[str] = Field(None, description="Profile last name")
+    email: t.Optional[str] = Field(None, description="Profile email")
+    phone: t.Optional[str] = Field(None, description="Profile phone number")
     date_birth: t.Optional[str] = Field(None, description="Profile date of birth")
     location: t.Optional[Location] = Field(None, description="Profile location object")
     urls: t.Optional[t.List[Url]] = Field(
