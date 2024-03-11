@@ -7,8 +7,8 @@ from pydantic import (
     conint,
     conlist,
     constr,
-    field_validator,
-    model_validator,
+    root_validator,
+    validator,
 )
 from pytest import fail
 
@@ -29,7 +29,7 @@ class Pagination(BaseModel):
     count: conint(ge=0)
     total: conint(ge=0)
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         page = values.get("page")
@@ -65,21 +65,21 @@ class TextImagingResponse(HrFlowAPIResponse):
 
 
 class TextEmbeddingDataItem(BaseModel):
-    embedding: conlist(float, min_length=2048, max_length=2048)
+    embedding: conlist(float, min_items=2048, max_items=2048)
 
 
 class TextEmbeddingResponse(HrFlowAPIResponse):
     data: t.Optional[t.List[TextEmbeddingDataItem]] = None
 
 
-_LINKING_DATA_ITEM_TYPE = conlist(t.Any, min_length=2, max_length=2)
+_LINKING_DATA_ITEM_TYPE = conlist(t.Any, min_items=2, max_items=2)
 _LINKING_DATA_TYPE = t.List[_LINKING_DATA_ITEM_TYPE]
 
 
 class TextLinkingResponse(HrFlowAPIResponse):
     data: t.Optional[_LINKING_DATA_TYPE] = None
 
-    @field_validator("data")
+    @validator("data")
     @classmethod
     def _check_data(cls, data: _LINKING_DATA_TYPE) -> _LINKING_DATA_TYPE:
         assert all(
@@ -97,7 +97,7 @@ class TextTaggingDataItem(BaseModel):
     predictions: t.List[float]
     tags: t.List[str]
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.List[t.Any]]) -> t.Dict[str, t.List[t.Any]]:
         if isinstance(values, list):
@@ -121,7 +121,7 @@ class TextParsingDataItemEntity(BaseModel):
     end: conint(ge=0)
     label: str
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         start = values.get("start")
@@ -156,7 +156,7 @@ class TextParsingDataItem(BaseModel):
     parsing: TextParsingDataItemParsing
     text: str
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         if isinstance(values, list):
@@ -194,7 +194,7 @@ class TextOCRDataItemPage(BaseModel):
     sections: t.List[str]
 
 
-_BASE64_PDF_TYPE = constr(pattern=r"^[A-Za-z0-9+/]*={0,2}$", strict=True)
+_BASE64_PDF_TYPE = constr(regex=r"^[A-Za-z0-9+/]*={0,2}$", strict=True)
 
 
 class TextOCRDataItem(BaseModel):
@@ -226,7 +226,7 @@ class AuthResponse(HrFlowAPIResponse):
 
 
 class Board(BaseModel):
-    key: constr(pattern=KEY_REGEX)
+    key: constr(regex=KEY_REGEX)
     name: str
     type: str
     subtype: str
@@ -267,8 +267,8 @@ class Location(BaseModel):
             Fields,
             conlist(
                 t.Any,
-                min_length=0,
-                max_length=0,
+                min_items=0,
+                max_items=0,
             ),
         ]
     ] = None
@@ -332,7 +332,7 @@ class RangeDate(BaseModel):
 
 class Job(BaseModel):
     id: conint(ge=0)
-    key: t.Optional[constr(pattern=KEY_REGEX)] = None
+    key: t.Optional[constr(regex=KEY_REGEX)] = None
     reference: t.Optional[str] = None
     board_key: str
     board: Board
@@ -358,7 +358,7 @@ class Job(BaseModel):
     requirements: t.Optional[str] = None
     interviews: t.Optional[str] = None
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         board_key = values.get("board_key")
@@ -394,7 +394,7 @@ class Info(BaseModel):
 
 
 class E(BaseModel):
-    key: t.Optional[constr(pattern=KEY_REGEX)] = None
+    key: t.Optional[constr(regex=KEY_REGEX)] = None
     logo: t.Optional[str] = None
     title: t.Optional[str] = None
     description: t.Optional[str] = None
@@ -419,7 +419,7 @@ class Education(E):
 
 class Attachment(BaseModel):
     type: t.Optional[str] = None
-    alt: t.Optional[constr(pattern=KEY_REGEX)]
+    alt: t.Optional[constr(regex=KEY_REGEX)]
     file_size: t.Optional[conint(ge=0)] = None
     file_name: t.Optional[str] = None
     original_file_name: t.Optional[str] = None
@@ -431,7 +431,7 @@ class Attachment(BaseModel):
 
 class Profile(BaseModel):
     id: t.Optional[conint(ge=0)] = None
-    key: t.Optional[constr(pattern=KEY_REGEX)] = None
+    key: t.Optional[constr(regex=KEY_REGEX)] = None
     reference: t.Optional[str] = None
     source_key: str
     source: Source
@@ -453,7 +453,7 @@ class Profile(BaseModel):
     tags: t.Optional[t.List[Tag]] = None
     metadatas: t.Optional[t.List[Metadata]] = None
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         source_key = values["source_key"]
@@ -535,21 +535,21 @@ class JobsSearchingData(BaseModel):
 class JobsSearchingResponse(HrFlowAPIResponseWithPagination):
     data: JobsSearchingData
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         return _validate_searching_result(values)
 
 
 class JobsScoringData(BaseModel):
-    predictions: t.List[conlist(confloat(ge=0, le=1), min_length=2, max_length=2)]
+    predictions: t.List[conlist(confloat(ge=0, le=1), min_items=2, max_items=2)]
     jobs: t.List[Job]
 
 
 class JobsScoringResponse(HrFlowAPIResponseWithPagination):
     data: JobsScoringData
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         return _validate_scoring_result(values)
@@ -560,7 +560,7 @@ class JobAskingResponse(HrFlowAPIResponse):
 
 
 class JobArchiveData(BaseModel):
-    key: constr(pattern=KEY_REGEX)
+    key: constr(regex=KEY_REGEX)
 
 
 class JobArchiveResponse(HrFlowAPIResponse):
@@ -584,8 +584,8 @@ class ProfileParsingFileResponse(HrFlowAPIResponse):
             ProfileParsingFileDataItem,
             conlist(  # for async
                 t.Any,
-                min_length=0,
-                max_length=0,
+                min_items=0,
+                max_items=0,
             ),
         ]
     ] = None
@@ -598,21 +598,21 @@ class ProfilesSearchingData(BaseModel):
 class ProfilesSearchingResponse(HrFlowAPIResponseWithPagination):
     data: ProfilesSearchingData
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         return _validate_searching_result(values)
 
 
 class ProfilesScoringData(BaseModel):
-    predictions: t.List[conlist(confloat(ge=0, le=1), min_length=2, max_length=2)]
+    predictions: t.List[conlist(confloat(ge=0, le=1), min_items=2, max_items=2)]
     profiles: t.List[Profile]
 
 
 class ProfilesScoringResponse(HrFlowAPIResponseWithPagination):
     data: ProfilesScoringData
 
-    @model_validator(mode="before")
+    @root_validator(pre=True)
     @classmethod
     def _check(cls, values: t.Dict[str, t.Any]) -> t.Dict[str, t.Any]:
         return _validate_scoring_result(values)
@@ -631,7 +631,7 @@ class ProfileUnfoldingResponse(HrFlowAPIResponse):
 
 
 class ProfileArchieveData(BaseModel):
-    key: constr(pattern=KEY_REGEX)
+    key: constr(regex=KEY_REGEX)
 
 
 class ProfileArchiveResponse(HrFlowAPIResponse):
