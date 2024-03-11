@@ -15,7 +15,7 @@ packages = [{include = "hrflow"}]
 "Changelog" = "https://github.com/Riminder/python-hrflow-api/releases"
 
 [tool.poetry.dependencies]
-python = "^3.8.1"
+python = "^3.8"
 requests = "^2.31.0"
 python-magic = "^0.4.27"
 pydantic = "^1.10.8"
