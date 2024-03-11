@@ -141,7 +141,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
     )
     assert model.code == http_codes.created
     assert model.data.profile
-    profile = model.data.profile.model_dump()
+    profile = model.data.profile.dict()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -234,7 +234,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
     )
     assert model.code == http_codes.created
     assert model.data.profile
-    profile = model.data.profile.model_dump()
+    profile = model.data.profile.dict()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -345,7 +345,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.model_dump()
+    profile = model.data.dict()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
     assert profile["info"]["phone"].count("5") >= 9
@@ -425,7 +425,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.model_dump()
+    profile = model.data.dict()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
     assert profile["info"]["phone"].count("5") >= 9
@@ -636,7 +636,7 @@ def test_profile_editing_basic(hrflow_client):
     model = ProfileIndexingResponse.parse_obj(
         hrflow_client.profile.storing.edit(
             source_key=SOURCE_KEY,
-            profile_json=mock_profile.model_dump(),
+            profile_json=mock_profile.dict(),
         )
     )
     assert model.code == http_codes.ok
