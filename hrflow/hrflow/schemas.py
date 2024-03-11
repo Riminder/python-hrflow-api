@@ -141,7 +141,7 @@ class HrFlowJob(BaseModel):
     )
     url: t.Optional[str] = Field(None, description="Job post original URL.")
     summary: t.Optional[str] = Field(None, description="Brief summary of the Job.")
-    board: Board
+    board: t.Optional[Board]
     archived_at: t.Optional[str] = Field(
         None,
         description=(
