@@ -65,14 +65,14 @@ class TextImagingResponse(HrFlowAPIResponse):
 
 
 class TextEmbeddingDataItem(BaseModel):
-    embedding: conlist(float, min_length=2048, max_length=2048)
+    embedding: conlist(float, min_items=2048, max_items=2048)
 
 
 class TextEmbeddingResponse(HrFlowAPIResponse):
     data: t.Optional[t.List[TextEmbeddingDataItem]] = None
 
 
-_LINKING_DATA_ITEM_TYPE = conlist(t.Any, min_length=2, max_length=2)
+_LINKING_DATA_ITEM_TYPE = conlist(t.Any, min_items=2, max_items=2)
 _LINKING_DATA_TYPE = t.List[_LINKING_DATA_ITEM_TYPE]
 
 
@@ -267,8 +267,8 @@ class Location(BaseModel):
             Fields,
             conlist(
                 t.Any,
-                min_length=0,
-                max_length=0,
+                min_items=0,
+                max_items=0,
             ),
         ]
     ] = None
@@ -541,7 +541,7 @@ class JobsSearchingResponse(HrFlowAPIResponseWithPagination):
 
 
 class JobsScoringData(BaseModel):
-    predictions: t.List[conlist(confloat(ge=0, le=1), min_length=2, max_length=2)]
+    predictions: t.List[conlist(confloat(ge=0, le=1), min_items=2, max_items=2)]
     jobs: t.List[Job]
 
 
@@ -583,8 +583,8 @@ class ProfileParsingFileResponse(HrFlowAPIResponse):
             ProfileParsingFileDataItem,
             conlist(  # for async
                 t.Any,
-                min_length=0,
-                max_length=0,
+                min_items=0,
+                max_items=0,
             ),
         ]
     ] = None
@@ -604,7 +604,7 @@ class ProfilesSearchingResponse(HrFlowAPIResponseWithPagination):
 
 
 class ProfilesScoringData(BaseModel):
-    predictions: t.List[conlist(confloat(ge=0, le=1), min_length=2, max_length=2)]
+    predictions: t.List[conlist(confloat(ge=0, le=1), min_items=2, max_items=2)]
     profiles: t.List[Profile]
 
 

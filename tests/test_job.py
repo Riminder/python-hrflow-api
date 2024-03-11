@@ -234,7 +234,7 @@ def test_job_editing_basic(hrflow_client):
     model = JobIndexingResponse.parse_obj(
         hrflow_client.job.storing.edit(
             board_key=BOARD_KEY,
-            job_json=mock_job.model_dump(),
+            job_json=mock_job.dict(),
         )
     )
     assert model.code == http_codes.ok
