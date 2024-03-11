@@ -1,5 +1,6 @@
-from ..core.validation import validate_response
 from ..core.rate_limit import rate_limiter
+from ..core.validation import validate_response
+
 
 class TextEmbedding:
     """Manage embedding related profile calls."""

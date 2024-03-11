@@ -1,9 +1,9 @@
 import json
 
-from ..core.validation import validate_response
 from ..core import format_item_payload
-
 from ..core.rate_limit import rate_limiter
+from ..core.validation import validate_response
+
 
 class ProfileEmbedding:
     """Manage embedding related profile calls."""

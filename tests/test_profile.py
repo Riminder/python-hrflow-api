@@ -510,9 +510,9 @@ def test_profiles_scoring_basic(hrflow_client):
             limit=5,  # allows to bypass the bug with archived profiles
         )
     )
-    assert model.code == http_codes.ok, (
-        "Maybe the job is not already indexed for the scoring. Please, try again later."
-    )
+    assert (
+        model.code == http_codes.ok
+    ), "Maybe the job is not already indexed for the scoring. Please, try again later."
     assert len(model.data.profiles) == len(model.data.predictions)
 
 

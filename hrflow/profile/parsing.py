@@ -5,13 +5,9 @@ import uuid
 
 from tqdm import tqdm
 
-from ..core.validation import (
-    validate_key,
-    validate_reference,
-    validate_response,
-)
 from ..core import format_item_payload, get_files_from_dir
 from ..core.rate_limit import rate_limiter
+from ..core.validation import validate_key, validate_reference, validate_response
 
 
 class ProfileParsing:

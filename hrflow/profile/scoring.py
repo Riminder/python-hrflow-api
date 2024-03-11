@@ -1,5 +1,6 @@
 import json
 
+from ..core.rate_limit import rate_limiter
 from ..core.validation import (
     ORDER_BY_VALUES,
     SORT_BY_VALUES,
@@ -11,7 +12,6 @@ from ..core.validation import (
     validate_response,
     validate_value,
 )
-from ..core.rate_limit import rate_limiter
 
 
 class ProfileScoring:
