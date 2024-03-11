@@ -339,6 +339,7 @@ class Job(BaseModel):
     name: t.Optional[str] = None
     url: t.Optional[str] = None
     summary: t.Optional[str] = None
+    location: t.Optional[Location] = None
     updated_at: t.Optional[str] = None
     created_at: t.Optional[str] = None
     sections: t.Optional[t.List[Section]] = None
