@@ -13,6 +13,7 @@ from ..core.validation import (
     validate_value,
 )
 from ..core import format_item_payload
+from ..core.rate_limit import rate_limiter
 
 
 class JobStoring:
@@ -28,6 +29,7 @@ class JobStoring:
         """
         self.client = api
 
+    @rate_limiter
     def add_json(self, board_key, job_json):
         """This endpoint allows you to Index a Job object.
         Note: If your Job is an unstructured text, make sure to parse it first before
@@ -120,6 +122,7 @@ class JobStoring:
         response = self.client.post("job/indexing", json=job_json)
         return validate_response(response)
 
+    @rate_limiter
     def edit(self, board_key, job_json, key=None):
         """
         Edit a job already stored in the given source.
@@ -148,6 +151,7 @@ class JobStoring:
         response = self.client.put("job/indexing", json=job_json)
         return validate_response(response)
 
+    @rate_limiter
     def get(self, board_key, key=None, reference=None):
         """
         Retrieve the parsing information.
@@ -168,6 +172,7 @@ class JobStoring:
         response = self.client.get("job/indexing", query_params)
         return validate_response(response)
 
+    @rate_limiter
     def archive(self, board_key, key=None, reference=None):
         """
         This method allows to archive (is_archive=1) or unarchive (is_archive=0) a job
@@ -192,6 +197,7 @@ class JobStoring:
         response = self.client.patch("job/indexing/archive", json=payload)
         return validate_response(response)
 
+    @rate_limiter
     def list(
         self,
         board_keys,

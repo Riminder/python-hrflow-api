@@ -1,6 +1,7 @@
 import typing as t
 
 from ..core.validation import validate_key, validate_response
+from ..core.rate_limit import rate_limiter
 
 API_SECRET_REGEX = r"^ask[rw]?_[0-9a-f]{32}$"
 
@@ -9,6 +10,7 @@ class Auth:
     def __init__(self, api):
         self.client = api
 
+    @rate_limiter
     def get(self) -> t.Dict[str, t.Any]:
         """
         Try your API Keys. This endpoint allows you to learn how to add the right

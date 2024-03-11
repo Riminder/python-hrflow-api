@@ -11,6 +11,7 @@ from ..core.validation import (
     validate_response,
     validate_value,
 )
+from ..core.rate_limit import rate_limiter
 
 
 class JobScoring:
@@ -20,6 +21,7 @@ class JobScoring:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def list(
         self,
         board_keys=None,

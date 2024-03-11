@@ -1,6 +1,8 @@
 from ..core.validation import validate_response
 from ..core import format_item_payload
 
+from ..core.rate_limit import rate_limiter
+
 
 class ProfileRevealing:
     """Manage revealing related profile calls."""
@@ -9,6 +11,7 @@ class ProfileRevealing:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def get(self, source_key=None, key=None, reference=None, email=None):
         """
         Retrieve Parsing information.

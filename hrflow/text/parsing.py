@@ -1,7 +1,7 @@
 import typing as t
 
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextParsing:
     """Manage Text parsing related calls."""
@@ -10,6 +10,7 @@ class TextParsing:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(
         self, text: t.Optional[str] = None, texts: t.Optional[t.List[str]] = None
     ) -> t.Dict[str, t.Any]:

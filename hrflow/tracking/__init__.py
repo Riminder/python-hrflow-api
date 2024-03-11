@@ -1,10 +1,11 @@
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class Tracking:
     def __init__(self, client):
         self.client = client
 
+    @rate_limiter
     def get(
         self,
         role,
@@ -65,6 +66,7 @@ class Tracking:
 
         return validate_response(response)
 
+    @rate_limiter
     def post(
         self,
         action,

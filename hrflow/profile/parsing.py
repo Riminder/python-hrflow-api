@@ -99,6 +99,7 @@ class ProfileParsing:
         )
         return validate_response(response)
 
+    @rate_limiter
     def add_folder(
         self,
         source_key,
@@ -174,6 +175,7 @@ class ProfileParsing:
         result = {"success": succeed_upload, "fail": failed_upload}
         return result
 
+    @rate_limiter
     def get(self, source_key=None, key=None, reference=None, email=None):
         """
         Retrieve Parsing information.

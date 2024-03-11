@@ -1,5 +1,5 @@
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextEmbedding:
     """Manage embedding related profile calls."""
@@ -8,6 +8,7 @@ class TextEmbedding:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(self, text):
         """
         This endpoint allows you to vectorize a Text.

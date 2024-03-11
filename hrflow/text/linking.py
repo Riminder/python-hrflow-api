@@ -1,5 +1,5 @@
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextLinking:
     """Manage Text linking calls."""
@@ -8,6 +8,7 @@ class TextLinking:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(self, word, top_n=5):
         """
         Find synonyms or the top N most similar words to a word.
