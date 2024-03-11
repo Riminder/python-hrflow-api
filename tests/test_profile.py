@@ -133,7 +133,7 @@ def test_profile_parsing_file_quicksilver_sync_basic(hrflow_client):
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_sync")
-    model = ProfileParsingFileResponse.model_validate(
+    model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_file=file,
@@ -141,7 +141,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
     )
     assert model.code == http_codes.created
     assert model.data.profile
-    profile = model.data.profile.model_dump()
+    profile = model.data.profile.dict()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -226,7 +226,7 @@ def test_profile_parsing_file_hawk_sync_basic(hrflow_client):
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_sync")
-    model = ProfileParsingFileResponse.model_validate(
+    model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"),
             profile_file=file,
@@ -234,7 +234,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
     )
     assert model.code == http_codes.created
     assert model.data.profile
-    profile = model.data.profile.model_dump()
+    profile = model.data.profile.dict()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -321,7 +321,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.model_validate(
+    model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -331,7 +331,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert model.code == http_codes.accepted
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
-        model = ProfileIndexingResponse.model_validate(
+        model = ProfileIndexingResponse.parse_obj(
             hrflow_client.profile.storing.get(
                 source_key=SOURCE_KEY, reference=reference
             )
@@ -345,7 +345,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.model_dump()
+    profile = model.data.dict()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
     assert profile["info"]["phone"].count("5") >= 9
@@ -401,7 +401,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
     file = _file_get(s3_url, "profile_async")
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.model_validate(
+    model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -411,7 +411,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
     assert model.code == http_codes.accepted
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
-        model = ProfileIndexingResponse.model_validate(
+        model = ProfileIndexingResponse.parse_obj(
             hrflow_client.profile.storing.get(
                 source_key=SOURCE_KEY, reference=reference
             )
@@ -425,7 +425,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.model_dump()
+    profile = model.data.dict()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
     assert profile["info"]["phone"].count("5") >= 9
@@ -475,7 +475,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 @pytest.mark.indexing
 def test_profile_indexing_basic(hrflow_client):
     profile = _profile_get()
-    model = ProfileIndexingResponse.model_validate(
+    model = ProfileIndexingResponse.parse_obj(
         hrflow_client.profile.storing.add_json(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_json=profile,
@@ -489,7 +489,7 @@ def test_profile_indexing_basic(hrflow_client):
 @pytest.mark.profile
 @pytest.mark.searching
 def test_profiles_searching_basic(hrflow_client):
-    model = ProfilesSearchingResponse.model_validate(
+    model = ProfilesSearchingResponse.parse_obj(
         hrflow_client.profile.searching.list(
             source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
             limit=5,  # allows to bypass the bug with archived profiles
@@ -501,7 +501,7 @@ def test_profiles_searching_basic(hrflow_client):
 @pytest.mark.profile
 @pytest.mark.scoring
 def test_profiles_scoring_basic(hrflow_client):
-    model = ProfilesScoringResponse.model_validate(
+    model = ProfilesScoringResponse.parse_obj(
         hrflow_client.profile.scoring.list(
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_key=_var_from_env_get("HRFLOW_BOARD_KEY"),
@@ -517,7 +517,7 @@ def test_profiles_scoring_basic(hrflow_client):
 @pytest.mark.asking
 def test_profile_asking_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    model = ProfileAskingResponse.model_validate(
+    model = ProfileAskingResponse.parse_obj(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(
@@ -543,7 +543,7 @@ def test_profile_asking_multiple_questions(hrflow_client):
         "Does the applicant have a driver's licence ?",
         "What year did the profile finish school ?",
     ]
-    model = ProfileAskingResponse.model_validate(
+    model = ProfileAskingResponse.parse_obj(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             questions=questions,
@@ -563,7 +563,7 @@ def test_profile_asking_multiple_questions(hrflow_client):
 @pytest.mark.asking
 def test_profile_asking_no_question(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    model = ProfileAskingResponse.model_validate(
+    model = ProfileAskingResponse.parse_obj(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(
@@ -588,7 +588,7 @@ def test_profile_unfolding_basic(hrflow_client):
             if datestr is not None:  # +1 year
                 last_experience[dkey] = str(int(datestr[:4]) + 1) + datestr[4:]
     for _ in range(_MAX_RETRIES):
-        model = ProfileUnfoldingResponse.model_validate(
+        model = ProfileUnfoldingResponse.parse_obj(
             hrflow_client.profile.unfolding.get(
                 source_key=SOURCE_KEY,
                 key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
@@ -606,7 +606,7 @@ def test_profile_unfolding_no_experience(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     profile["experiences"] = list()
-    model = ProfileUnfoldingResponse.model_validate(
+    model = ProfileUnfoldingResponse.parse_obj(
         hrflow_client.profile.unfolding.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
@@ -620,7 +620,7 @@ def test_profile_unfolding_no_experience(hrflow_client):
 def test_profile_archive_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_key = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key
-    model = ProfileArchiveResponse.model_validate(
+    model = ProfileArchiveResponse.parse_obj(
         hrflow_client.profile.storing.archive(source_key=SOURCE_KEY, key=mock_key)
     )
     assert model.code == http_codes.ok
@@ -633,10 +633,10 @@ def test_profile_editing_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_profile = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data
     mock_profile.text = f"The password of my bitcoin wallet is {uuid1()}."
-    model = ProfileIndexingResponse.model_validate(
+    model = ProfileIndexingResponse.parse_obj(
         hrflow_client.profile.storing.edit(
             source_key=SOURCE_KEY,
-            profile_json=mock_profile.model_dump(),
+            profile_json=mock_profile.dict(),
         )
     )
     assert model.code == http_codes.ok

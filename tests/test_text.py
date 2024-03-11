@@ -46,7 +46,7 @@ def hrflow_client():
 @pytest.mark.embedding
 def test_embedding_basic(hrflow_client):
     text = "I love using embeddings in order do transfer learning with my AI algorithms"
-    model = TextEmbeddingResponse.model_validate(
+    model = TextEmbeddingResponse.parse_obj(
         hrflow_client.text.embedding.post(text=text)
     )
     assert model.code == requests.codes.ok
@@ -56,7 +56,7 @@ def test_embedding_basic(hrflow_client):
 @pytest.mark.text
 @pytest.mark.embedding
 def test_embedding_no_text(hrflow_client):
-    model = TextEmbeddingResponse.model_validate(
+    model = TextEmbeddingResponse.parse_obj(
         hrflow_client.text.embedding.post(text=None)
     )
     assert model.code == requests.codes.bad_request
@@ -74,7 +74,7 @@ def _content_is_png(content: bytes) -> bool:
 
 
 def _imaging_test_valid_size(hrflow_client, width: t.Literal[256, 512]):
-    model = TextImagingResponse.model_validate(
+    model = TextImagingResponse.parse_obj(
         hrflow_client.text.imaging.post(text="plumber", width=width)
     )
     assert model.code == requests.codes.ok
@@ -99,7 +99,7 @@ def test_imaging_basic_512(hrflow_client):
 @pytest.mark.text
 @pytest.mark.imaging
 def test_imaging_unsupported_size(hrflow_client):
-    model = TextImagingResponse.model_validate(
+    model = TextImagingResponse.parse_obj(
         hrflow_client.text.imaging.post(text="mechanic", width=111)
     )
     assert model.code == requests.codes.bad_request
@@ -109,7 +109,7 @@ def test_imaging_unsupported_size(hrflow_client):
 @pytest.mark.text
 @pytest.mark.imaging
 def test_imaging_no_text(hrflow_client):
-    model = TextImagingResponse.model_validate(
+    model = TextImagingResponse.parse_obj(
         hrflow_client.text.imaging.post(text=None, width=256)
     )
     assert model.code == requests.codes.bad_request
@@ -120,7 +120,7 @@ def test_imaging_no_text(hrflow_client):
 @pytest.mark.linking
 def test_linking_basic(hrflow_client):
     top_n = 7
-    model = TextLinkingResponse.model_validate(
+    model = TextLinkingResponse.parse_obj(
         hrflow_client.text.linking.post(word="ai", top_n=top_n)
     )
     assert model.code == requests.codes.ok
@@ -130,7 +130,7 @@ def test_linking_basic(hrflow_client):
 @pytest.mark.text
 @pytest.mark.linking
 def test_linking_no_text(hrflow_client):
-    model = TextLinkingResponse.model_validate(
+    model = TextLinkingResponse.parse_obj(
         hrflow_client.text.linking.post(word=None, top_n=1)
     )
     assert model.code == requests.codes.bad_request
@@ -140,7 +140,7 @@ def test_linking_no_text(hrflow_client):
 @pytest.mark.text
 @pytest.mark.linking
 def test_linking_zero(hrflow_client):
-    model = TextLinkingResponse.model_validate(
+    model = TextLinkingResponse.parse_obj(
         hrflow_client.text.linking.post(word="ai", top_n=0)
     )
     assert model.code == requests.codes.ok
@@ -151,7 +151,7 @@ def test_linking_zero(hrflow_client):
 @pytest.mark.linking
 @pytest.mark.skip(reason="backend: negative top_n not correctly handled yet")
 def test_linking_negative_amount(hrflow_client):
-    model = TextLinkingResponse.model_validate(
+    model = TextLinkingResponse.parse_obj(
         hrflow_client.text.linking.post(word="ai", top_n=-42)
     )
     assert model.code == requests.codes.bad_request
@@ -160,7 +160,7 @@ def test_linking_negative_amount(hrflow_client):
 @pytest.mark.text
 @pytest.mark.tagging
 def test_tagger_rome_family_with_text_param(hrflow_client):
-    model = TextTaggingReponse.model_validate(
+    model = TextTaggingReponse.parse_obj(
         hrflow_client.text.tagging.post(
             algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
             text=TAGGING_TEXTS[0],
@@ -174,7 +174,7 @@ def test_tagger_rome_family_with_text_param(hrflow_client):
 @pytest.mark.text
 @pytest.mark.tagging
 def test_tagger_rome_family_with_texts_param(hrflow_client):
-    model = TextTaggingReponse.model_validate(
+    model = TextTaggingReponse.parse_obj(
         hrflow_client.text.tagging.post(
             algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
             texts=TAGGING_TEXTS,
@@ -190,7 +190,7 @@ def test_tagger_rome_family_with_texts_param(hrflow_client):
 @pytest.mark.tagging
 def test_tagger_rome_family_with_text_and_texts_param(hrflow_client):
     try:
-        TextTaggingReponse.model_validate(
+        TextTaggingReponse.parse_obj(
             hrflow_client.text.tagging.post(
                 algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
                 text=TAGGING_TEXTS[0],
@@ -207,7 +207,7 @@ def test_tagger_rome_family_with_text_and_texts_param(hrflow_client):
 @pytest.mark.tagging
 def test_tagger_rome_family_without_text_or_texts_param(hrflow_client):
     try:
-        TextTaggingReponse.model_validate(
+        TextTaggingReponse.parse_obj(
             hrflow_client.text.tagging.post(
                 algorithm_key=TAGGING_ALGORITHM.TAGGER_ROME_FAMILY,
                 top_n=2,
@@ -226,7 +226,7 @@ def _tagging_test(
     labels: t.Optional[t.List[str]] = None,
     top_n: t.Optional[int] = 1,
 ) -> TextTaggingReponse:
-    model = TextTaggingReponse.model_validate(
+    model = TextTaggingReponse.parse_obj(
         hrflow_client.text.tagging.post(
             algorithm_key=algorithm_key,
             texts=texts,
@@ -362,7 +362,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 495c951bbae6b/profiles/52e3c23a5f21190c59f53c41b5630ecb5d414f94/parsing/resume.pdf"""
     file = _file_get(s3_url, "ocr")
     assert file is not None
-    model = TextOCRResponse.model_validate(hrflow_client.text.ocr.post(file=file))
+    model = TextOCRResponse.parse_obj(hrflow_client.text.ocr.post(file=file))
     assert model.code == requests.codes.ok
     assert "ocr" in model.message.lower()
 
@@ -371,9 +371,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 @pytest.mark.parsing
 def test_parsing_basic_with_texts_param(hrflow_client):
     texts = ["John Doe can be contacted on john.doe@hrflow.ai"]
-    model = TextParsingResponse.model_validate(
-        hrflow_client.text.parsing.post(texts=texts)
-    )
+    model = TextParsingResponse.parse_obj(hrflow_client.text.parsing.post(texts=texts))
     assert model.code == requests.codes.ok
     assert len(model.data) == len(texts)
 
@@ -382,9 +380,7 @@ def test_parsing_basic_with_texts_param(hrflow_client):
 @pytest.mark.parsing
 def test_parsing_basic_with_text_param(hrflow_client):
     text = "John Doe can be contacted on john.doe@hrflow.ai"
-    model = TextParsingResponse.model_validate(
-        hrflow_client.text.parsing.post(text=text)
-    )
+    model = TextParsingResponse.parse_obj(hrflow_client.text.parsing.post(text=text))
     assert model.code == requests.codes.ok
 
 
@@ -392,7 +388,7 @@ def test_parsing_basic_with_text_param(hrflow_client):
 @pytest.mark.parsing
 def test_parsing_basic_with_no_text_or_texts_param(hrflow_client):
     with pytest.raises(ValueError):
-        TextParsingResponse.model_validate(hrflow_client.text.parsing.post())
+        TextParsingResponse.parse_obj(hrflow_client.text.parsing.post())
 
 
 @pytest.mark.text
@@ -400,6 +396,6 @@ def test_parsing_basic_with_no_text_or_texts_param(hrflow_client):
 def test_parsing_basic_with_text_and_texts_param(hrflow_client):
     text = "John Doe can be contacted on john.doe@hrflow.ai"
     with pytest.raises(ValueError):
-        TextParsingResponse.model_validate(
+        TextParsingResponse.parse_obj(
             hrflow_client.text.parsing.post(text=text, texts=[text])
         )
