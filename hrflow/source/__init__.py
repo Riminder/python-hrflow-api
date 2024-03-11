@@ -6,12 +6,14 @@ from ..core.validation import (
     validate_response,
     validate_value,
 )
+from ..core.rate_limit import rate_limiter
 
 
 class Source(object):
     def __init__(self, client):
         self.client = client
 
+    @rate_limiter
     def list(self, name=None, page=1, limit=30, sort_by="date", order_by="desc"):
         """
         Search sources for given filters.
@@ -42,6 +44,7 @@ class Source(object):
         response = self.client.get("sources", query_params)
         return validate_response(response)
 
+    @rate_limiter
     def get(self, key=None):
         """
         Get source given a source id.

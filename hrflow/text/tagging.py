@@ -1,7 +1,7 @@
 import typing as t
 
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextTagging:
     """Manage tagging related calls."""
@@ -10,6 +10,7 @@ class TextTagging:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(
         self,
         algorithm_key: str,

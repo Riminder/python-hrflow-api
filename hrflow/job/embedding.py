@@ -1,6 +1,6 @@
 from ..core.validation import validate_response
 from ..core import format_item_payload
-
+from ..core.rate_limit import rate_limiter
 
 class JobEmbedding:
     """Manage embedding related job calls."""
@@ -9,6 +9,7 @@ class JobEmbedding:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def get(self, board_key, key=None, reference=None):
         """
         Retrieve the parsing information.

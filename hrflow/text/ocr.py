@@ -1,5 +1,5 @@
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextOCR:
     "Manage Text extraction from documents using in-house advance OCR related calls."
@@ -8,6 +8,7 @@ class TextOCR:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(self, file):
         """
         This endpoint allows you to extract a the text from a document across all

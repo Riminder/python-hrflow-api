@@ -13,7 +13,7 @@ from ..core.validation import (
     validate_value,
 )
 from ..core import format_item_payload
-
+from ..core.rate_limit import rate_limiter
 
 class ProfileStoring:
     """Manage Storing related profile calls."""
@@ -22,6 +22,7 @@ class ProfileStoring:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def add_json(self, source_key, profile_json):
         """This endpoint allows you to Index a Profile object.
 
@@ -170,6 +171,7 @@ class ProfileStoring:
         response = self.client.post("profile/indexing", json=profile_json)
         return validate_response(response)
 
+    @rate_limiter
     def edit(self, source_key, profile_json, key=None):
         """
         Edit a profile already stored in the given source.
@@ -194,6 +196,7 @@ class ProfileStoring:
         response = self.client.put("profile/indexing", json=profile_json)
         return validate_response(response)
 
+    @rate_limiter
     def get(self, source_key, key=None, reference=None):
         """
         💾 Get a Profile indexed in a Source
@@ -218,6 +221,7 @@ class ProfileStoring:
         response = self.client.get("profile/indexing", query_params)
         return validate_response(response)
 
+    @rate_limiter
     def archive(self, source_key, key=None, reference=None, email=None):
         """
         This method allows to archive (is_archive=1) or unarchive (is_archive=0) a
@@ -245,6 +249,7 @@ class ProfileStoring:
         response = self.client.patch("profile/indexing/archive", json=payload)
         return validate_response(response)
 
+    @rate_limiter
     def list(
         self,
         source_keys,

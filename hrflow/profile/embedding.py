@@ -3,6 +3,7 @@ import json
 from ..core.validation import validate_response
 from ..core import format_item_payload
 
+from ..core.rate_limit import rate_limiter
 
 class ProfileEmbedding:
     """Manage embedding related profile calls."""
@@ -11,6 +12,7 @@ class ProfileEmbedding:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def get(self, source_key, key=None, reference=None, email=None, fields={}):
         """
         Retrieve the interpretability information.

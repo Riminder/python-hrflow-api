@@ -1,5 +1,5 @@
 from ..core.validation import validate_response
-
+from ..core.rate_limit import rate_limiter
 
 class TextImaging:
     """Manage Imaging API related calls."""
@@ -8,6 +8,7 @@ class TextImaging:
         """Init."""
         self.client = api
 
+    @rate_limiter
     def post(self, text, width=256):
         """
         This endpoint allows you to generate an image from a job description text.
