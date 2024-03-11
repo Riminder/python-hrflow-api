@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "hrflow"
-version = "3.3.0a2"
+version = "4.0.0"
 description = "Python hrflow.ai API package"
 authors = ["HrFlow.ai <contact@hrflow.ai>"]
 license = "MIT"
@@ -20,7 +20,7 @@ requests = "^2.31.0"
 python-magic = "^0.4.27"
 tqdm = "^4.66.2"
 openpyxl = "^3.1.2"
-pydantic = "^2.5.2"
+pydantic = "^1.10.8"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.4.3"

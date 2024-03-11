@@ -105,7 +105,7 @@ def _check_same_keys_equality(source: t.Dict[str, t.Any], target: BaseModel):
         None
     """
 
-    dumped = target.model_dump()  # easier to compare dict vs dict
+    dumped = target.dict()  # easier to compare dict vs dict
 
     def _fail_message_get(key, source_value, target_value, is_complex=False):
         return (
@@ -189,7 +189,7 @@ def _indexed_response_get(
 
     is_job = "info" not in json
 
-    model = (JobIndexingResponse if is_job else ProfileIndexingResponse).model_validate(
+    model = (JobIndexingResponse if is_job else ProfileIndexingResponse).parse_obj(
         getattr(hf, "job" if is_job else "profile").storing.add_json(holder_key, json)
     )
 
