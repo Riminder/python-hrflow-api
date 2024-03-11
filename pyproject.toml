@@ -59,6 +59,7 @@ markers = [
     "parsing_file_sync",
     "profile",
     "quicksilver",
+    "rate_limit",
     "scoring",
     "searching",
     "tagging",
