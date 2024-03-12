@@ -65,12 +65,11 @@ with open("path_to_file.pdf", "rb") as f:
 
 #Parse it using this method without reference:
 response = client.profile.parsing.add_file(
-            source_key="INSERT_THE_TARGET_SOURCE_KEY",
-            profile_file=file,
-            sync_parsing=1, # This is to invoke real time parsing
-            tags=[{"name": "application_reference", "value": "TS_X12345"}], # Attach an application tag to the profile to be parsed
-        )
-
+    source_key="INSERT_THE_TARGET_SOURCE_KEY",
+    profile_file=file,
+    sync_parsing=1, # This is to invoke real time parsing
+    tags=[{"name": "application_reference", "value": "TS_X12345"}], # Attach an application tag to the profile to be parsed
+)
 ```
 
 

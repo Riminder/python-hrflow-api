@@ -1,7 +1,7 @@
 # Define variables
 ARGS := 
 
-clean:
+clean: clean_cache
 	rm -rf build dist *.egg-info
 
 clean_cache:
