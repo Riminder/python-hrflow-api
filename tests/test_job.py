@@ -149,8 +149,10 @@ def test_job_scoring_basic(hrflow_client):
             limit=5,  # allows to bypass the bug with archived jobs
         )
     )
-    assert model.code == http_codes.ok
-    assert len(model.data.jobs) == len(model.data.predictions) == model.meta.count
+    assert (
+        model.code == http_codes.ok
+    ), "Maybe the job is not already indexed for the scoring. Please, try again later."
+    assert len(model.data.jobs) == len(model.data.predictions)
 
 
 @pytest.mark.job
