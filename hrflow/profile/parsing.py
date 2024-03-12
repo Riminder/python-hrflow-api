@@ -144,16 +144,15 @@ class ProfileParsing:
         for file_path in files_to_send:
             filename = os.path.basename(file_path)
             try:
-                with open(file_path, "rb") as f:
-                    profile_file = f.read()
-                resp = self.add_file(
-                    source_key=source_key,
-                    profile_file=profile_file,
-                    profile_file_name=filename,
-                    created_at=created_at,
-                    sync_parsing=sync_parsing,
-                    **kwargs,
-                )
+                with open(file_path, "rb") as file:
+                    resp = self.add_file(
+                        source_key=source_key,
+                        profile_file=file,
+                        profile_file_name=filename,
+                        created_at=created_at,
+                        sync_parsing=sync_parsing,
+                        **kwargs,
+                    )
                 response_code = str(resp["code"])  # 200, 201, 202, 400, ...
                 if response_code[0] != "2":
                     failed_upload[file_path] = ValueError(
