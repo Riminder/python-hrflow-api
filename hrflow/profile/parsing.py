@@ -84,12 +84,18 @@ class ProfileParsing:
             "sync_parsing_indexing": sync_parsing_indexing,
             "webhook_parsing_sending": webhook_parsing_sending,
         }
-
+        default_file_name = "resume.pdf"
         if profile_file_name is None:
-            file_payload = {"file": profile_file}
-        else:
-            file_payload = {"file": (profile_file_name, profile_file)}
+            if hasattr(profile_file, "name"):
+                file_name_from_obj = os.path.basename(profile_file.name)
+                if file_name_from_obj:
+                    profile_file_name = file_name_from_obj
+                else:
+                    profile_file_name = default_file_name
+            else:
+                profile_file_name = default_file_name
 
+        file_payload = {"file": (profile_file_name, profile_file)}
         response = self.client.post(
             "profile/parsing/file", data=payload, files=file_payload
         )
