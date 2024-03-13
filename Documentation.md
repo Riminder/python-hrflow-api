@@ -96,8 +96,7 @@ This endpoint allows you to parse a resume and make a profile object from it.
 > 📘 **Real-time parsing**: To use the real-time parsing feature, you must have it enabled for the correponding source. In which case you just need to set `sync_parsing` to `1`.
 - Open the file in `binary mode`
 ```python
-    >>> with open("path/2/file", "rb") as f:
-            profile_file = f.read()
+    >>> profile_file = open("path/2/file", "rb")
 
 ```
 - Parse it using this method without reference:
@@ -132,6 +131,10 @@ In both cases the output should look like this:
         ...
     }
  ```
+- Close the file after parsing
+```python
+    >>> profile_file.close()
+```
 ### 🧠 **Get a Resume Parsing from a Source**  
 Retrieve Parsing information using source key and key/reference.
 > ⚠️ **Query parameters**: `reference` and `key` cannot be null at the same time.
