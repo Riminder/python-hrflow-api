@@ -97,7 +97,8 @@ class InfoEvaluation(BaseModel):
         location = 1 if info.get("location") else 0
         summary = 1 if info.get("summary") else 0
         driving_license = 1 if info.get("driving_license") else 0
-
+        person = int(first_name and last_name)
+        
         score = (
             first_name
             + last_name
@@ -110,7 +111,7 @@ class InfoEvaluation(BaseModel):
         score /= 7
         return InfoEvaluation(
             score=score,
-            person=1,
+            person=person,
             first_name=first_name,
             last_name=last_name,
             phone=phone,
