@@ -1,3 +1,4 @@
+import io
 import os
 import typing as t
 from datetime import datetime, timezone
@@ -50,7 +51,10 @@ def _iso8601_to_datetime(datestr: str) -> t.Optional[datetime]:
         pass
 
 
-def _file_get(url: str, file_name: t.Optional[str] = None) -> t.Optional[bytes]:
+def _file_get(
+    url: str,
+    file_name: t.Optional[str] = None
+) -> t.Optional[t.Union[io.BytesIO, io.BufferedReader]]:
     """
     Gets the file corresponding to the specified `url`. If tests/assets/`file_name`
     does not exist, it will be downloaded from `url` and stored for reuse, basically,
@@ -72,7 +76,9 @@ def _file_get(url: str, file_name: t.Optional[str] = None) -> t.Optional[bytes]:
     file_path = os.path.join(dir_path, file_name)
     if os.path.isfile(file_path):
         with open(file_path, "rb") as file:
-            return file.read()
+            file_object = io.BytesIO(file.read())
+            file_object.name = file_path
+            return file_object
 
     response = requests.get(url)
 
@@ -88,7 +94,7 @@ def _file_get(url: str, file_name: t.Optional[str] = None) -> t.Optional[bytes]:
     with open(file_path, "wb+") as file:
         file.write(file_data)
 
-    return file_data
+    return io.BytesIO(file_data)
 
 
 def _check_same_keys_equality(source: t.Dict[str, t.Any], target: BaseModel):
