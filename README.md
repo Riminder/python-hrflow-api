@@ -59,17 +59,18 @@ from hrflow import Hrflow
 client = Hrflow(api_secret="YOUR_API_KEY", api_user="YOU_USER_EMAIL")
 
 # read file from directory (in binary mode) 
-with open("path_to_file.pdf", "rb") as f:
-    file = f.read()
+file = open("path_to_file.pdf", "rb")
 
-
-#Parse it using this method without reference:
+# Parse it using this method without reference:
 response = client.profile.parsing.add_file(
     source_key="INSERT_THE_TARGET_SOURCE_KEY",
     profile_file=file,
     sync_parsing=1, # This is to invoke real time parsing
     tags=[{"name": "application_reference", "value": "TS_X12345"}], # Attach an application tag to the profile to be parsed
 )
+
+# Close the file
+file.close()
 ```
 
 
