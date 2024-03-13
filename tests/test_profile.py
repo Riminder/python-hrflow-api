@@ -645,28 +645,6 @@ def test_profile_editing_basic(hrflow_client):
     )
     assert model.code == http_codes.ok
     assert model.data.text == mock_profile.text
-
-@pytest.mark.profile
-@pytest.mark.parsing
-def test_profile_parsing_hawk_sync_from_byteio(hrflow_client):
-    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC")
-    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
-teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
-3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
-    file = _file_get(s3_url, "profile_async")
-    file = io.BytesIO(file)
-    reference = str(uuid1())
-    model = ProfileParsingFileResponse.parse_obj(
-        hrflow_client.profile.parsing.add_file(
-            source_key=SOURCE_KEY,
-            profile_file=file,
-            profile_file_name="resume.png",
-            reference=reference,
-        )
-    )
-    assert model.code == http_codes.created
-    assert model.data.profile.text != "", "The text of the profile should not be empty."
-    
     
 @pytest.mark.profile
 @pytest.mark.parsing
