@@ -52,8 +52,7 @@ def _iso8601_to_datetime(datestr: str) -> t.Optional[datetime]:
 
 
 def _file_get(
-    url: str,
-    file_name: t.Optional[str] = None
+    url: str, file_name: t.Optional[str] = None
 ) -> t.Optional[t.Union[io.BytesIO, io.BufferedReader]]:
     """
     Gets the file corresponding to the specified `url`. If tests/assets/`file_name`

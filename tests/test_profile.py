@@ -1,4 +1,3 @@
-import io
 import json
 import typing as t
 from time import sleep
@@ -645,7 +644,8 @@ def test_profile_editing_basic(hrflow_client):
     )
     assert model.code == http_codes.ok
     assert model.data.text == mock_profile.text
-    
+
+
 @pytest.mark.profile
 @pytest.mark.parsing
 def test_profile_parsing_hawk_sync_png(hrflow_client):
@@ -665,6 +665,7 @@ fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/7f61abfb4a0ea127ca1536136a0891c
     )
     assert model.code == http_codes.created
     assert model.data.profile.text != "", "The text of the profile should not be empty."
+
 
 @pytest.mark.profile
 @pytest.mark.parsing
