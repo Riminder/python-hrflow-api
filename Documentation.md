@@ -94,35 +94,33 @@ JSON object with 5 required fields: `key`, `reference`, `info`, `text_language` 
 ### 🧠 **Parse a Resume in a Source**
 This endpoint allows you to parse a resume and make a profile object from it.
 > 📘 **Real-time parsing**: To use the real-time parsing feature, you must have it enabled for the correponding source. In which case you just need to set `sync_parsing` to `1`.
-- Open the file in `binary mode`
+- Open the file in `binary mode` and parse it using this method without reference
 ```python
-    >>> profile_file = open("path/2/file", "rb")
-
-```
-- Parse it using this method without reference:
-```python
-    >>> response = client.profile.parsing.add_file(
-            source_key="source_key",
-            profile_file=profile_file,
-            sync_parsing=1,
-            sync_parsing_indexing=1,
-            webhook_parsing_sending=0,
-            tags=[{"name": "archive", "value": True}],
-        )
+    >>> with open("path/2/file", "rb") as profile_file:
+    ...     response = client.profile.parsing.add_file(
+                source_key="source_key",
+                profile_file=profile_file,
+                sync_parsing=1,
+                sync_parsing_indexing=1,
+                webhook_parsing_sending=0,
+                tags=[{"name": "archive", "value": True}],
+            )
 ```
 
 - Or using a reference like this:
 ```python
-    >>> response = client.profile.parsing.add_file(
-            source_key="source_key",
-            reference="my_resume",
-            profile_file=profile_file,
-            sync_parsing=1,
-            sync_parsing_indexing=1,
-            webhook_parsing_sending=0,
-            tags=[{"name": "archive", "value": True}],
-        )
+    >>> with open("path/2/file", "rb") as profile_file:
+    ...     response = client.profile.parsing.add_file(
+                source_key="source_key",
+                reference="my_resume",
+                profile_file=profile_file,
+                sync_parsing=1,
+                sync_parsing_indexing=1,
+                webhook_parsing_sending=0,
+                tags=[{"name": "archive", "value": True}],
+            )
 ```
+
 In both cases the output should look like this:
 ```
     {
@@ -131,10 +129,6 @@ In both cases the output should look like this:
         ...
     }
  ```
-- Close the file after parsing
-```python
-    >>> profile_file.close()
-```
 ### 🧠 **Get a Resume Parsing from a Source**  
 Retrieve Parsing information using source key and key/reference.
 > ⚠️ **Query parameters**: `reference` and `key` cannot be null at the same time.
