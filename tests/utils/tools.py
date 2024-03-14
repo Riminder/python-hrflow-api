@@ -93,6 +93,8 @@ def _file_get(
     with open(file_path, "wb+") as file:
         file.write(file_data)
 
+    file_object = io.BytesIO(file_data)
+    file_object.name = file_name
     return io.BytesIO(file_data)
 
 
