@@ -9,6 +9,8 @@ from ..core import format_item_payload, get_files_from_dir
 from ..core.rate_limit import rate_limiter
 from ..core.validation import validate_key, validate_reference, validate_response
 
+DEFAULT_FILE_NAME = "resume.pdf"
+
 
 class ProfileParsing:
     """Manage parsing related profile calls."""
@@ -86,10 +88,13 @@ class ProfileParsing:
         }
 
         if profile_file_name is None:
-            file_payload = {"file": profile_file}
-        else:
-            file_payload = {"file": (profile_file_name, profile_file)}
+            profile_file_name = DEFAULT_FILE_NAME
+            if hasattr(profile_file, "name"):
+                profile_file_name = (
+                    os.path.basename(profile_file.name) or profile_file_name
+                )
 
+        file_payload = {"file": (profile_file_name, profile_file)}
         response = self.client.post(
             "profile/parsing/file", data=payload, files=file_payload
         )
