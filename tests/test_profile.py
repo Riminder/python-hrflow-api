@@ -29,6 +29,19 @@ _MAX_RETRIES = 5
 _ASYNC_RETRY_INTERVAL_SECONDS = 5
 _ASYNC_TIMEOUT_SECONDS = 60
 
+NICO_PDF_URL = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
+teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
+495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
+NICO_PNG_URL = """https://riminder-documents-eu-2019-12.s3.eu-west-1.amazonaws.com/team\
+s/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/7f61abfb4a0ea127ca1536136a0891c5948b\
+fb7f/files/035b6b44943877bae355a527efcb7b721dbcdde7/file-nico_durant.png"""
+NICO_DOCX_URL = """https://riminder-documents-eu-2019-12.s3.eu-west-1.amazonaws.com/tea\
+ms/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/7f61abfb4a0ea127ca1536136a0891c5948\
+bfb7f/files/73ad352f0e93a46c82591655edacaf01711141a6/file-nico_durant.docx"""
+JOHN_PDF_URL = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
+teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
+3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
+
 
 @pytest.fixture(scope="module")
 def hrflow_client():
@@ -129,10 +142,7 @@ def _profile_get() -> t.Dict[str, t.Any]:
 @pytest.mark.parsing_file_sync
 @pytest.mark.quicksilver
 def test_profile_parsing_file_quicksilver_sync_basic(hrflow_client):
-    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
-teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
-495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
-    file = _file_get(s3_url, "profile_sync")
+    file = _file_get(NICO_PDF_URL)
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
@@ -222,10 +232,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 @pytest.mark.parsing_file_sync
 @pytest.mark.hawk
 def test_profile_parsing_file_hawk_sync_basic(hrflow_client):
-    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
-teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
-495c951bbae6b/profiles/1fed6e15b2df4465b1e406adabd0075d3214bc18/parsing/resume.pdf"""
-    file = _file_get(s3_url, "profile_sync")
+    file = _file_get(NICO_PDF_URL)
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"),
@@ -316,15 +323,13 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586af
 @pytest.mark.quicksilver
 def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_ASYNC")
-    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
-teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
-3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
-    file = _file_get(s3_url, "profile_async")
+    file = _file_get(JOHN_PDF_URL)
     reference = str(uuid1())
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
+            profile_file_name="john_smith.pdf",
             reference=reference,
         )
     )
@@ -396,15 +401,13 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
 @pytest.mark.mozart
 def test_profile_parsing_file_mozart_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_MOZART_ASYNC")
-    s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
-teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d385d\
-3c2b0cf00c0eb/profiles/d79768fb63013a8bdd04e7e8742cc84afd428a87/parsing/resume.pdf"""
-    file = _file_get(s3_url, "profile_async")
+    file = _file_get(JOHN_PDF_URL)
     reference = str(uuid1())
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
+            profile_file_name="john_smith.pdf",
             reference=reference,
         )
     )
@@ -644,3 +647,39 @@ def test_profile_editing_basic(hrflow_client):
     )
     assert model.code == http_codes.ok
     assert model.data.text == mock_profile.text
+
+
+@pytest.mark.profile
+@pytest.mark.parsing
+def test_profile_parsing_hawk_sync_png(hrflow_client):
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC")
+    file = _file_get(NICO_PNG_URL)
+    reference = str(uuid1())
+    model = ProfileParsingFileResponse.parse_obj(
+        hrflow_client.profile.parsing.add_file(
+            source_key=SOURCE_KEY,
+            profile_file=file,
+            profile_file_name="nico_durant.png",
+            reference=reference,
+        )
+    )
+    assert model.code == http_codes.created
+    assert model.data.profile.text != "", "The text of the profile should not be empty."
+
+
+@pytest.mark.profile
+@pytest.mark.parsing
+def test_profile_parsing_hawk_sync_docx(hrflow_client):
+    SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC")
+    file = _file_get(NICO_DOCX_URL)
+    reference = str(uuid1())
+    model = ProfileParsingFileResponse.parse_obj(
+        hrflow_client.profile.parsing.add_file(
+            source_key=SOURCE_KEY,
+            profile_file=file,
+            profile_file_name="nico_durant.docx",
+            reference=reference,
+        )
+    )
+    assert model.code == http_codes.created
+    assert model.data.profile.text != "", "The text of the profile should not be empty."
