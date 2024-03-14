@@ -360,7 +360,7 @@ def test_ocr_basic(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3-eu-west-1.amazonaws.com/\
 teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/07065e555609a231752a586afd6\
 495c951bbae6b/profiles/52e3c23a5f21190c59f53c41b5630ecb5d414f94/parsing/resume.pdf"""
-    file = _file_get(s3_url, "ocr")
+    file = _file_get(s3_url, "ocr.pdf")
     assert file is not None
     model = TextOCRResponse.parse_obj(hrflow_client.text.ocr.post(file=file))
     assert model.code == requests.codes.ok
