@@ -1,3 +1,4 @@
+import hashlib
 import io
 import os
 import typing as t
@@ -51,13 +52,12 @@ def _iso8601_to_datetime(datestr: str) -> t.Optional[datetime]:
         pass
 
 
-def _file_get(
-    url: str, file_name: t.Optional[str] = None
-) -> t.Optional[t.Union[io.BytesIO, io.BufferedReader]]:
+def _file_get(url: str) -> t.Optional[t.Union[io.BytesIO, io.BufferedReader]]:
     """
-    Gets the file corresponding to the specified `url`. If tests/assets/`file_name`
-    does not exist, it will be downloaded from `url` and stored for reuse, basically,
-    it will be locally cached.
+    Gets the file corresponding to the specified `url`.
+    This function avoids downloading the same file multiple times using caching based on
+    the hash of the URL. If tests/assets/`<url_hash>` does not exist, it will
+    be downloaded from `url` and stored for reuse.
 
     Args:
         url (str): The download URL of the file.
@@ -66,17 +66,18 @@ def _file_get(
     Returns:
         The content of the file if it exists; otherwise, returns `None`.
     """
+    url_hash = hashlib.md5(url.encode()).hexdigest()
 
-    if file_name is None:  # deduce from the url
-        file_name = url[url.rfind("/") + 1 :]
+    last_slash_index = url.rfind("/") + 1
+    file_name = url[last_slash_index:]
 
     # look up for its cached version
     dir_path = "tests/assets"
-    file_path = os.path.join(dir_path, file_name)
+    file_path = os.path.join(dir_path, url_hash)
     if os.path.isfile(file_path):
         with open(file_path, "rb") as file:
             file_object = io.BytesIO(file.read())
-            file_object.name = file_path
+            file_object.name = file_name
             return file_object
 
     response = requests.get(url)
