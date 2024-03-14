@@ -325,7 +325,7 @@ teams/fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/06d96aab2661b16eaf4d34d38
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
-            profile_name="john_smith.pdf",
+            profile_file_name="john_smith.pdf",
             reference=reference,
         )
     )
