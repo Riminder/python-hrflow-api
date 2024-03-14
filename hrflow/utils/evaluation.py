@@ -12,7 +12,7 @@ from tqdm import tqdm
 
 from .storing import get_all_profiles
 
-TEMPLATE_URL = "https://riminder-documents-eu-2019-12-dev.s3.eu-west-1.amazonaws.com/evaluation/parsing-evaluation-template.xlsx"  # noqa: E501
+TEMPLATE_URL = "https://riminder-documents-eu-2019-12-dev.s3.eu-west-1.amazonaws.com/evaluation/parsing-evaluation-template-v2.xlsx"  # noqa: E501
 STATISTICS_SHEET_NAME = "1. Statistics"
 START_ROW_ID = 5
 
@@ -22,7 +22,7 @@ PROFILE_COLUMN_ID = "C"
 
 INFO_FIELD_LIST = (
     "score",
-    "person",
+    "full_name",
     "first_name",
     "last_name",
     "phone",
@@ -78,7 +78,7 @@ OTHER_START_COLUMN_ID, OTHER_END_COLUMN_ID = ("AK", "AP")
 
 class InfoEvaluation(BaseModel):
     score: float
-    person: float
+    full_name: float
     first_name: float
     last_name: float
     phone: float
@@ -97,7 +97,7 @@ class InfoEvaluation(BaseModel):
         location = 1 if info.get("location") else 0
         summary = 1 if info.get("summary") else 0
         driving_license = 1 if info.get("driving_license") else 0
-        person = int(first_name and last_name)
+        full_name = 1 if info.get("full_name") else 0
 
         score = (
             first_name
@@ -111,7 +111,7 @@ class InfoEvaluation(BaseModel):
         score /= 7
         return InfoEvaluation(
             score=score,
-            person=person,
+            full_name=full_name,
             first_name=first_name,
             last_name=last_name,
             phone=phone,
