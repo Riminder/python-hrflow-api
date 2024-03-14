@@ -653,7 +653,7 @@ def test_profile_parsing_hawk_sync_png(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3.eu-west-1.amazonaws.com/teams/\
 fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/7f61abfb4a0ea127ca1536136a0891c5948bfb\
 7f/files/035b6b44943877bae355a527efcb7b721dbcdde7/file-nico_durant.png"""
-    file = _file_get(s3_url, "profile_async")
+    file = _file_get(s3_url, "profile_png")
     reference = str(uuid1())
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
@@ -674,7 +674,7 @@ def test_profile_parsing_hawk_sync_docx(hrflow_client):
     s3_url = """https://riminder-documents-eu-2019-12.s3.eu-west-1.amazonaws.com/teams/\
 fc9d40fd60e679119130ea74ae1d34a3e22174f2/sources/7f61abfb4a0ea127ca1536136a0891c5948bfb\
 7f/files/73ad352f0e93a46c82591655edacaf01711141a6/file-nico_durant.docx"""
-    file = _file_get(s3_url, "profile_async")
+    file = _file_get(s3_url, "profile_docx")
     reference = str(uuid1())
     model = ProfileParsingFileResponse.parse_obj(
         hrflow_client.profile.parsing.add_file(
