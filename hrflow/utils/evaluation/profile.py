@@ -343,7 +343,6 @@ def parsing_evaluator(
     return [ProfileEvaluation.from_profile(profile) for profile in profile_list]
 
 
-
 def fill_metadata(
     work_sheet: Worksheet,
     profile_eval_list: t.List[ProfileEvaluation],

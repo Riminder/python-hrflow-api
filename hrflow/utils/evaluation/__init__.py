@@ -6,17 +6,16 @@ from io import BytesIO
 from openpyxl import load_workbook
 from openpyxl.workbook.workbook import Workbook
 
+from ..storing import get_all_jobs, get_all_profiles
+from .job import TEMPLATE_URL as JOB_TEMPLATE_URL
+from .job import fill_work_sheet as fill_job_work_sheet
+from .job import parsing_evaluator as job_parsing_evaluator
+from .profile import TEMPLATE_URL as PROFILE_TEMPLATE_URL
 from .profile import fill_work_sheet as fill_profile_work_sheet
 from .profile import parsing_evaluator as profile_parsing_evaluator
-from .profile import TEMPLATE_URL as PROFILE_TEMPLATE_URL
-
-from .job import parsing_evaluator as job_parsing_evaluator
-from .job import fill_work_sheet as fill_job_work_sheet
-from .job import TEMPLATE_URL as JOB_TEMPLATE_URL
-
-from ..storing import get_all_profiles, get_all_jobs
 
 STATISTICS_SHEET_NAME = "1. Statistics"
+
 
 def load_workbook_from_url(url: str) -> Workbook:
     """
@@ -33,6 +32,7 @@ def load_workbook_from_url(url: str) -> Workbook:
     file = urllib.request.urlopen(url).read()
     return load_workbook(filename=BytesIO(file))
 
+
 def prepare_report_path(path: str) -> str:
     """
     Prepare the report path
@@ -47,6 +47,7 @@ def prepare_report_path(path: str) -> str:
         return f"{path}.xlsx"
     return path
 
+
 def generate_parsing_evaluation_report(
     client: "Hrflow",  # noqa: F821
     report_path: str,
@@ -56,12 +57,12 @@ def generate_parsing_evaluation_report(
 ):
     """
     Generate a parsing evaluation report
-    
-    If you want to generate a parsing evaluation report for jobs, you must 
+
+    If you want to generate a parsing evaluation report for jobs, you must
     provide the board_key.
     If you want to generate a parsing evaluation report for profiles, you must
     provide the source_key.
-    
+
     board_key and source_key are optional string, you must provide only one of them.
 
     Args:
@@ -81,12 +82,12 @@ def generate_parsing_evaluation_report(
         show_progress:               <bool>
                                      Show the progress bar
     """
-    
+
     if not source_key and not board_key:
         raise ValueError("You must provide either source_key or board_key")
     if source_key and board_key:
         raise ValueError("You must provide only one of source_key or board_key")
-    
+
     if source_key:
         profile_list = get_all_profiles(client, source_key, show_progress)
         evaluation_list = profile_parsing_evaluator(profile_list, show_progress)

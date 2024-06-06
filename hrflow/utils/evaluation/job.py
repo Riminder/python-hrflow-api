@@ -111,7 +111,7 @@ class RangeFloatEvaluation(BaseModel):
     @staticmethod
     def from_job(job: t.Dict[str, t.Any]) -> "RangeFloatEvaluation":
         count = len(job.get("ranges_float", []))
-        
+
         name = 0
         value_min = 0
         value_max = 0
@@ -121,16 +121,16 @@ class RangeFloatEvaluation(BaseModel):
             value_min += 1 if range_float.get("value_min") else 0
             value_max += 1 if range_float.get("value_max") else 0
             unit += 1 if range_float.get("unit") else 0
-        
+
         if count > 0:
             name /= count
             value_min /= count
             value_max /= count
             unit /= count
-        
+
         score = name + value_min + value_max + unit
         score /= 4
-        
+
         return RangeFloatEvaluation(
             score=score,
             count=count,
@@ -151,7 +151,7 @@ class RangeDateEvaluation(BaseModel):
     @staticmethod
     def from_job(job: t.Dict[str, t.Any]) -> "RangeDateEvaluation":
         count = len(job.get("ranges_date", []))
-        
+
         name = 0
         value_min = 0
         value_max = 0
@@ -159,15 +159,15 @@ class RangeDateEvaluation(BaseModel):
             name += 1 if range_date.get("name") else 0
             value_min += 1 if range_date.get("value_min") else 0
             value_max += 1 if range_date.get("value_max") else 0
-        
+
         if count > 0:
             name /= count
             value_min /= count
             value_max /= count
-        
+
         score = name + value_min + value_max
         score /= 3
-        
+
         return RangeDateEvaluation(
             score=score,
             count=count,
@@ -245,7 +245,6 @@ def parsing_evaluator(
     return [JobEvaluation.from_job(job) for job in job_list]
 
 
-
 def fill_metadata(
     work_sheet: Worksheet,
     job_eval_list: t.List[JobEvaluation],
@@ -270,6 +269,7 @@ def fill_metadata(
         if job_eval.url:
             work_sheet[f"{URL_COLUMN_ID}{row_id}"].hyperlink = job_eval.url
 
+
 def fill_overview(
     work_sheet: Worksheet,
     job_eval_list: t.List[JobEvaluation],
@@ -292,7 +292,7 @@ def fill_overview(
     for row_id, job_eval in enumerate(job_eval_list, START_ROW_ID):
         for column_id, field in zip(colum_id_list, OVERVIEW_FIELD_LIST):
             work_sheet[f"{column_id}{row_id}"].value = getattr(job_eval.overview, field)
-    
+
 
 def fill_range_float(
     work_sheet: Worksheet,
@@ -371,9 +371,7 @@ def fill_other(
         job_eval_list = tqdm(job_eval_list, desc="Filling other scores")
     for row_id, job_eval in enumerate(job_eval_list, START_ROW_ID):
         for column_id, field in zip(colum_id_list, OTHER_FIELD_LIST):
-            work_sheet[f"{column_id}{row_id}"].value = getattr(
-                job_eval.other, field
-            )
+            work_sheet[f"{column_id}{row_id}"].value = getattr(job_eval.other, field)
 
 
 def fill_work_sheet(
