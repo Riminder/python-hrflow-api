@@ -1,19 +1,11 @@
-import os
 import typing as t
-import urllib
-from io import BytesIO
 
-from openpyxl import load_workbook
 from openpyxl.utils.cell import get_column_interval
-from openpyxl.workbook.workbook import Workbook
 from openpyxl.worksheet.worksheet import Worksheet
 from pydantic import BaseModel
 from tqdm import tqdm
 
-from .storing import get_all_profiles
-
-TEMPLATE_URL = "https://riminder-documents-eu-2019-12-dev.s3.eu-west-1.amazonaws.com/evaluation/parsing-evaluation-template.xlsx"  # noqa: E501
-STATISTICS_SHEET_NAME = "1. Statistics"
+TEMPLATE_URL = "https://riminder-documents-eu-2019-12-dev.s3.eu-west-1.amazonaws.com/evaluation/parsing-evaluation-template-v3-profile.xlsx"  # noqa: E501
 START_ROW_ID = 5
 
 FILENAME_COLUMN_ID = "A"
@@ -22,7 +14,7 @@ PROFILE_COLUMN_ID = "C"
 
 INFO_FIELD_LIST = (
     "score",
-    "person",
+    "full_name",
     "first_name",
     "last_name",
     "phone",
@@ -78,7 +70,7 @@ OTHER_START_COLUMN_ID, OTHER_END_COLUMN_ID = ("AK", "AP")
 
 class InfoEvaluation(BaseModel):
     score: float
-    person: float
+    full_name: float
     first_name: float
     last_name: float
     phone: float
@@ -97,7 +89,7 @@ class InfoEvaluation(BaseModel):
         location = 1 if info.get("location") else 0
         summary = 1 if info.get("summary") else 0
         driving_license = 1 if info.get("driving_license") else 0
-        person = int(first_name and last_name)
+        full_name = 1 if info.get("full_name") else 0
 
         score = (
             first_name
@@ -111,7 +103,7 @@ class InfoEvaluation(BaseModel):
         score /= 7
         return InfoEvaluation(
             score=score,
-            person=person,
+            full_name=full_name,
             first_name=first_name,
             last_name=last_name,
             phone=phone,
@@ -351,21 +343,6 @@ def parsing_evaluator(
     return [ProfileEvaluation.from_profile(profile) for profile in profile_list]
 
 
-def load_workbook_from_url(url: str) -> Workbook:
-    """
-    Load an excel file from a url
-
-    Args:
-        url:                         <str>
-                                     The url of the excel file
-
-    Returns:
-        <Workbook>
-        The loaded workbook
-    """
-    file = urllib.request.urlopen(url).read()
-    return load_workbook(filename=BytesIO(file))
-
 
 def fill_metadata(
     work_sheet: Worksheet,
@@ -497,57 +474,24 @@ def fill_other(
             )
 
 
-def prepare_report_path(path: str) -> str:
-    """
-    Prepare the report path
-
-    Args:
-        path:                        <str>
-                                     The path of the report
-    """
-    if os.path.isdir(path):
-        return os.path.join(path, "parsing_evaluation.xlsx")
-    if not path.endswith(".xlsx"):
-        return f"{path}.xlsx"
-    return path
-
-
-def generate_parsing_evaluation_report(
-    client: "Hrflow",  # noqa: F821
-    source_key: str,
-    report_path: str,
+def fill_work_sheet(
+    work_sheet: Worksheet,
+    profile_eval_list: t.List[ProfileEvaluation],
     show_progress: bool = False,
-):
+) -> None:
     """
-    Generate a parsing evaluation report
+    Fill the work sheet with the profile evaluations
 
     Args:
-        client:                      <Hrflow>
-                                     The client to use
-        source_key:                  <str>
-                                     The source key where the profiles are
-        report_path:                 <str>
-                                     The path of the report
-                                     This can be a already existing directory where
-                                     the report will be saved as parsing_evaluation.xlsx
-                                     This can be directly the path of the report.
-                                     If the path is not an excel file (xlsx),
-                                     the report will be saved as {path}.xlsx
+        work_sheet:                  <Worksheet>
+                                     The worksheet to fill
+        profile_eval_list:           <List[ProfileEvaluation]>
+                                     The list of profile evaluations
         show_progress:               <bool>
                                      Show the progress bar
     """
-    profile_list = get_all_profiles(client, source_key, show_progress)
-    evaluation_list = parsing_evaluator(profile_list, show_progress)
-
-    work_book = load_workbook_from_url(TEMPLATE_URL)
-    work_sheet = work_book[STATISTICS_SHEET_NAME]
-
-    fill_metadata(work_sheet, evaluation_list, show_progress)
-    fill_info(work_sheet, evaluation_list, show_progress)
-    fill_experience(work_sheet, evaluation_list, show_progress)
-    fill_education(work_sheet, evaluation_list, show_progress)
-    fill_other(work_sheet, evaluation_list, show_progress)
-
-    report_path = prepare_report_path(report_path)
-    work_book.save(report_path)
-    work_book.close()
+    fill_metadata(work_sheet, profile_eval_list, show_progress)
+    fill_info(work_sheet, profile_eval_list, show_progress)
+    fill_experience(work_sheet, profile_eval_list, show_progress)
+    fill_education(work_sheet, profile_eval_list, show_progress)
+    fill_other(work_sheet, profile_eval_list, show_progress)
