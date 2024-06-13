@@ -86,7 +86,7 @@ class InfoEvaluation(BaseModel):
         last_name = 1 if info.get("last_name") else 0
         phone = 1 if info.get("phone") else 0
         email = 1 if info.get("email") else 0
-        location = 1 if info.get("location") else 0
+        location = 1 if info.get("location", {}).get("text") else 0
         summary = 1 if info.get("summary") else 0
         driving_license = 1 if info.get("driving_license") else 0
         full_name = 1 if info.get("full_name") else 0
