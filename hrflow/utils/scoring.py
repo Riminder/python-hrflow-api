@@ -1,6 +1,7 @@
 import typing as t
 
 from ..schemas import Education, Experience, HrFlowProfile
+from .searching import is_valid_for_searching
 
 
 def is_valid_experiences_for_scoring(
@@ -65,7 +66,7 @@ def is_valid_for_scoring(
     if not isinstance(profile, HrFlowProfile):
         raise ValueError("profile must be a dict or a HrFlowProfile object")
 
-    return (
+    return is_valid_for_searching(profile) and (
         is_valid_experiences_for_scoring(profile.experiences)
         or is_valid_educations_for_scoring(profile.educations)
         or bool(profile.summary)
