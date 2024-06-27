@@ -241,6 +241,12 @@ class Experience(BaseModel):
     tasks: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of tasks of the Experience."
     )
+    languages: t.Optional[t.List[GeneralEntitySchema]] = Field(
+        None, description="List of spoken languages of the profile"
+    )
+    interests: t.Optional[t.List[GeneralEntitySchema]] = Field(
+        None, description="List of interests of the Experience."
+    )
 
 
 class Education(BaseModel):
@@ -273,6 +279,12 @@ class Education(BaseModel):
     )
     tasks: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of tasks of the Education."
+    )
+    languages: t.Optional[t.List[GeneralEntitySchema]] = Field(
+        None, description="List of spoken languages of the profile"
+    )
+    interests: t.Optional[t.List[GeneralEntitySchema]] = Field(
+        None, description="List of interests of the Experience."
     )
 
 
