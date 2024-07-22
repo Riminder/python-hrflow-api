@@ -51,16 +51,28 @@ class GeneralEntitySchema(BaseModel):
 
 class Label(BaseModel):
     board_key: str = Field(
-        ..., description="Identification key of the Board attached to the Job."
+        description="Identification key of the Board containing the target Job."
     )
-    job_key: str = Field(None, description="Identification key of the Job.")
-    job_reference: t.Optional[str] = Field(
-        None, description="Custom identifier of the Job."
+    job_key: str = Field(description="Identification key of the Job.")
+    job_reference: str = Field(description="Custom identifier of the Job.")
+    stage: t.Literal["yes", "no", "later"] = Field(
+        description=(
+            "Stage associated to the Profile following the action of a recruiter (yes,"
+            " no, later)."
+        )
     )
-    stage: str = Field(..., description="Stage of the job")
-    date_stage: str = Field(..., description="Date when the job reached this stage")
-    rating: int = Field(..., description="Rating associated with the job")
-    date_rating: str = Field(..., description="Date when the rating was given")
+    date_stage: str = Field(
+        None, description="Date of the stage edit action. type: ('datetime ISO 8601')"
+    )
+    rating: t.Optional[t.Literal[1, 2, 3, 4, 5]] = Field(
+        description=(
+            "Rating associated to the Profile following the action of a recruiter (from"
+            " 1 to 5)."
+        )
+    )
+    date_rating: str = Field(
+        None, description="Date of the rating action. type: ('datetime ISO 8601')"
+    )
 
 
 class Skill(BaseModel):
