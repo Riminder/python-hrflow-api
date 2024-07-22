@@ -69,7 +69,7 @@ def is_valid_for_scoring(
     return is_valid_for_searching(profile) and (
         is_valid_experiences_for_scoring(profile.experiences)
         or is_valid_educations_for_scoring(profile.educations)
-        or bool(profile.summary)
+        or bool(profile.info.summary)
         or bool(profile.skills)
         or bool(profile.tasks)
     )

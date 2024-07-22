@@ -49,6 +49,20 @@ class GeneralEntitySchema(BaseModel):
     )
 
 
+class Label(BaseModel):
+    board_key: str = Field(
+        ..., description="Identification key of the Board attached to the Job."
+    )
+    job_key: str = Field(None, description="Identification key of the Job.")
+    job_reference: t.Optional[str] = Field(
+        None, description="Custom identifier of the Job."
+    )
+    stage: str = Field(..., description="Stage of the job")
+    date_stage: str = Field(..., description="Date when the job reached this stage")
+    rating: int = Field(..., description="Rating associated with the job")
+    date_rating: str = Field(..., description="Date when the rating was given")
+
+
 class Skill(BaseModel):
     name: str = Field(..., description="Identification name of the skill")
     type: t.Optional[str] = Field(None, description="Type of the skill. hard or soft")
@@ -306,8 +320,8 @@ class HrFlowProfile(BaseModel):
         None, description="Custom identifier of the Profile."
     )
     info: ProfileInfo = Field(..., description="Object containing the Profile's info.")
-    text_language: str = Field(
-        ..., description="Code language of the Profile. type: string code ISO 639-1"
+    text_language: t.Optional[str] = Field(
+        None, description="Code language of the Profile. type: string code ISO 639-1"
     )
     text: str = Field(..., description="Full text of the Profile..")
     archived_at: t.Optional[str] = Field(
@@ -362,6 +376,6 @@ class HrFlowProfile(BaseModel):
     metadatas: t.Optional[t.List[GeneralEntitySchema]] = Field(
         None, description="List of metadatas of the Profile."
     )
-    labels: t.Optional[t.List[GeneralEntitySchema]] = Field(
+    labels: t.Optional[t.List[Label]] = Field(
         None, description="List of labels of the Profile."
     )
