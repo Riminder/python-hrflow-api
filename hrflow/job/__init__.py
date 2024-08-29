@@ -1,5 +1,6 @@
 from .asking import JobAsking
 from .embedding import JobEmbedding
+from .matching import JobMatching
 from .parsing import JobParsing
 from .reasoning import JobReasoning
 from .scoring import JobScoring
@@ -17,3 +18,4 @@ class Job:
         self.scoring = JobScoring(self.client)
         self.reasoning = JobReasoning(self.client)
         self.storing = JobStoring(self.client)
+        self.matching = JobMatching(self.client)

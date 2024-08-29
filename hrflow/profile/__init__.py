@@ -3,6 +3,8 @@
 from .asking import ProfileAsking
 from .attachment import ProfileAttachments
 from .embedding import ProfileEmbedding
+from .grading import ProfileGrading
+from .matching import ProfileMatching
 from .parsing import ProfileParsing
 from .reasoning import ProfileReasoning
 from .revealing import ProfileRevealing
@@ -35,3 +37,5 @@ class Profile(object):
         self.searching = ProfileSearching(self.client)
         self.reasoning = ProfileReasoning(self.client)
         self.unfolding = ProfileUnfolding(self.client)
+        self.matching = ProfileMatching(self.client)
+        self.grading = ProfileGrading(self.client)
