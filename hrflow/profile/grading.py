@@ -18,40 +18,44 @@ from ..core.validation import (
 
 class ProfileGrading:
     def __init__(self, api):
-        """Init."""
+        """Initialize the ProfileGrading class with the provided API client."""
         self.client = api
 
     @rate_limiter
     def get(
         self,
-        algorithm_key: t.Literal[
-            "1d07451c0f33091869bd3c6d336dfa4e5c63af74",
-            "daaa0f61b72a68b985f31d123ad45b361adc91e4",
-        ],
-        source_key,
-        board_key,
-        profile_key=None,
-        profile_reference=None,
-        job_key=None,
-        job_reference=None,
+        algorithm_key: str,
+        source_key: str,
+        board_key: str,
+        profile_key: t.Optional[str] = None,
+        profile_reference: t.Optional[str] = None,
+        job_key: t.Optional[str] = None,
+        job_reference: t.Optional[str] = None,
     ):
         """
         💾 Grade a Profile indexed in a Source for a Job
         (https://api.hrflow.ai/v1/profile/grading).
 
         Args:
+            algorithm_key:          <string>
+                                    The key of the grading algorithm to use.
+                                    Refer to the documentation: https://developers.hrflow.ai/reference/grade-a-profile-indexed-in-a-source-for-a-job
+                                    for all possible values.
             source_key:             <string>
-                                    The key of the Source where the profile is indexed.
-            key:                    <string>
-                                    The Profile unique identifier.
-            reference:              <string>
-                                    The Profile reference chosen by the customer.
-            job_key:                <string>
-            job_reference:          <string>
+                                    The key of the Source where the profile to grade is indexed.
             board_key:              <string>
+                                    The key of the Board where the job to grade to is indexed.
+            profile_key:            <string>
+                                    (Optional) The Profile unique identifier.
+            profile_reference:      <string>
+                                    (Optional) The Profile reference chosen by the customer.
+            job_key:                <string>
+                                    (Optional) The Job unique identifier.
+            job_reference:          <string>
+                                    (Optional) The Job reference chosen by the customer.
 
-        Returns
-            Get information
+        Returns:
+            The grading information for the profile, based on the specified job.
 
         """
         query_params = {
