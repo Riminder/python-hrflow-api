@@ -17,7 +17,7 @@ from ..core.validation import (
 
 class ProfileMatching:
     def __init__(self, api):
-        """Init."""
+        """Initialize the ProfileMatching class with the provided API client."""
         self.client = api
 
     @rate_limiter
@@ -36,58 +36,63 @@ class ProfileMatching:
         **kwargs,
     ):
         """
-        Retrieve the matching information.
+        💾 Match Profils indexed in Sources to a Profile
+        (https://api.hrflow.ai/v1/profils/matching).
 
         Args:
-            profile_key:        <string>
-            profile_reference:  <string>
             source_key:         <string>
-            source_keys:        <list>
-                                source_keys
+                                The key of the Source in which the profile is indexed.
+            profile_key:        <string> (Optional)
+                                The key of a specific profile to macth with.
+            profile_reference:  <string> (Optional)
+                                The reference of a specific profile to macth with.
+            source_keys:        <list> (Optional)
+                                A list of keys for multiple Sources of profiles to be matched with the profile.
+            page:               <int> (default to 1)
+                                The page number for pagination.
             limit:              <int> (default to 30)
-                                number of fetched profiles/page
-            page:               <int> REQUIRED default to 1
-                                number of the page associated to the pagination
-            sort_by:            <string>
-            order_by:           <string>
-            created_at_min:     <string>
-                                The minimum date of creation of the targeted Profiles.
-                                Format : "YYYY-MM-DD".
-            created_at_max:     <string>
-                                The maximum date of creation of the targeted Profiles.
-                                Format : "YYYY-MM-DD".
-        Returns
-            Applies the params to filter on Profiles in the targeted Sources and
-            returns the response from the endpoint.
-            Response examples :
-                - Success response :
+                                Number of profiles to fetch per page.
+            sort_by:            <string> (default to "created_at")
+                                The field to sort by.
+            order_by:           <string> (Optional)
+                                The order of sorting, either 'asc' or 'desc'.
+            created_at_min:     <string> (Optional)
+                                The minimum creation date of the profiles in format "YYYY-MM-DD".
+            created_at_max:     <string> (Optional)
+                                The maximum creation date of the profiles in format "YYYY-MM-DD".
+
+        Returns:
+            Match the profile identified by profile_key or profile_reference
+            and board_key with all profiles in the sources identified by keys in source_keys list.
+
+            Response examples:
+                - Success response:
                     {
                         "code": 200, # response code
                         "message": "Profile Matching results", # response message
-                        "meta" : {'page': 1, # current page
-                                'maxPage': 5, # max page in the paginated response
-                                'count': 2, # number of profiles in the current page
-                                'total': 10}, # total number of profiles retrieved
-                        "data": {               # list of profiles objects
-                            "predictions":[
-                                []
-                            ]
-                            "profiles":[
-                            {
-                                "key": "xxx",
-                                "reference": "xxx",
+                        "meta": {
+                            'page': 1, # current page
+                            'maxPage': 5, # max page in the paginated response
+                            'count': 2, # number of profiles in the current page
+                            'total': 10 # total number of profiles retrieved
+                        },
+                        "data": {  # list of profile objects
+                            "predictions": [[]],
+                            "profiles": [
+                                {
+                                    "key": "xxx",
+                                    "reference": "xxx",
+                                    ...
+                                },
                                 ...
-                            },
-                            ...
                             ]
                         }
                     }
-                - Error response : (if the source_key is not valid)
+                - Error response: (if the source_key is not valid)
                     {
                         "code": 400,
                         "message": "Invalid parameters. Unable to find object: source"
                     }
-
         """
 
         query_params = {

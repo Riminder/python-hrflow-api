@@ -36,57 +36,63 @@ class JobMatching:
         **kwargs,
     ):
         """
-        Retrieve the matching information.
+        💾 Match Jobs indexed in Boards to a Job
+        (https://api.hrflow.ai/v1/jobs/matching).
 
         Args:
-            job_key:        <string>
-            job_reference:  <string>
             board_key:         <string>
-            baord_keys:        <list>
-            limit:              <int> (default to 30)
-                                number of fetched jobs/page
-            page:               <int> REQUIRED default to 1
-                                number of the page associated to the pagination
-            sort_by:            <string>
-            order_by:           <string>
-            created_at_min:     <string>
-                                The minimum date of creation of the targeted Jobs.
-                                Format : "YYYY-MM-DD".
-            created_at_max:     <string>
-                                The maximum date of creation of the targeted Jobs.
-                                Format : "YYYY-MM-DD".
-        Returns
-            Applies the params to filter on Jobs in the targeted Boards and
-            returns the response from the endpoint.
-            Response examples :
-                - Success response :
+                               The key of the Board in which the job is indexed.
+            job_key:           <string>
+                               The key of a specific job to macth with.
+            job_reference:     <string>
+                               The reference of a specific job to macth with.
+            board_keys:        <list>
+                               A list of keys for multiple Boards of profiles to be matched with the specific job.
+                               Example : ["xxx", "yyy", "zzz"]
+            limit:             <int> (default to 30)
+                               number of fetched jobs/page
+            page:              <int> REQUIRED default to 1
+                               number of the page associated to the pagination
+            sort_by:           <string>
+            order_by:          <string>
+            created_at_min:    <string>
+                               The minimum date of creation of the targeted Jobs.
+                               Format: "YYYY-MM-DD".
+            created_at_max:    <string>
+                               The maximum date of creation of the targeted Jobs.
+                               Format: "YYYY-MM-DD".
+
+        Returns:
+            Match the job identified by job_key or job_reference
+            and board_key with all jobs in the boards identified by keys in board_keys list.
+            Response examples:
+                - Success response:
                     {
                         "code": 200, # response code
                         "message": "Job Matching results", # response message
-                        "meta" : {'page': 1, # current page
-                                'maxPage': 5, # max page in the paginated response
-                                'count': 2, # number of jobs in the current page
-                                'total': 10}, # total number of jobs retrieved
-                        "data": {               # list of jobs objects
-                            "predictions":[
-                                []
-                            ]
-                            "jobs":[
-                            {
-                                "key": "xxx",
-                                "reference": "xxx",
+                        "meta" : {
+                            'page': 1, # current page
+                            'maxPage': 5, # max page in the paginated response
+                            'count': 2, # number of jobs in the current page
+                            'total': 10 # total number of jobs retrieved
+                        },
+                        "data": {  # list of jobs objects
+                            "predictions": [[]],
+                            "jobs": [
+                                {
+                                    "key": "xxx",
+                                    "reference": "xxx",
+                                    ...
+                                },
                                 ...
-                            },
-                            ...
                             ]
                         }
                     }
-                - Error response : (if the board_key is not valid)
+                - Error response: (if the board_key is not valid)
                     {
                         "code": 400,
                         "message": "Invalid parameters. Unable to find object: source"
                     }
-
         """
 
         query_params = {
