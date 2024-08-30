@@ -63,7 +63,7 @@ class ProfileMatching:
 
         Returns:
             Match the profile identified by profile_key or profile_reference
-            and board_key with all profiles in the sources identified by keys in source_keys list.
+            and source_key with all profiles in the sources identified by keys in source_keys list.
 
             Response examples:
                 - Success response:
