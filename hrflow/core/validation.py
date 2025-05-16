@@ -90,6 +90,11 @@ def validate_limit(value):
 
     return value
 
+def validate_score(value):
+    if value < 0 or value > 1:
+        raise ValueError("score must be between 0 and 1")
+
+    return value
 
 def validate_provider_keys(value):
     if not value or not all(isinstance(elt, str) for elt in value):
