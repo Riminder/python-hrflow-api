@@ -11,6 +11,7 @@ from .source import Source
 from .text import Text
 from .tracking import Tracking
 from .webhook import Webhook
+from .workflow import Workflow
 
 CLIENT_API_URL = "https://api.hrflow.ai/v1/"
 
@@ -57,6 +58,7 @@ class Hrflow(object):
         self.board = Board(self)
         self.tracking = Tracking(self)
         self.rating = Rating(self)
+        self.workflow = Workflow(self)
 
     def _create_request_url(self, resource_url):
         return "{api_endpoint}{resource_url}".format(

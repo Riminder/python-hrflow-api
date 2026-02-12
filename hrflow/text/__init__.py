@@ -1,6 +1,7 @@
 """Profile related calls."""
 
 from .embedding import TextEmbedding
+from .geocoding import TextGeocoding
 from .imaging import TextImaging
 from .linking import TextLinking
 from .ocr import TextOCR
@@ -29,3 +30,4 @@ class Text(object):
         self.tagging = TextTagging(self.client)
         self.ocr = TextOCR(self.client)
         self.imaging = TextImaging(self.client)
+        self.geocoding = TextGeocoding(self.client)
