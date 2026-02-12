@@ -13,9 +13,7 @@ class Workflow(object):
         self.client = client
 
     @rate_limiter
-    def list(
-        self, name=None, environment=None, page=1, limit=30, order_by="desc"
-    ):
+    def list(self, name=None, environment=None, page=1, limit=30, order_by="desc"):
         """
         Find Workflows in a Workspace.
         (https://api.hrflow.ai/v1/workflows).
@@ -44,8 +42,6 @@ class Workflow(object):
             query_params["environment"] = environment
         query_params["page"] = validate_page(page)
         query_params["limit"] = validate_limit(limit)
-        query_params["order_by"] = validate_value(
-            order_by, ORDER_BY_VALUES, "order by"
-        )
+        query_params["order_by"] = validate_value(order_by, ORDER_BY_VALUES, "order by")
         response = self.client.get("workflows", query_params)
         return validate_response(response)
