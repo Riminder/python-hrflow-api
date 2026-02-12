@@ -6,6 +6,7 @@ from ..core.validation import (
     validate_key,
     validate_reference,
     validate_response,
+    validate_score,
 )
 
 
@@ -19,6 +20,7 @@ class JobUpskilling:
         self,
         board_key: str,
         source_key: str,
+        score: float,
         job_key: t.Optional[str] = None,
         job_reference: t.Optional[str] = None,
         profile_key: t.Optional[str] = None,
@@ -33,6 +35,9 @@ class JobUpskilling:
                                     The key of the Board where the job is indexed.
             source_key:             <string>
                                     The key of the Source where the profile is indexed.
+            score:                  <float>
+                                    The recommendation score. Must be between 0 and 1
+                                    (exclusive).
             job_key:                <string>
                                     (Optional) The Job unique identifier.
             job_reference:          <string>
@@ -48,6 +53,7 @@ class JobUpskilling:
         query_params = {
             "board_key": validate_key("Board", board_key, regex=KEY_REGEX),
             "source_key": validate_key("Source", source_key, regex=KEY_REGEX),
+            "score": validate_score(score),
             "job_key": validate_key("Key", job_key, regex=KEY_REGEX),
             "job_reference": validate_reference(job_reference),
             "profile_key": validate_key("Key", profile_key, regex=KEY_REGEX),
