@@ -4,27 +4,27 @@ from pydantic import BaseModel, Field
 
 
 class LocationFields(BaseModel):
-    category: t.Optional[str]
-    city: t.Optional[str]
-    city_district: t.Optional[str]
-    country: t.Optional[str]
-    country_region: t.Optional[str]
-    entrance: t.Optional[str]
-    house: t.Optional[str]
-    house_number: t.Optional[str]
-    island: t.Optional[str]
-    level: t.Optional[str]
-    near: t.Optional[str]
-    po_box: t.Optional[str]
-    postcode: t.Optional[str]
-    road: t.Optional[str]
-    staircase: t.Optional[str]
-    state: t.Optional[str]
-    state_district: t.Optional[str]
-    suburb: t.Optional[str]
-    text: t.Optional[str]
-    unit: t.Optional[str]
-    world_region: t.Optional[str]
+    category: t.Optional[str] = None
+    city: t.Optional[str] = None
+    city_district: t.Optional[str] = None
+    country: t.Optional[str] = None
+    country_region: t.Optional[str] = None
+    entrance: t.Optional[str] = None
+    house: t.Optional[str] = None
+    house_number: t.Optional[str] = None
+    island: t.Optional[str] = None
+    level: t.Optional[str] = None
+    near: t.Optional[str] = None
+    po_box: t.Optional[str] = None
+    postcode: t.Optional[str] = None
+    road: t.Optional[str] = None
+    staircase: t.Optional[str] = None
+    state: t.Optional[str] = None
+    state_district: t.Optional[str] = None
+    suburb: t.Optional[str] = None
+    text: t.Optional[str] = None
+    unit: t.Optional[str] = None
+    world_region: t.Optional[str] = None
 
 
 class Location(BaseModel):
@@ -35,9 +35,8 @@ class Location(BaseModel):
     lng: t.Optional[float] = Field(
         None, description="Geocentric longitude of the Location."
     )
-    _fields: t.Optional[LocationFields] = Field(
+    fields: t.Optional[LocationFields] = Field(
         None,
-        alias="fields",
         description="Other location attributes like country, country_code etc",
     )
 
@@ -53,7 +52,7 @@ class Label(BaseModel):
     board_key: str = Field(
         ..., description="Identification key of the Board attached to the Job."
     )
-    job_key: str = Field(None, description="Identification key of the Job.")
+    job_key: t.Optional[str] = Field(None, description="Identification key of the Job.")
     job_reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Job."
     )
@@ -127,7 +126,7 @@ class Board(BaseModel):
 
 
 class HrFlowJob(BaseModel):
-    key: str = Field(None, description="Identification key of the Job.")
+    key: t.Optional[str] = Field(None, description="Identification key of the Job.")
     reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Job."
     )
@@ -136,7 +135,9 @@ class HrFlowJob(BaseModel):
         ..., description="Identification key of the Board attached to the Job."
     )
     location: Location = Field(..., description="Job location object.")
-    sections: t.List[Section] = Field(None, description="Job custom sections.")
+    sections: t.Optional[t.List[Section]] = Field(
+        None, description="Job custom sections."
+    )
     culture: t.Optional[str] = Field(
         None, description="Describes the company's values, work environment, and ethos."
     )
@@ -155,7 +156,7 @@ class HrFlowJob(BaseModel):
     )
     url: t.Optional[str] = Field(None, description="Job post original URL.")
     summary: t.Optional[str] = Field(None, description="Brief summary of the Job.")
-    board: t.Optional[Board]
+    board: t.Optional[Board] = None
     archived_at: t.Optional[str] = Field(
         None,
         description=(
@@ -163,7 +164,7 @@ class HrFlowJob(BaseModel):
             "The value is null for unarchived Jobs."
         ),
     )
-    updated_at: str = Field(
+    updated_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Last update date of the Job."
     )
     created_at: t.Optional[str] = Field(
@@ -202,8 +203,8 @@ class HrFlowJob(BaseModel):
 class Url(BaseModel):
     type: t.Optional[
         t.Literal["from_resume", "linkedin", "twitter", "facebook", "github"]
-    ]
-    url: t.Optional[str]
+    ] = None
+    url: t.Optional[str] = None
 
 
 class ProfileInfo(BaseModel):
@@ -303,19 +304,19 @@ class Education(BaseModel):
 
 
 class Attachment(BaseModel):
-    type: t.Optional[str]
-    alt: t.Optional[str]
-    file_size: t.Optional[str]
-    file_name: t.Optional[str]
-    original_file_name: t.Optional[str]
-    extension: t.Optional[str]
-    public_url: t.Optional[str]
-    updated_at: t.Optional[str]
-    created_at: t.Optional[str]
+    type: t.Optional[str] = None
+    alt: t.Optional[str] = None
+    file_size: t.Optional[str] = None
+    file_name: t.Optional[str] = None
+    original_file_name: t.Optional[str] = None
+    extension: t.Optional[str] = None
+    public_url: t.Optional[str] = None
+    updated_at: t.Optional[str] = None
+    created_at: t.Optional[str] = None
 
 
 class HrFlowProfile(BaseModel):
-    key: str = Field(None, description="Identification key of the Profile.")
+    key: t.Optional[str] = Field(None, description="Identification key of the Profile.")
     reference: t.Optional[str] = Field(
         None, description="Custom identifier of the Profile."
     )
@@ -331,16 +332,16 @@ class HrFlowProfile(BaseModel):
             " The value is null for unarchived Profiles."
         ),
     )
-    updated_at: str = Field(
+    updated_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Last update date of the Profile."
     )
-    created_at: str = Field(
+    created_at: t.Optional[str] = Field(
         None, description="type: datetime ISO8601, Creation date of the Profile."
     )
-    experiences_duration: float = Field(
+    experiences_duration: t.Optional[float] = Field(
         None, description="Total number of years of experience."
     )
-    educations_duration: float = Field(
+    educations_duration: t.Optional[float] = Field(
         None, description="Total number of years of education."
     )
     experiences: t.Optional[t.List[Experience]] = Field(
@@ -349,7 +350,7 @@ class HrFlowProfile(BaseModel):
     educations: t.Optional[t.List[Education]] = Field(
         None, description="List of educations of the Profile."
     )
-    attachments: t.List[Attachment] = Field(
+    attachments: t.Optional[t.List[Attachment]] = Field(
         None, description="List of documents attached to the Profile."
     )
     skills: t.Optional[t.List[Skill]] = Field(

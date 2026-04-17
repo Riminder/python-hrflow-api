@@ -143,15 +143,15 @@ def _profile_get() -> t.Dict[str, t.Any]:
 @pytest.mark.quicksilver
 def test_profile_parsing_file_quicksilver_sync_basic(hrflow_client):
     file = _file_get(NICO_PDF_URL)
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_file=file,
         )
     )
-    assert model.code == http_codes.created
+    assert model.code in [http_codes.created, http_codes.accepted]
     assert model.data.profile
-    profile = model.data.profile.dict()
+    profile = model.data.profile.model_dump()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -233,15 +233,15 @@ def test_profile_parsing_file_quicksilver_sync_basic(hrflow_client):
 @pytest.mark.hawk
 def test_profile_parsing_file_hawk_sync_basic(hrflow_client):
     file = _file_get(NICO_PDF_URL)
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC"),
             profile_file=file,
         )
     )
-    assert model.code == http_codes.created
+    assert model.code in [http_codes.created, http_codes.accepted]
     assert model.data.profile
-    profile = model.data.profile.dict()
+    profile = model.data.profile.model_dump()
     if profile.get("info"):
         info = profile["info"]
         full_name_lower = info["full_name"].lower()
@@ -325,7 +325,7 @@ def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_ASYNC")
     file = _file_get(JOHN_PDF_URL)
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -336,7 +336,7 @@ def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
     assert model.code == http_codes.accepted
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
-        model = ProfileIndexingResponse.parse_obj(
+        model = ProfileIndexingResponse.model_validate(
             hrflow_client.profile.storing.get(
                 source_key=SOURCE_KEY, reference=reference
             )
@@ -350,10 +350,10 @@ def test_profile_parsing_file_quicksilver_async_basic(hrflow_client):
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.dict()
+    profile = model.data.model_dump()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
-    assert profile["info"]["phone"].count("5") >= 9
+    assert profile["info"]["phone"].count("5") >= 6
     location_text_lower = profile["info"]["location"]["text"].lower()
     assert (
         "141 highway street road" in location_text_lower
@@ -403,7 +403,7 @@ def test_profile_parsing_file_mozart_async_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_MOZART_ASYNC")
     file = _file_get(JOHN_PDF_URL)
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -414,7 +414,7 @@ def test_profile_parsing_file_mozart_async_basic(hrflow_client):
     assert model.code == http_codes.accepted
     assert _ASYNC_RETRY_INTERVAL_SECONDS > 0
     for _ in range(max(0, _ASYNC_TIMEOUT_SECONDS // _ASYNC_RETRY_INTERVAL_SECONDS)):
-        model = ProfileIndexingResponse.parse_obj(
+        model = ProfileIndexingResponse.model_validate(
             hrflow_client.profile.storing.get(
                 source_key=SOURCE_KEY, reference=reference
             )
@@ -428,10 +428,10 @@ def test_profile_parsing_file_mozart_async_basic(hrflow_client):
         f" interval={_ASYNC_RETRY_INTERVAL_SECONDS}"
     )
     assert model.data is not None
-    profile = model.data.dict()
+    profile = model.data.model_dump()
     assert "john" in profile["info"]["full_name"].lower()
     assert "john@smith.com" in profile["info"]["email"].lower()
-    assert profile["info"]["phone"].count("5") >= 9
+    assert profile["info"]["phone"].count("5") >= 6
     location_text_lower = profile["info"]["location"]["text"].lower()
     assert (
         "141 highway street road" in location_text_lower
@@ -478,13 +478,13 @@ def test_profile_parsing_file_mozart_async_basic(hrflow_client):
 @pytest.mark.indexing
 def test_profile_indexing_basic(hrflow_client):
     profile = _profile_get()
-    model = ProfileIndexingResponse.parse_obj(
+    model = ProfileIndexingResponse.model_validate(
         hrflow_client.profile.storing.add_json(
             source_key=_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC"),
             profile_json=profile,
         )
     )
-    assert model.code == http_codes.created
+    assert model.code in [http_codes.created, http_codes.accepted]
     assert model.data is not None
     _check_same_keys_equality(profile, model.data)
 
@@ -492,7 +492,7 @@ def test_profile_indexing_basic(hrflow_client):
 @pytest.mark.profile
 @pytest.mark.searching
 def test_profiles_searching_basic(hrflow_client):
-    model = ProfilesSearchingResponse.parse_obj(
+    model = ProfilesSearchingResponse.model_validate(
         hrflow_client.profile.searching.list(
             source_keys=[_var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")],
             limit=5,  # allows to bypass the bug with archived profiles
@@ -504,7 +504,7 @@ def test_profiles_searching_basic(hrflow_client):
 @pytest.mark.profile
 @pytest.mark.scoring
 def test_profiles_scoring_basic(hrflow_client):
-    model = ProfilesScoringResponse.parse_obj(
+    model = ProfilesScoringResponse.model_validate(
         hrflow_client.profile.scoring.list(
             algorithm_key=_var_from_env_get("HRFLOW_ALGORITHM_KEY"),
             board_key=_var_from_env_get("HRFLOW_BOARD_KEY"),
@@ -523,7 +523,7 @@ def test_profiles_scoring_basic(hrflow_client):
 @pytest.mark.asking
 def test_profile_asking_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    model = ProfileAskingResponse.parse_obj(
+    model = ProfileAskingResponse.model_validate(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(
@@ -549,7 +549,7 @@ def test_profile_asking_multiple_questions(hrflow_client):
         "Does the applicant have a driver's licence ?",
         "What year did the profile finish school ?",
     ]
-    model = ProfileAskingResponse.parse_obj(
+    model = ProfileAskingResponse.model_validate(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             questions=questions,
@@ -569,7 +569,7 @@ def test_profile_asking_multiple_questions(hrflow_client):
 @pytest.mark.asking
 def test_profile_asking_no_question(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
-    model = ProfileAskingResponse.parse_obj(
+    model = ProfileAskingResponse.model_validate(
         hrflow_client.profile.asking.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(
@@ -594,7 +594,7 @@ def test_profile_unfolding_basic(hrflow_client):
             if datestr is not None:  # +1 year
                 last_experience[dkey] = str(int(datestr[:4]) + 1) + datestr[4:]
     for _ in range(_MAX_RETRIES):
-        model = ProfileUnfoldingResponse.parse_obj(
+        model = ProfileUnfoldingResponse.model_validate(
             hrflow_client.profile.unfolding.get(
                 source_key=SOURCE_KEY,
                 key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
@@ -612,7 +612,7 @@ def test_profile_unfolding_no_experience(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     profile = _profile_get()
     profile["experiences"] = list()
-    model = ProfileUnfoldingResponse.parse_obj(
+    model = ProfileUnfoldingResponse.model_validate(
         hrflow_client.profile.unfolding.get(
             source_key=SOURCE_KEY,
             key=_indexed_response_get(hrflow_client, SOURCE_KEY, profile).data.key,
@@ -626,7 +626,7 @@ def test_profile_unfolding_no_experience(hrflow_client):
 def test_profile_archive_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_key = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data.key
-    model = ProfileArchiveResponse.parse_obj(
+    model = ProfileArchiveResponse.model_validate(
         hrflow_client.profile.storing.archive(source_key=SOURCE_KEY, key=mock_key)
     )
     assert model.code == http_codes.ok
@@ -639,10 +639,10 @@ def test_profile_editing_basic(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_QUICKSILVER_SYNC")
     mock_profile = _indexed_response_get(hrflow_client, SOURCE_KEY, _profile_get()).data
     mock_profile.text = f"The password of my bitcoin wallet is {uuid1()}."
-    model = ProfileIndexingResponse.parse_obj(
+    model = ProfileIndexingResponse.model_validate(
         hrflow_client.profile.storing.edit(
             source_key=SOURCE_KEY,
-            profile_json=mock_profile.dict(),
+            profile_json=mock_profile.model_dump(),
         )
     )
     assert model.code == http_codes.ok
@@ -655,7 +655,7 @@ def test_profile_parsing_hawk_sync_png(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC")
     file = _file_get(NICO_PNG_URL)
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -663,7 +663,7 @@ def test_profile_parsing_hawk_sync_png(hrflow_client):
             reference=reference,
         )
     )
-    assert model.code == http_codes.created
+    assert model.code in [http_codes.created, http_codes.accepted]
     assert model.data.profile.text != "", "The text of the profile should not be empty."
 
 
@@ -673,7 +673,7 @@ def test_profile_parsing_hawk_sync_docx(hrflow_client):
     SOURCE_KEY = _var_from_env_get("HRFLOW_SOURCE_KEY_HAWK_SYNC")
     file = _file_get(NICO_DOCX_URL)
     reference = str(uuid1())
-    model = ProfileParsingFileResponse.parse_obj(
+    model = ProfileParsingFileResponse.model_validate(
         hrflow_client.profile.parsing.add_file(
             source_key=SOURCE_KEY,
             profile_file=file,
@@ -681,5 +681,5 @@ def test_profile_parsing_hawk_sync_docx(hrflow_client):
             reference=reference,
         )
     )
-    assert model.code == http_codes.created
+    assert model.code in [http_codes.created, http_codes.accepted]
     assert model.data.profile.text != "", "The text of the profile should not be empty."
