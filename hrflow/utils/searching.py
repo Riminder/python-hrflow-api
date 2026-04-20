@@ -59,7 +59,7 @@ def is_valid_for_searching(
                                 False otherwise
     """
     if isinstance(profile, dict):
-        profile = HrFlowProfile.parse_obj(profile)
+        profile = HrFlowProfile.model_validate(profile)
 
     if not isinstance(profile, HrFlowProfile):
         raise ValueError("profile must be a dict or a HrFlowProfile object")
