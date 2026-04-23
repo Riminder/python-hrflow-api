@@ -77,6 +77,6 @@ class ProfileScoring:
             "order_by": validate_value(order_by, ORDER_BY_VALUES, "order by"),
         }
 
-        params = {**query_params, **kwargs}
-        response = self.client.get("profiles/scoring", params)
+        data = {**query_params, **kwargs}
+        response = self.client.post("profiles/scoring", json=data)
         return validate_response(response)
