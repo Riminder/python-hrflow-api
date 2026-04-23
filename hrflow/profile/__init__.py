@@ -12,6 +12,7 @@ from .scoring import ProfileScoring
 from .searching import ProfileSearching
 from .storing import ProfileStoring
 from .unfolding import ProfileUnfolding
+from .upskilling import ProfileUpskilling
 
 
 class Profile(object):
@@ -39,3 +40,4 @@ class Profile(object):
         self.unfolding = ProfileUnfolding(self.client)
         self.matching = ProfileMatching(self.client)
         self.grading = ProfileGrading(self.client)
+        self.upskilling = ProfileUpskilling(self.client)

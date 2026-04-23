@@ -6,6 +6,7 @@ from .reasoning import JobReasoning
 from .scoring import JobScoring
 from .searching import JobSearching
 from .storing import JobStoring
+from .upskilling import JobUpskilling
 
 
 class Job:
@@ -19,3 +20,4 @@ class Job:
         self.reasoning = JobReasoning(self.client)
         self.storing = JobStoring(self.client)
         self.matching = JobMatching(self.client)
+        self.upskilling = JobUpskilling(self.client)
