@@ -91,6 +91,14 @@ def validate_limit(value):
     return value
 
 
+def validate_score(value):
+    if not isinstance(value, (int, float)):
+        raise TypeError("score must be a number, not {}".format(type(value).__name__))
+    if value <= 0 or value >= 1:
+        raise ValueError("score must be between 0 and 1 (exclusive)")
+    return value
+
+
 def validate_provider_keys(value):
     if not value or not all(isinstance(elt, str) for elt in value):
         raise TypeError("provider_ids must contain list of strings")
